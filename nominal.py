@@ -221,3 +221,46 @@ def calculate_correlation(dataset, nominal_columns=None, mark_columns=False, the
         sns.heatmap(corr, annot=True, fmt=kwargs.get('fmt','.2f'))
         plt.show()
     return corr
+
+
+def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False):
+    """
+    Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
+    using the following logic:
+    - categorical with only a single value will be marked as zero (or dropped, if requested)
+    - categorical with two values will be replaced with the result of Pandas `factorize`
+    - categorical with more than two values will be replaced with the result of Pandas `get_dummies`
+    - numerical columns will not be modified
+
+    :param dataset: NumPy ndarray / Pandas DataFrame
+        The data-set to encode
+    :param nominal_columns: sequence / string
+        A sequence of the nominal (categorical) columns in the dataset. If string, must be 'all' to state that
+        all columns are nominal. If None, nothing happens. Default: 'all'
+    :param drop_single_label: Boolean
+        If True, nominal columns with a only a single value will be dropped. Default: False
+    :return: DataFrame, dict
+        A tuple of the encoded DataFrame and dictionary, where each key is a two-value column, and the value is
+        the original labels, as supplied by Pandas `factorize`. Will be empty if no two-value columns are present
+        in the data-set
+    """
+    dataset = _convert(dataset,'dataframe')
+    if nominal_columns is None:
+        return dataset
+    elif nominal_columns == 'all':
+        nominal_columns = dataset.columns
+    converted_dataset = pd.DataFrame()
+    binary_columns_dict = dict()
+    for col in dataset.columns:
+        if col not in nominal_columns:
+            converted_dataset.loc[:,col] = dataset[col]
+        else:
+            unique_values = pd.unique(dataset[col])
+            if len(unique_values) == 1 and not drop_single_label:
+                converted_dataset.loc[:,col] = 0
+            elif len(unique_values) == 2:
+                converted_dataset.loc[:,col], binary_columns_dict[col] = pd.factorize(dataset[col])
+            else:
+                dummies = pd.get_dummies(dataset[col],prefix=col)
+                converted_dataset = pd.concat([converted_dataset,dummies],axis=1)
+    return converted_dataset, binary_columns_dict
