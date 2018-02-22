@@ -1,12 +1,12 @@
-# EDA Tools
-A set of exploratory data analysis (EDA) tools in **Python 3.x**.
+# Dython
+A set of **D**ata analysis tools in p**YTHON** 3.x.
 
 ### Dependencies:
 * numpy
 * pandas
 * seaborn
 * scipy
-* matplotlib.pyplot 
+* matplotlib
 
 ## Nominal (`nominal.py`):
 A set of functions to explore nominal (categorical) datasets and
@@ -23,6 +23,9 @@ Additional functions:
 of a data-set
 * `numerical_encoding`: Encode a mixed data-set to a numerical data-set 
 (one-hot encoding)
+
+### TO DO:
+* README: Better documentation, examples
 
 ### License:
 Apache License 2.0
