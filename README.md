@@ -19,7 +19,7 @@ Coefficients and statistics:
 * Correlation ratio (`correlation_ratio`)
 
 Additional functions:
-* `calculate_correlation`: Calculate correlation/strength-of-association
+* `associations`: Calculate correlation/strength-of-association
 of a data-set
 * `numerical_encoding`: Encode a mixed data-set to a numerical data-set 
 (one-hot encoding)

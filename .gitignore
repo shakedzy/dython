@@ -6,3 +6,5 @@ venv/*
 ENV/*
 .idea/*
 .DS_Store
+dython.egg*/*
+*__pycache__*

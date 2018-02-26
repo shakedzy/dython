@@ -151,7 +151,8 @@ def correlation_ratio(categories, measurements):
     return eta
 
 
-def calculate_correlation(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, **kwargs):
+def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True,
+                          return_results = False, **kwargs):
     """
     Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
     continuous features using:
@@ -171,6 +172,8 @@ def calculate_correlation(dataset, nominal_columns=None, mark_columns=False, the
         In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
     :param plot: Boolean (default: True)
         If True, plot a heat-map of the correlation matrix
+    :param return_results: Boolean (default: False)
+        If True, the function will return a Pandas DataFrame of the computed associations
     :param kwargs:
         Arguments to be passed to used function and methods
     :return: Pandas DataFrame
@@ -218,12 +221,13 @@ def calculate_correlation(dataset, nominal_columns=None, mark_columns=False, the
         corr.index = marked_columns
     if plot:
         plt.figure(figsize=kwargs.get('figsize',None))
-        sns.heatmap(corr, annot=True, fmt=kwargs.get('fmt','.2f'))
+        sns.heatmap(corr, annot=kwargs.get('annot',True), fmt=kwargs.get('fmt','.2f'))
         plt.show()
-    return corr
+    if return_results:
+        return corr
 
 
-def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False):
+def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, drop_fact_dict=True):
     """
     Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
     using the following logic:
@@ -237,12 +241,15 @@ def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False):
     :param nominal_columns: sequence / string
         A sequence of the nominal (categorical) columns in the dataset. If string, must be 'all' to state that
         all columns are nominal. If None, nothing happens. Default: 'all'
-    :param drop_single_label: Boolean
-        If True, nominal columns with a only a single value will be dropped. Default: False
-    :return: DataFrame, dict
-        A tuple of the encoded DataFrame and dictionary, where each key is a two-value column, and the value is
-        the original labels, as supplied by Pandas `factorize`. Will be empty if no two-value columns are present
-        in the data-set
+    :param drop_single_label: Boolean (default: False)
+        If True, nominal columns with a only a single value will be dropped.
+    :param drop_fact_dict: Boolean (default: True)
+        If True, the return value will be the encoded DataFrame alone. If False, it will be a tuple of
+        the DataFrame and the dictionary of the binary factorization (originating from pd.factorize)
+    :return: DataFrame or (DataFrame, dict)
+        If drop_fact_dict is True, returns the encoded DataFrame. else, returns a tuple of the encoded DataFrame and
+        dictionary, where each key is a two-value column, and the value is the original labels, as supplied by
+        Pandas `factorize`. Will be empty if no two-value columns are present in the data-set
     """
     dataset = _convert(dataset,'dataframe')
     if nominal_columns is None:
@@ -263,4 +270,7 @@ def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False):
             else:
                 dummies = pd.get_dummies(dataset[col],prefix=col)
                 converted_dataset = pd.concat([converted_dataset,dummies],axis=1)
-    return converted_dataset, binary_columns_dict
+    if drop_fact_dict:
+        return converted_dataset
+    else:
+        return converted_dataset, binary_columns_dict
