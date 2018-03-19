@@ -8,6 +8,14 @@ A set of **D**ata analysis tools in p**YTHON** 3.x.
 * scipy
 * matplotlib
 
+## Installation:
+Clone this repository to your local machine anr run `pip`:
+```
+git clone https://github.com/shakedzy/dython.git
+cd dython
+pip install -e .
+```
+
 ## Nominal (`nominal.py`):
 A set of functions to explore nominal (categorical) datasets and
 mixed (nominal and continuous) data-sets.
