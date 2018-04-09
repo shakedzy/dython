@@ -5,35 +5,7 @@ import seaborn as sns
 import scipy.stats as ss
 import matplotlib.pyplot as plt
 from collections import Counter
-
-
-def _convert(data, to):
-    converted = None
-    if to == 'array':
-        if isinstance(data, np.ndarray):
-            converted = data
-        elif isinstance(data, pd.Series):
-            converted = data.values
-        elif isinstance(data, list):
-            converted = np.array(data)
-    elif to == 'list':
-        if isinstance(data, list):
-            converted = data
-        elif isinstance(data, pd.Series):
-            converted = data.values.tolist()
-        elif isinstance(data, np.ndarray):
-            converted = data.tolist()
-    elif to == 'dataframe':
-        if isinstance(data, pd.DataFrame):
-            converted = data
-        elif isinstance(data, np.ndarray):
-            converted = pd.DataFrame(data)
-    else:
-        raise ValueError("Unknown data conversion: {}".format(to))
-    if converted is None:
-        raise TypeError('cannot handle data conversion of type: {} to {}'.format(type(data),to))
-    else:
-        return converted
+from dython.private import _convert
 
 
 def conditional_entropy(x, y):

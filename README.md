@@ -2,11 +2,12 @@
 A set of **D**ata analysis tools in p**YTHON** 3.x.
 
 ### Dependencies:
-* numpy
-* pandas
-* seaborn
-* scipy
-* matplotlib
+* `numpy`
+* `pandas`
+* `seaborn`
+* `scipy`
+* `matplotlib`
+* `sklearn`
 
 ## Installation:
 Clone this repository to your local machine anr run `pip`:

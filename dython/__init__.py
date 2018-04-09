@@ -1,4 +1,4 @@
-hard_dependencies = ['numpy','pandas','seaborn','scipy','matplotlib']
+hard_dependencies = ['numpy','pandas','seaborn','scipy','matplotlib','sklearn']
 missing_dependencies = []
 
 for dependency in hard_dependencies:
