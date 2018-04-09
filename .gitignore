@@ -8,3 +8,4 @@ ENV/*
 .DS_Store
 dython.egg*/*
 *__pycache__*
+*run_stuff.py*
