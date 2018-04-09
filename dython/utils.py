@@ -16,27 +16,32 @@ def roc_graph(y_true, y_pred, pos_index=1, threshold_optimizer='simple', return_
     if y_pred.shape != y_true.shape:
         raise ValueError('y_true and y_pred must have the same shape')
     elif len(y_pred.shape) == 1:
+        def expand(x):
+            if x == 0:
+                return [1,0]
+            else:
+                return [0,1]
+        def expand_prob(p, pos):
+            if pos == 0:
+                return [p, 1-p]
+            else:
+                return [1-p, p]
         y_t = y_true
         y_p = y_pred
-        warnings.warn('When y_pred is a one-dimensional array, AUC cannot be calculated')
-        auc = None
+        y_true = np.array([expand(x) for x in y_t])
+        y_pred = np.array([expand_prob(p,x) for (p,x) in zip(y_p,y_t)])
     else:
         y_t = [np.argmax(x) for x in y_true]
         y_p = [x[pos_index] for x in y_pred]
-        auc = roc_auc_score(y_true, y_pred)
+    auc = roc_auc_score(y_true, y_pred)
     fpr, tpr, thresholds = roc_curve(y_t, y_p)
     ideal_fpr, ideal_tpr, ideal_threshold = threshold_optimizer(fpr, tpr, thresholds)
     color = kwargs.get('color','darkorange')
     lw = kwargs.get('lw', 2)
     ms = kwargs.get('ms', 10)
     fmt = kwargs.get('fmt','.2f')
-    if auc is None:
-        auc_label = ''
-    else:
-        auc_label = ' (AUC = {auc:{fmt}})'.format(auc=auc,fmt=fmt)
-    label = 'ROC curve' + auc_label
     plt.figure()
-    plt.plot(fpr, tpr, color=color, lw=lw, label=label)
+    plt.plot(fpr, tpr, color=color, lw=lw, label='ROC curve (AUC = {auc:{fmt}})'.format(auc=auc,fmt=fmt))
     plt.plot(ideal_fpr, ideal_tpr, color=color, ms=ms, lw=1, marker=kwargs.get('marker','*'),
              label='Ideal Threshold: {th:{fmt}}'.format(th=ideal_threshold,fmt=fmt))
     plt.plot([0, 1], [0, 1], color=kwargs.get('dash_color','navy'), lw=lw, linestyle='--')
