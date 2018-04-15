@@ -8,7 +8,7 @@ from dython.private import _convert
 def _display_plot():
     plt.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--')
     plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.0])
+    plt.ylim([0.0, 1.02])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
@@ -16,48 +16,39 @@ def _display_plot():
     plt.show()
 
 
-def _binary_roc_graph(y_true, y_pred, threshold_optimizer='simple', **kwargs):
+def binary_roc_graph(y_true, y_pred, **kwargs):
     """
+    This function plots the ROC graph of a binary-class predictor. AUC calculation are presented as-well.
+    Data can be either: (1) one dimensional, where the values of y_true represent the true class and y_pred the
+    predicted probability of that class, or (2) two-dimensional, where each line in y_true is a one-hot-encoding
+    of the true class and y_pred holds the predicted probabilities of each class.
+    For example, consider a data-set of two data-points where the true class of the first line is class 0, which
+    was predicted with a probability of 0.6, and the second line's true class is 1, with predicted probability of
+    0.8. In the first configuration, the input will be: y_true = [0,1], y_pred = [0.6,0.8]. In the second
+    configuration, the input will be: y_true = [[1,0],[0,1]], y_pred = [[0.6,0.4],[0.2,0.8]].
 
     Based on sklearn examples (April 2018):
     http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
-    :param y_true:
-    :param y_pred:
-    :param threshold_optimizer:
-    :param kwargs:
-    :return:
+    :param y_true: list / NumPy ndarray
+                   The true classes of the predicted data
+    :param y_pred: list / NumPy ndarray
+                   The predicted classes
+    :param kwargs: Different options and configurations
+    :return: None
     """
-    def simple_threshold_optimizer(fpr, tpr, thresholds):
-        idx = np.array([tp-fp for (fp,tp) in zip(fpr,tpr)]).argmin()
-        return fpr[idx], tpr[idx], thresholds[idx]
-    if threshold_optimizer == 'simple':
-        threshold_optimizer = simple_threshold_optimizer
     y_true = _convert(y_true, 'array')
     y_pred = _convert(y_pred, 'array')
     if y_pred.shape != y_true.shape:
         raise ValueError('y_true and y_pred must have the same shape')
     elif len(y_pred.shape) == 1:
-        def expand(x):
-            if x == 0:
-                return [1,0]
-            else:
-                return [0,1]
-        def expand_prob(p, pos):
-            if pos == 0:
-                return [p, 1-p]
-            else:
-                return [1-p, p]
         y_t = y_true
         y_p = y_pred
-        y_true = np.array([expand(x) for x in y_t])
-        y_pred = np.array([expand_prob(p,x) for (p,x) in zip(y_p,y_t)])
     else:
         y_t = [np.argmax(x) for x in y_true]
         y_p = [x[1] for x in y_pred]
-    auc = roc_auc_score(y_true, y_pred)
-    fpr, tpr, thresholds = roc_curve(y_t, y_p)
-    ideal_fpr, ideal_tpr, ideal_threshold = threshold_optimizer(fpr, tpr, thresholds)
+    fpr, tpr, _ = roc_curve(y_t, y_p)
+    auc_score = auc(fpr,tpr)
     color = kwargs.get('color','darkorange')
     lw = kwargs.get('lw', 2)
     ls = kwargs.get('ls','-')
@@ -70,9 +61,7 @@ def _binary_roc_graph(y_true, y_pred, threshold_optimizer='simple', **kwargs):
     if kwargs.get('new_figure',True):
         plt.figure()
     plt.plot(fpr, tpr, color=color, lw=lw, ls=ls, label='ROC curve{class_label} (AUC = {auc:{fmt}})'
-             .format(class_label=class_label,auc=auc,fmt=fmt))
-    plt.plot(ideal_fpr, ideal_tpr, color=color, ms=ms, lw=1, marker=kwargs.get('marker','*'),
-             label='Ideal Threshold: {th:{fmt}}'.format(th=ideal_threshold,fmt=fmt))
+             .format(class_label=class_label,auc=auc_score,fmt=fmt))
     if kwargs.get('show_graphs',True):
         _display_plot()
     if kwargs.get('return_pr',False):
@@ -94,7 +83,19 @@ def _plot_macro_roc(fpr, tpr, n, **kwargs):
              color='navy', ls=':', lw=lw)
 
 
-def roc_graph(y_true, y_pred, micro=True, macro=True, threshold_optimizer='simple', **kwargs):
+def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
+    """
+
+    Based on sklearn examples (April 2018):
+    http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
+
+    :param y_true:
+    :param y_pred:
+    :param micro:
+    :param macro:
+    :param kwargs:
+    :return:
+    """
     all_fpr = list()
     all_tpr = list()
     y_true = _convert(y_true, 'array')
@@ -102,7 +103,7 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, threshold_optimizer='simpl
     if y_pred.shape != y_true.shape:
         raise ValueError('y_true and y_pred must have the same shape')
     elif len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
-        return _binary_roc_graph(y_true, y_pred, threshold_optimizer, **kwargs)
+        return binary_roc_graph(y_true, y_pred, **kwargs)
     else:
         colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
         n = y_pred.shape[1]
@@ -111,12 +112,13 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, threshold_optimizer='simpl
         kwargs['show_graphs'] = False
         kwargs['return_pr'] = True
         for i in range(0,n):
-            pr = _binary_roc_graph(y_true[:,i], y_pred[:,i], threshold_optimizer,
-                                   color=colors[n % len(colors)], **kwargs)
+            pr = binary_roc_graph(y_true[:,i], y_pred[:,i],
+                                   color=colors[i % len(colors)],class_label=i, **kwargs)
             all_fpr.append(pr['fpr'])
             all_tpr.append(pr['tpr'])
         if micro:
-            _binary_roc_graph(y_true.ravel(), y_pred.ravel(), threshold_optimizer, ls=':', color='deeppink', **kwargs)
+            binary_roc_graph(y_true.ravel(), y_pred.ravel(), ls=':',
+                              color='deeppink', class_label='micro', **kwargs)
         if macro:
             _plot_macro_roc(all_fpr,all_tpr,n)
         _display_plot()
