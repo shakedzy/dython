@@ -5,7 +5,7 @@ import seaborn as sns
 import scipy.stats as ss
 import matplotlib.pyplot as plt
 from collections import Counter
-from dython.private import _convert
+from dython._private import convert
 
 
 def conditional_entropy(x, y):
@@ -103,8 +103,8 @@ def correlation_ratio(categories, measurements):
     :return: float
         in the range of [0,1]
     """
-    categories = _convert(categories, 'array')
-    measurements = _convert(measurements, 'array')
+    categories = convert(categories, 'array')
+    measurements = convert(measurements, 'array')
     fcat, _ = pd.factorize(categories)
     cat_num = np.max(fcat)+1
     y_avg_array = np.zeros(cat_num)
@@ -135,8 +135,8 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
     :param dataset: NumPy ndarray / Pandas DataFrame
         The data-set for which the features' correlation is computed
     :param nominal_columns: string / list / NumPy ndarray
-        Names of columns of the data-set which hold categorical values. Can also the string 'all' to state all columns
-        are categorical or None (default) to state none are categorical
+        Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
+        columns are categorical, or None (default) to state none are categorical
     :param mark_columns: Boolean (default: False)
         if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or
         continuous), as provided by nominal_columns
@@ -152,7 +152,7 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         A DataFrame of the correlation/strength-of-association between all features
     """
 
-    dataset = _convert(dataset,'dataframe')
+    dataset = convert(dataset, 'dataframe')
     columns = dataset.columns
     if nominal_columns is None:
         nominal_columns = list()
@@ -223,7 +223,7 @@ def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, 
         dictionary, where each key is a two-value column, and the value is the original labels, as supplied by
         Pandas `factorize`. Will be empty if no two-value columns are present in the data-set
     """
-    dataset = _convert(dataset,'dataframe')
+    dataset = convert(dataset, 'dataframe')
     if nominal_columns is None:
         return dataset
     elif nominal_columns == 'all':

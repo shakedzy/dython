@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interp
-from sklearn.metrics import roc_auc_score, roc_curve, auc
-from dython.private import _convert
+from sklearn.metrics import roc_curve, auc
+from dython._private import convert
 
 
 def _display_plot():
@@ -18,7 +18,7 @@ def _display_plot():
 
 def binary_roc_graph(y_true, y_pred, **kwargs):
     """
-    This function plots the ROC graph of a binary-class predictor. AUC calculation are presented as-well.
+    This function plots a ROC graph of a binary-class predictor. AUC calculation are presented as-well.
     Data can be either: (1) one dimensional, where the values of y_true represent the true class and y_pred the
     predicted probability of that class, or (2) two-dimensional, where each line in y_true is a one-hot-encoding
     of the true class and y_pred holds the predicted probabilities of each class.
@@ -27,7 +27,7 @@ def binary_roc_graph(y_true, y_pred, **kwargs):
     0.8. In the first configuration, the input will be: y_true = [0,1], y_pred = [0.6,0.8]. In the second
     configuration, the input will be: y_true = [[1,0],[0,1]], y_pred = [[0.6,0.4],[0.2,0.8]].
 
-    Based on sklearn examples (April 2018):
+    Based on sklearn examples (as was seen on April 2018):
     http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
     :param y_true: list / NumPy ndarray
@@ -37,8 +37,8 @@ def binary_roc_graph(y_true, y_pred, **kwargs):
     :param kwargs: Different options and configurations
     :return: None
     """
-    y_true = _convert(y_true, 'array')
-    y_pred = _convert(y_pred, 'array')
+    y_true = convert(y_true, 'array')
+    y_pred = convert(y_pred, 'array')
     if y_pred.shape != y_true.shape:
         raise ValueError('y_true and y_pred must have the same shape')
     elif len(y_pred.shape) == 1:
@@ -85,21 +85,31 @@ def _plot_macro_roc(fpr, tpr, n, **kwargs):
 
 def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
     """
+    Plot a ROC graph of predictor's results (inclusding AUC scores), where each row of y_true and y_pred
+    represent a single example.
+    If there are 1 or two columns only, the data is treated as a binary classification, in which
+    the result is similar to the `binary_roc_graph` method, see its documentation for more information.
+    If there are more then 2 columns, each column is considered a unique class, and a ROC graph and AUC
+    score will be computed for each. A Macro-ROC and Micro-ROC are computed and plotted too by default.
 
-    Based on sklearn examples (April 2018):
+    Based on sklearn examples (as was seen on April 2018):
     http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
-    :param y_true:
-    :param y_pred:
-    :param micro:
-    :param macro:
-    :param kwargs:
-    :return:
+    :param y_true: list / NumPy ndarray
+                   The true classes of the predicted data
+    :param y_pred: list / NumPy ndarray
+                   The predicted classes
+    :param micro: boolean
+                  Whether to calculate a Micro ROC graph (not applicable for binary cases)
+    :param macro: boolean
+                  Whether to calculate a Macro ROC graph (not applicable for binary cases)
+    :param kwargs: Different options and configurations
+    :return: None
     """
     all_fpr = list()
     all_tpr = list()
-    y_true = _convert(y_true, 'array')
-    y_pred = _convert(y_pred, 'array')
+    y_true = convert(y_true, 'array')
+    y_pred = convert(y_pred, 'array')
     if y_pred.shape != y_true.shape:
         raise ValueError('y_true and y_pred must have the same shape')
     elif len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
@@ -125,5 +135,17 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
 
 
 def random_forest_feature_importance(forest, features, **kwargs):
+    """
+    Given a trained `sklearn.ensemble.RandomForestClassifier`, plot the different features based on their
+    importance according to the classifier, from the most important to the least.
+
+    :param forest: sklearn.ensemble.RandomForestClassifier
+                   A trained `RandomForestClassifier`
+    :param features: list
+                     A list of the names of the features the classifier was trained on, ordered by the same
+                     order the appeared in the training data
+    :param kwargs: Different options and configurations
+    :return: None
+    """
     return sorted(zip(map(lambda x: round(x, kwargs.get('precision',4)), forest.feature_importances_), features),
                   reverse=True)
