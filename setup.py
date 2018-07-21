@@ -8,6 +8,6 @@ setup(name='dython',
       author='Shaked Zychlinski',
       author_email='shakedzy@gmail.com',
       url='https://github.com/shakedzy/dython',
-      install_requires=['numpy','pandas','seaborn','scipy','matplotlib','sklearn'],
+      install_requires=['numpy','pandas','seaborn','scipy','matplotlib','scikit-learn'],
       packages=find_packages(),
       )
