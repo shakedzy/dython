@@ -34,6 +34,8 @@ A set of functions to gain more information over a model's performance.
 predictions
 * `random_forest_feature_importance`: plot the feature importance of a
 trained sklearn `RandomForestClassifier` 
+* `associations`: Calculate correlation/strength-of-association
+of a data-set (same as `nominal.associations`)
 
 ### Examples:
 See the `examples.py` module for `roc_graph` and `associations` examples.
