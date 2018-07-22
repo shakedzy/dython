@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import dython.nominal as nominal
 from scipy import interp
 from sklearn.metrics import roc_curve, auc
 from dython._private import convert
@@ -149,3 +150,10 @@ def random_forest_feature_importance(forest, features, **kwargs):
     """
     return sorted(zip(map(lambda x: round(x, kwargs.get('precision',4)), forest.feature_importances_), features),
                   reverse=True)
+
+
+def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, return_results=False, **kwargs):
+    """
+    See 'associations' in the 'nominal' module.
+    """
+    return nominal.associations(dataset,nominal_columns,mark_columns,theil_u,plot,return_results,**kwargs)
