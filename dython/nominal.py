@@ -14,9 +14,9 @@ def conditional_entropy(x, y):
 
     Wikipedia: https://en.wikipedia.org/wiki/Conditional_entropy
 
-    :param x: list / NumPy ndarray / Pandas DataFrame
+    :param x: list / NumPy ndarray / Pandas Series
         A sequence of measurements
-    :param y: list / NumPy ndarray / Pandas DataFrame
+    :param y: list / NumPy ndarray / Pandas Series
         A sequence of measurements
     :return: float
     """
@@ -41,9 +41,9 @@ def cramers_v(x, y):
     Original function taken from: https://stackoverflow.com/a/46498792/5863503
     Wikipedia: https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
 
-    :param x: list / NumPy ndarray / Pandas DataFrame
+    :param x: list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :param y: list / NumPy ndarray / Pandas DataFrame
+    :param y: list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
     :return: float
         in the range of [0,1]
@@ -68,9 +68,9 @@ def theils_u(x, y):
 
     Wikipedia: https://en.wikipedia.org/wiki/Uncertainty_coefficient
 
-    :param x: list / NumPy ndarray / Pandas DataFrame
+    :param x: list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :param y: list / NumPy ndarray / Pandas DataFrame
+    :param y: list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
     :return: float
         in the range of [0,1]
@@ -96,9 +96,9 @@ def correlation_ratio(categories, measurements):
 
     Wikipedia: https://en.wikipedia.org/wiki/Correlation_ratio
 
-    :param categories: list / NumPy ndarray / Pandas DataFrame
+    :param categories: list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :param measurements: list / NumPy ndarray / Pandas DataFrame
+    :param measurements: list / NumPy ndarray / Pandas Series
         A sequence of continuous measurements
     :return: float
         in the range of [0,1]
