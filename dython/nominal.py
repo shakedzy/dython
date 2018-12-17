@@ -88,7 +88,7 @@ def theils_u(x, y):
 
 def correlation_ratio(categories, measurements):
     """
-    Calculates the Correlation Ration (sometimes marked by the greek letter Eta) for categorical-continuous association.
+    Calculates the Correlation Ratio (sometimes marked by the greek letter Eta) for categorical-continuous association.
     Answers the question - given a continuous value of a measurement, is it possible to know which category is it
     associated with?
     Value is in the range [0,1], where 0 means a category cannot be determined by a continuous measurement, and 1 means
