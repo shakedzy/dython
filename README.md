@@ -2,7 +2,7 @@
 A set of **D**ata analysis tools in p**YTHON** 3.x.
 
 ## Installation:
-Clone this repository to your local machine anr run `pip`:
+Clone this repository to your local machine and run `pip`:
 ```
 git clone https://github.com/shakedzy/dython.git
 cd dython
