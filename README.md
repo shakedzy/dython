@@ -40,5 +40,8 @@ of a data-set (same as `nominal.associations`)
 ### Examples:
 See the `examples.py` module for `roc_graph` and `associations` examples.
 
+### Related blogposts:
+Read more about the Nominal tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
+
 ### License:
 Apache License 2.0
