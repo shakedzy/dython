@@ -6,7 +6,7 @@ Clone this repository to your local machine and run `pip`:
 ```
 git clone https://github.com/shakedzy/dython.git
 cd dython
-pip install -e .
+pip install .
 ```
 
 **Dependencies:** `numpy`, `pandas`, `seaborn`, `scipy`, `matplotlib`, `sklearn`
