@@ -119,7 +119,7 @@ def correlation_ratio(categories, measurements):
     if numerator == 0:
         eta = 0.0
     else:
-        eta = numerator/denominator
+        eta = np.sqrt(numerator/denominator)
     return eta
 
 
