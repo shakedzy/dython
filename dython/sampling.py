@@ -8,7 +8,7 @@ def weighted_sampling(numbers, k=1, with_replacement=False, **kwargs):
     :param numbers: List or np.ndarray of numbers
     :param k: Integer. How many numbers to sample. Choosing k=None will yield a single number
     :param with_replacement: Boolean. Allow replacement or not
-    :return: k numbers sampled from numbers
+    :return: k numbers sampled from numbers. List or np.ndarray, depending on the input. if k=None, returns a single number
     """
     sampled = np.random.choice(numbers, size=k, replace=with_replacement)
     if (isinstance(numbers, list) or kwargs.get('to_list', False)) and k is not None:
@@ -23,7 +23,7 @@ def boltzmann_sampling(numbers, k=1, with_replacement=False):
     :param numbers: List or np.ndarray of numbers
     :param k: Integer. How many numbers to sample. Choosing k=None will yield a single number
     :param with_replacement: Boolean. Allow replacement or not
-    :return: k numbers sampled from numbers
+    :return: k numbers sampled from numbers. List or np.ndarray, depending on the input. if k=None, returns a single number
     """
     exp_func = np.vectorize(lambda x: np.exp(x))
     exp_numbers = exp_func(numbers)

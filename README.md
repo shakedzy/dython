@@ -5,8 +5,7 @@ A set of **D**ata analysis tools in p**YTHON** 3.x.
 Clone this repository to your local machine and run `pip`:
 ```
 git clone https://github.com/shakedzy/dython.git
-cd dython
-pip install .
+pip install ./dython
 ```
 
 **Dependencies:** `numpy`, `pandas`, `seaborn`, `scipy`, `matplotlib`, `sklearn`
@@ -27,7 +26,7 @@ of a data-set
 * `numerical_encoding`: Encode a mixed data-set to a numerical data-set 
 (one-hot encoding)
 
-## Model utilities (`model_utils.py`)
+## Model utilities (`model_utils.py`):
 A set of functions to gain more information over a model's performance.
 
 * `roc_graph`: compute and plot a ROC graph (and AUC score) for a model's
@@ -37,8 +36,16 @@ trained sklearn `RandomForestClassifier`
 * `associations`: Calculate correlation/strength-of-association
 of a data-set (same as `nominal.associations`)
 
-### Examples:
+## Sampling (`sampling.py`):
+Some sampling functions.
+
+* `weighted_sampling`: Sample `k` numbers of the provided input using simple weighted sampling
+* `boltzmann_sampling`: Sample `k` numbers of the provided input using Boltzmann sampling
+
+## Examples:
 See the `examples.py` module for `roc_graph` and `associations` examples.
+
+-------------
 
 ### Related blogposts:
 Read more about the Nominal tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
