@@ -8,6 +8,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from dython.model_utils import roc_graph
 from dython.nominal import associations
 
+
 def roc_graph_example():
     # Based on sklearn examples (as was seen on April 2018):
     # http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
