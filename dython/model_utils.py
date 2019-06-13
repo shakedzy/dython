@@ -31,12 +31,14 @@ def binary_roc_graph(y_true, y_pred, **kwargs):
     Based on sklearn examples (as was seen on April 2018):
     http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
-    :param y_true: list / NumPy ndarray
-                   The true classes of the predicted data
-    :param y_pred: list / NumPy ndarray
-                   The predicted classes
-    :param kwargs: Different options and configurations
-    :return: None
+    Parameters
+    ----------
+    y_true : list / NumPy ndarray
+        The true classes of the predicted data
+    y_pred : list / NumPy ndarray
+        The predicted classes
+    kwargs : any key-value pairs
+        Different options and configurations
     """
     y_true = convert(y_true, 'array')
     y_pred = convert(y_pred, 'array')
@@ -96,16 +98,20 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
     Based on sklearn examples (as was seen on April 2018):
     http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
-    :param y_true: list / NumPy ndarray
-                   The true classes of the predicted data
-    :param y_pred: list / NumPy ndarray
-                   The predicted classes
-    :param micro: boolean
-                  Whether to calculate a Micro ROC graph (not applicable for binary cases)
-    :param macro: boolean
-                  Whether to calculate a Macro ROC graph (not applicable for binary cases)
-    :param kwargs: Different options and configurations
-    :return: None
+    **Example:** See `roc_graph_example` under `dython.examples`
+
+    Parameters
+    ----------
+    y_true : list / NumPy ndarray
+        The true classes of the predicted data
+    y_pred : list / NumPy ndarray
+        The predicted classes
+    micro : Boolean, default = True
+        Whether to calculate a Micro ROC graph (not applicable for binary cases)
+    macro : Boolean, default = True
+        Whether to calculate a Macro ROC graph (not applicable for binary cases)
+    kwargs : any key-value pairs
+        Different options and configurations
     """
     all_fpr = list()
     all_tpr = list()
@@ -140,20 +146,16 @@ def random_forest_feature_importance(forest, features, **kwargs):
     Given a trained `sklearn.ensemble.RandomForestClassifier`, plot the different features based on their
     importance according to the classifier, from the most important to the least.
 
-    :param forest: sklearn.ensemble.RandomForestClassifier
-                   A trained `RandomForestClassifier`
-    :param features: list
-                     A list of the names of the features the classifier was trained on, ordered by the same
-                     order the appeared in the training data
-    :param kwargs: Different options and configurations
-    :return: None
+    Parameters
+    ----------
+    forest : sklearn.ensemble.RandomForestClassifier
+        A trained `RandomForestClassifier`
+    features : list
+        A list of the names of the features the classifier was trained on, ordered by the same order the appeared
+        in the training data
+    kwargs : any key-value pairs
+        Different options and configurations
     """
     return sorted(zip(map(lambda x: round(x, kwargs.get('precision',4)), forest.feature_importances_), features),
                   reverse=True)
 
-
-def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, return_results=False, **kwargs):
-    """
-    See 'associations' in the 'nominal' module.
-    """
-    return nominal.associations(dataset,nominal_columns,mark_columns,theil_u,plot,return_results,**kwargs)

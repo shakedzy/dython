@@ -14,13 +14,15 @@ def conditional_entropy(x, y):
 
     Wikipedia: https://en.wikipedia.org/wiki/Conditional_entropy
 
-    :param x: list / NumPy ndarray / Pandas Series
+    **Returns:** float
+
+    Parameters
+    ----------
+    x : list / NumPy ndarray / Pandas Series
         A sequence of measurements
-    :param y: list / NumPy ndarray / Pandas Series
+    y : list / NumPy ndarray / Pandas Series
         A sequence of measurements
-    :return: float
     """
-    # entropy of x given y
     y_counter = Counter(y)
     xy_counter = Counter(list(zip(x,y)))
     total_occurrences = sum(y_counter.values())
@@ -41,12 +43,14 @@ def cramers_v(x, y):
     Original function taken from: https://stackoverflow.com/a/46498792/5863503
     Wikipedia: https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
 
-    :param x: list / NumPy ndarray / Pandas Series
+    **Returns:** float in the range of [0,1]
+
+    Parameters
+    ----------
+    x : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :param y: list / NumPy ndarray / Pandas Series
+    y : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :return: float
-        in the range of [0,1]
     """
     confusion_matrix = pd.crosstab(x,y)
     chi2 = ss.chi2_contingency(confusion_matrix)[0]
@@ -68,12 +72,14 @@ def theils_u(x, y):
 
     Wikipedia: https://en.wikipedia.org/wiki/Uncertainty_coefficient
 
-    :param x: list / NumPy ndarray / Pandas Series
+    **Returns:** float in the range of [0,1]
+
+    Parameters
+    ----------
+    x : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :param y: list / NumPy ndarray / Pandas Series
+    y : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :return: float
-        in the range of [0,1]
     """
     s_xy = conditional_entropy(x,y)
     x_counter = Counter(x)
@@ -96,12 +102,14 @@ def correlation_ratio(categories, measurements):
 
     Wikipedia: https://en.wikipedia.org/wiki/Correlation_ratio
 
-    :param categories: list / NumPy ndarray / Pandas Series
+    **Returns:** float in the range of [0,1]
+
+    Parameters
+    ----------
+    categories : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
-    :param measurements: list / NumPy ndarray / Pandas Series
+    measurements : list / NumPy ndarray / Pandas Series
         A sequence of continuous measurements
-    :return: float
-        in the range of [0,1]
     """
     categories = convert(categories, 'array')
     measurements = convert(measurements, 'array')
@@ -128,30 +136,33 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
     """
     Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
     continuous features using:
-     - Pearson's R for continuous-continuous cases
-     - Correlation Ratio for categorical-continuous cases
-     - Cramer's V or Theil's U for categorical-categorical cases
+     * Pearson's R for continuous-continuous cases
+     * Correlation Ratio for categorical-continuous cases
+     * Cramer's V or Theil's U for categorical-categorical cases
 
-    :param dataset: NumPy ndarray / Pandas DataFrame
+    **Returns:** a DataFrame of the correlation/strength-of-association between all features
+
+    **Example:** see `associations_example` under `dython.examples`
+
+    Parameters
+    ----------
+    dataset : NumPy ndarray / Pandas DataFrame
         The data-set for which the features' correlation is computed
-    :param nominal_columns: string / list / NumPy ndarray
+    nominal_columns : string / list / NumPy ndarray
         Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
         columns are categorical, or None (default) to state none are categorical
-    :param mark_columns: Boolean (default: False)
+    mark_columns : Boolean, default = False
         if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or
         continuous), as provided by nominal_columns
-    :param theil_u: Boolean (default: False)
+    theil_u : Boolean, default = False
         In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
-    :param plot: Boolean (default: True)
+    plot : Boolean, default = True
         If True, plot a heat-map of the correlation matrix
-    :param return_results: Boolean (default: False)
+    return_results : Boolean, default = False
         If True, the function will return a Pandas DataFrame of the computed associations
-    :param kwargs:
+    kwargs : any key-value pairs
         Arguments to be passed to used function and methods
-    :return: Pandas DataFrame
-        A DataFrame of the correlation/strength-of-association between all features
     """
-
     dataset = convert(dataset, 'dataframe')
     columns = dataset.columns
     if nominal_columns is None:
@@ -203,25 +214,28 @@ def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, 
     """
     Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
     using the following logic:
-    - categorical with only a single value will be marked as zero (or dropped, if requested)
-    - categorical with two values will be replaced with the result of Pandas `factorize`
-    - categorical with more than two values will be replaced with the result of Pandas `get_dummies`
-    - numerical columns will not be modified
+    * categorical with only a single value will be marked as zero (or dropped, if requested)
+    * categorical with two values will be replaced with the result of Pandas `factorize`
+    * categorical with more than two values will be replaced with the result of Pandas `get_dummies`
+    * numerical columns will not be modified
 
-    :param dataset: NumPy ndarray / Pandas DataFrame
+    **Returns:** DataFrame or (DataFrame, dict). If `drop_fact_dict` is True, returns the encoded DataFrame.
+    else, returns a tuple of the encoded DataFrame and dictionary, where each key is a two-value column, and the
+    value is the original labels, as supplied by Pandas `factorize`. Will be empty if no two-value columns are
+    present in the data-set
+
+    Parameters
+    ----------
+    dataset : NumPy ndarray / Pandas DataFrame
         The data-set to encode
-    :param nominal_columns: sequence / string
+    nominal_columns : sequence / string
         A sequence of the nominal (categorical) columns in the dataset. If string, must be 'all' to state that
         all columns are nominal. If None, nothing happens. Default: 'all'
-    :param drop_single_label: Boolean (default: False)
+    drop_single_label : Boolean, default = False
         If True, nominal columns with a only a single value will be dropped.
-    :param drop_fact_dict: Boolean (default: True)
+    drop_fact_dict : Boolean, default = True
         If True, the return value will be the encoded DataFrame alone. If False, it will be a tuple of
         the DataFrame and the dictionary of the binary factorization (originating from pd.factorize)
-    :return: DataFrame or (DataFrame, dict)
-        If drop_fact_dict is True, returns the encoded DataFrame. else, returns a tuple of the encoded DataFrame and
-        dictionary, where each key is a two-value column, and the value is the original labels, as supplied by
-        Pandas `factorize`. Will be empty if no two-value columns are present in the data-set
     """
     dataset = convert(dataset, 'dataframe')
     if nominal_columns is None:
