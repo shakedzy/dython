@@ -2,7 +2,7 @@
 A set of **D**ata analysis tools in p**YTHON** 3.x.
 
 Dython was designed with analysis usage in mind - meaning ease-of-use, functionality and readability are the core
-values of this library, while production-grade performance were not considered. 
+values of this library. Production-grade performance, on the other hand, were not considered. 
 
 ## Installation:
 Dython can be installed directly using `pip`:
