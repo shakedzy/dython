@@ -30,7 +30,7 @@ pip install ./dython
 {% endfor %}
 
 ### Examples:
-Some examples are available, see descriptions [here]({{'examples.html' | relative_url}})
+Some examples are available, see descriptions [here]({{'examples.html' | relative_url}}).
 
 -------------
 
