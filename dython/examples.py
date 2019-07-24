@@ -10,8 +10,12 @@ from dython.nominal import associations
 
 
 def roc_graph_example():
-    # Based on sklearn examples (as was seen on April 2018):
-    # http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
+    """
+    Plot an example ROC graph of an SVM model predictions over the Iris dataset.
+
+    Based on sklearn examples (as was seen on April 2018):
+    http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
+    """
     iris = datasets.load_iris()
     X = iris.data
     y = label_binarize(iris.target, classes=[0, 1, 2])
@@ -25,6 +29,9 @@ def roc_graph_example():
 
 
 def associations_example():
+    """
+    Plot an example of an associations heat-map of the Iris dataset features
+    """
     iris = datasets.load_iris()
     X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
     y = pd.DataFrame(data=iris.target, columns=['target'])

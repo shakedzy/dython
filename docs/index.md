@@ -29,6 +29,9 @@ pip install ./dython
   {% endif %}
 {% endfor %}
 
+### Examples:
+Some examples are available, see descriptions [here]({{'examples.html' | relative_url}})
+
 -------------
 
 ### Related blogposts:
