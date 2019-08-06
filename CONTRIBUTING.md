@@ -8,7 +8,7 @@ If you'd like to contribute or assist - then first of all, thanks. This isn't ob
 make sure to add any input and code fractions required to recreate it.
 
 ## If you would like to add a feature or merge a bug fix:
-* Before anything, make sure to test your code.
+* Before anything, make sure to test your code. Remember that Dython doesn't support Python 2.x.
 * Please make sure there's an issue open regarding the issue you address.
 * Explain on the issue's page what does your change affect.
 * After an approval was recieved on the issue page, open a pull request
