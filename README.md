@@ -24,6 +24,9 @@ pip install ./dython
 
 **Dependencies:** `numpy`, `pandas`, `seaborn`, `scipy`, `matplotlib`, `sklearn`
 
+## Contributing:
+Contributions are always welcomed - if you found something you can fix, or have an idea for a new feature, feel free to write it and open a pull request. Please make sure to go over the [contributions guidelines](CONTRIBUTING.md).
+
 -------------
 
 ### Related blogposts:
