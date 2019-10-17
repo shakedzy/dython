@@ -19,13 +19,13 @@ configuration, the input will be: y_true = [[1,0],[0,1]], y_pred = [[0.6,0.4],[0
 Based on sklearn examples (as was seen on April 2018):
 http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
-- **`y_true`** `list / NumPy ndarray`
+- **`y_true`** : `list / NumPy ndarray`
 
    The true classes of the predicted data
-- **`y_pred`** `list / NumPy ndarray`
+- **`y_pred`** : `list / NumPy ndarray`
 
    The predicted classes
-- **`kwargs`** `any key-value pairs`
+- **`kwargs`** : `any key-value pairs`
 
    Different options and configurations
 
@@ -43,23 +43,23 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
 **Example:** See `roc_graph_example` under `dython.examples`
 
-- **`y_true`** `list / NumPy ndarray`
+- **`y_true`** : `list / NumPy ndarray`
 
    The true classes of the predicted data
-- **`y_pred`** `list / NumPy ndarray`
+- **`y_pred`** : `list / NumPy ndarray`
 
    The predicted classes
-- **`micro`** `Boolean` 
+- **`micro`** : `Boolean` 
 
   _Default = True_
 
    Whether to calculate a Micro ROC graph (not applicable for binary cases)
-- **`macro`** `Boolean` 
+- **`macro`** : `Boolean` 
 
   _Default = True_
 
    Whether to calculate a Macro ROC graph (not applicable for binary cases)
-- **`kwargs`** `any key-value pairs`
+- **`kwargs`** : `any key-value pairs`
 
    Different options and configurations
 
@@ -68,13 +68,13 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 Given a trained `sklearn.ensemble.RandomForestClassifier`, plot the different features based on their
 importance according to the classifier, from the most important to the least.
 
-- **`forest`** `sklearn.ensemble.RandomForestClassifier`
+- **`forest`** : `sklearn.ensemble.RandomForestClassifier`
 
    A trained `RandomForestClassifier`
-- **`features`** `list`
+- **`features`** : `list`
 
    A list of the names of the features the classifier was trained on, ordered by the same order the appeared
 in the training data
-- **`kwargs`** `any key-value pairs`
+- **`kwargs`** : `any key-value pairs`
 
    Different options and configurations

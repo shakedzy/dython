@@ -17,45 +17,45 @@ continuous features using:
 
 **Example:** see `associations_example` under `dython.examples`
 
-- **`dataset`** `NumPy ndarray / Pandas DataFrame`
+- **`dataset`** : `NumPy ndarray / Pandas DataFrame`
 
    The data-set for which the features' correlation is computed
-- **`nominal_columns`** `string / list / NumPy ndarray`
+- **`nominal_columns`** : `string / list / NumPy ndarray`
 
    Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
 columns are categorical, or None (default) to state none are categorical
-- **`mark_columns`** `Boolean` 
+- **`mark_columns`** : `Boolean` 
 
    _Default: False_
 
    if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or
 continuous), as provided by nominal_columns
-- **`theil_u`** `Boolean` 
+- **`theil_u`** : `Boolean` 
 
    _Default: False_
 
    In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
-- **`plot`** `Boolean` 
+- **`plot`** : `Boolean` 
 
   _Default: True_
 
    If True, plot a heat-map of the correlation matrix
-- **`return_results`** `Boolean` 
+- **`return_results`** : `Boolean` 
 
    _Default: False_
 
    If True, the function will return a Pandas DataFrame of the computed associations
-- **`nan_strategy`** `string` `Default: 'replace'`
+- **`nan_strategy`** : `string` `Default: 'replace'`
 
    How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
 'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing
 values with the nan_replace_value. Missing values are None and np.nan.
-- **`nan_replace_value`** `any` 
+- **`nan_replace_value`** : `any` 
 
    _Default: 0.0_
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
-- **`kwargs`** `any key-value pairs`
+- **`kwargs`** : `any key-value pairs`
 
    Arguments to be passed to used function and methods
 
@@ -67,19 +67,19 @@ Wikipedia: https://en.wikipedia.org/wiki/Conditional_entropy
 
 **Returns:** float
 
-- **`x`** `list / NumPy ndarray / Pandas Series`
+- **`x`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of measurements
-- **`y`** `list / NumPy ndarray / Pandas Series`
+- **`y`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of measurements
-- **`nan_strategy`** `string` 
+- **`nan_strategy`** : `string` 
 
    _Default: 'replace'_
 
    How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
 to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
-- **`nan_replace_value`** `any` 
+- **`nan_replace_value`** : `any` 
 
    _Default: 0.0_
 
@@ -97,19 +97,19 @@ Wikipedia: https://en.wikipedia.org/wiki/Correlation_ratio
 
 **Returns:** float in the range of [0,1]
 
-- **`categories`** `list / NumPy ndarray / Pandas Series`
+- **`categories`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of categorical measurements
-- **`measurements`** `list / NumPy ndarray / Pandas Series`
+- **`measurements`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of continuous measurements
-- **`nan_strategy`** `string` 
+- **`nan_strategy`** : `string` 
 
    _Default: 'replace'_
 
    How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
 to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
-- **`nan_replace_value`** `any` 
+- **`nan_replace_value`** : `any` 
 
    _Default: 0.0_
 
@@ -126,19 +126,19 @@ Wikipedia: https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
 
 **Returns:** float in the range of [0,1]
 
-- **`x`** `list / NumPy ndarray / Pandas Series`
+- **`x`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of categorical measurements
-- **`y`** `list / NumPy ndarray / Pandas Series`
+- **`y`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of categorical measurements
-- **`nan_strategy`** `string` 
+- **`nan_strategy`** : `string` 
 
    _Default: 'replace'_
 
    How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
 to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
-- **`nan_replace_value`** `any` 
+- **`nan_replace_value`** : `any` 
 
    _Default: 0.0_
 
@@ -158,34 +158,34 @@ else, returns a tuple of the encoded DataFrame and dictionary, where each key is
 value is the original labels, as supplied by Pandas `factorize`. Will be empty if no two-value columns are
 present in the data-set
 
-- **`dataset`** `NumPy ndarray / Pandas DataFrame`
+- **`dataset`** : `NumPy ndarray / Pandas DataFrame`
 
    The data-set to encode
-- **`nominal_columns`** `sequence / string 
+- **`nominal_columns`** : `sequence / string 
 
    _Default: 'all'_
 
    A sequence of the nominal (categorical) columns in the dataset. If string, must be 'all' to state that
 all columns are nominal. If None, nothing happens.
-- **`drop_single_label`** `Boolean` 
+- **`drop_single_label`** : `Boolean` 
 
    _Default: False_
 
    If True, nominal columns with a only a single value will be dropped.
-- **`drop_fact_dict`** `Boolean` 
+- **`drop_fact_dict`** : `Boolean` 
 
    _Default: True_
 
    If True, the return value will be the encoded DataFrame alone. If False, it will be a tuple of
 the DataFrame and the dictionary of the binary factorization (originating from pd.factorize)
-- **`nan_strategy`** `string` 
+- **`nan_strategy`** : `string` 
 
    _Default: 'replace'_
 
    How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
 'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing
 values with the nan_replace_value. Missing values are None and np.nan.
-- **`nan_replace_value`** `any` 
+- **`nan_replace_value`** : `any` 
 
    _Default: 0.0_
 
@@ -202,19 +202,19 @@ Wikipedia: https://en.wikipedia.org/wiki/Uncertainty_coefficient
 
 **Returns:** float in the range of [0,1]
 
-- **`x`** `list / NumPy ndarray / Pandas Series`
+- **`x`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of categorical measurements
-- **`y`** `list / NumPy ndarray / Pandas Series`
+- **`y`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of categorical measurements
-- **`nan_strategy`** `string` 
+- **`nan_strategy`** : `string` 
 
    _Default: 'replace'_
 
    How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
 to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
-- **`nan_replace_value`** `any` 
+- **`nan_replace_value`** : `any` 
 
    _Default: 0.0_
 
