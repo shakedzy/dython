@@ -5,10 +5,17 @@ import seaborn as sns
 import scipy.stats as ss
 import matplotlib.pyplot as plt
 from collections import Counter
-from dython._private import convert
+from dython._private import convert, remove_incomplete_samples, replace_nan_with_value
+
+REPLACE = 'replace'
+DROP = 'drop'
+DROP_SAMPLES = 'drop_samples'
+DROP_FEATURES = 'drop_features'
+SKIP = 'skip'
+DEFAULT_REPLACE_VALUE = 0.0
 
 
-def conditional_entropy(x, y):
+def conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE):
     """
     Calculates the conditional entropy of x given y: S(x|y)
 
@@ -22,7 +29,16 @@ def conditional_entropy(x, y):
         A sequence of measurements
     y : list / NumPy ndarray / Pandas Series
         A sequence of measurements
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+        to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
     """
+    if nan_strategy == REPLACE:
+        x, y = replace_nan_with_value(x, y, nan_replace_value)
+    elif nan_strategy == DROP:
+        x, y = remove_incomplete_samples(x, y)
     y_counter = Counter(y)
     xy_counter = Counter(list(zip(x,y)))
     total_occurrences = sum(y_counter.values())
@@ -34,7 +50,7 @@ def conditional_entropy(x, y):
     return entropy
 
 
-def cramers_v(x, y):
+def cramers_v(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE):
     """
     Calculates Cramer's V statistic for categorical-categorical association.
     Uses correction from Bergsma and Wicher, Journal of the Korean Statistical Society 42 (2013): 323-328.
@@ -51,7 +67,16 @@ def cramers_v(x, y):
         A sequence of categorical measurements
     y : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+        to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
     """
+    if nan_strategy == REPLACE:
+        x, y = replace_nan_with_value(x, y, nan_replace_value)
+    elif nan_strategy == DROP:
+        x, y = remove_incomplete_samples(x, y)
     confusion_matrix = pd.crosstab(x,y)
     chi2 = ss.chi2_contingency(confusion_matrix)[0]
     n = confusion_matrix.sum().sum()
@@ -63,7 +88,7 @@ def cramers_v(x, y):
     return np.sqrt(phi2corr/min((kcorr-1),(rcorr-1)))
 
 
-def theils_u(x, y):
+def theils_u(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE):
     """
     Calculates Theil's U statistic (Uncertainty coefficient) for categorical-categorical association.
     This is the uncertainty of x given y: value is on the range of [0,1] - where 0 means y provides no information about
@@ -80,7 +105,16 @@ def theils_u(x, y):
         A sequence of categorical measurements
     y : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+        to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
     """
+    if nan_strategy == REPLACE:
+        x, y = replace_nan_with_value(x, y, nan_replace_value)
+    elif nan_strategy == DROP:
+        x, y = remove_incomplete_samples(x, y)
     s_xy = conditional_entropy(x,y)
     x_counter = Counter(x)
     total_occurrences = sum(x_counter.values())
@@ -92,7 +126,7 @@ def theils_u(x, y):
         return (s_x - s_xy) / s_x
 
 
-def correlation_ratio(categories, measurements):
+def correlation_ratio(categories, measurements, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE):
     """
     Calculates the Correlation Ratio (sometimes marked by the greek letter Eta) for categorical-continuous association.
     Answers the question - given a continuous value of a measurement, is it possible to know which category is it
@@ -110,7 +144,16 @@ def correlation_ratio(categories, measurements):
         A sequence of categorical measurements
     measurements : list / NumPy ndarray / Pandas Series
         A sequence of continuous measurements
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+        to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
     """
+    if nan_strategy == REPLACE:
+        categories, measurements = replace_nan_with_value(categories, measurements, nan_replace_value)
+    elif nan_strategy == DROP:
+        categories, measurements = remove_incomplete_samples(categories, measurements)
     categories = convert(categories, 'array')
     measurements = convert(measurements, 'array')
     fcat, _ = pd.factorize(categories)
@@ -131,8 +174,7 @@ def correlation_ratio(categories, measurements):
     return eta
 
 
-def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True,
-                          return_results = False, **kwargs):
+def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, return_results=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs):
     """
     Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
     continuous features using:
@@ -160,10 +202,22 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         If True, plot a heat-map of the correlation matrix
     return_results : Boolean, default = False
         If True, the function will return a Pandas DataFrame of the computed associations
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
+        'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing
+        values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
     kwargs : any key-value pairs
         Arguments to be passed to used function and methods
     """
     dataset = convert(dataset, 'dataframe')
+    if nan_strategy == REPLACE:
+        dataset.fillna(nan_replace_value, inplace=True)
+    elif nan_strategy == DROP_SAMPLES:
+        dataset.dropna(axis=0, inplace=True)
+    elif nan_strategy == DROP_FEATURES:
+        dataset.dropna(axis=1, inplace=True)
     columns = dataset.columns
     if nominal_columns is None:
         nominal_columns = list()
@@ -178,19 +232,19 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
                         if theil_u:
-                            corr[columns[j]][columns[i]] = theils_u(dataset[columns[i]],dataset[columns[j]])
-                            corr[columns[i]][columns[j]] = theils_u(dataset[columns[j]],dataset[columns[i]])
+                            corr[columns[j]][columns[i]] = theils_u(dataset[columns[i]], dataset[columns[j]], nan_strategy=SKIP)
+                            corr[columns[i]][columns[j]] = theils_u(dataset[columns[j]], dataset[columns[i]], nan_strategy=SKIP)
                         else:
-                            cell = cramers_v(dataset[columns[i]],dataset[columns[j]])
+                            cell = cramers_v(dataset[columns[i]], dataset[columns[j]], nan_strategy=SKIP)
                             corr[columns[i]][columns[j]] = cell
                             corr[columns[j]][columns[i]] = cell
                     else:
-                        cell = correlation_ratio(dataset[columns[i]], dataset[columns[j]])
+                        cell = correlation_ratio(dataset[columns[i]], dataset[columns[j]], nan_strategy=SKIP)
                         corr[columns[i]][columns[j]] = cell
                         corr[columns[j]][columns[i]] = cell
                 else:
                     if columns[j] in nominal_columns:
-                        cell = correlation_ratio(dataset[columns[j]], dataset[columns[i]])
+                        cell = correlation_ratio(dataset[columns[j]], dataset[columns[i]], nan_strategy=SKIP)
                         corr[columns[i]][columns[j]] = cell
                         corr[columns[j]][columns[i]] = cell
                     else:
@@ -210,7 +264,7 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         return corr
 
 
-def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, drop_fact_dict=True):
+def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE):
     """
     Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
     using the following logic:
@@ -228,16 +282,28 @@ def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, 
     ----------
     dataset : NumPy ndarray / Pandas DataFrame
         The data-set to encode
-    nominal_columns : sequence / string
+    nominal_columns : sequence / string. default = 'all'
         A sequence of the nominal (categorical) columns in the dataset. If string, must be 'all' to state that
-        all columns are nominal. If None, nothing happens. Default: 'all'
+        all columns are nominal. If None, nothing happens.
     drop_single_label : Boolean, default = False
         If True, nominal columns with a only a single value will be dropped.
     drop_fact_dict : Boolean, default = True
         If True, the return value will be the encoded DataFrame alone. If False, it will be a tuple of
         the DataFrame and the dictionary of the binary factorization (originating from pd.factorize)
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
+        'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing
+        values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
     """
     dataset = convert(dataset, 'dataframe')
+    if nan_strategy == REPLACE:
+        dataset.fillna(nan_replace_value, inplace=True)
+    elif nan_strategy == DROP_SAMPLES:
+        dataset.dropna(axis=0, inplace=True)
+    elif nan_strategy == DROP_FEATURES:
+        dataset.dropna(axis=1, inplace=True)
     if nominal_columns is None:
         return dataset
     elif nominal_columns == 'all':
