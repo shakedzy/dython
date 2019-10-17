@@ -49,10 +49,14 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 - **`y_pred`** `list / NumPy ndarray`
 
    The predicted classes
-- **`micro`** `Boolean` `default = True`
+- **`micro`** `Boolean` 
+
+  _Default = True_
 
    Whether to calculate a Micro ROC graph (not applicable for binary cases)
-- **`macro`** `Boolean` `default = True`
+- **`macro`** `Boolean` 
+
+  _Default = True_
 
    Whether to calculate a Macro ROC graph (not applicable for binary cases)
 - **`kwargs`** `any key-value pairs`

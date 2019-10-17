@@ -14,10 +14,14 @@ Return k numbers from a weighted-sampling over the supplied numbers
 - **`numbers`** `List or np.ndarray`
 
    numbers to sample
-- **`k`** `int` `default = 1`
-
+- **`k`** `int`
+ 
+  _Default: 1_
+  
    How many numbers to sample. Choosing `k=None` will yield a single number
-- **`with_replacement`** `Boolean` `default = False`
+- **`with_replacement`** `Boolean` 
+
+  _Default: False_
 
    Allow replacement or not
 
@@ -30,9 +34,11 @@ Return k numbers from a boltzmann-sampling over the supplied numbers
 - **`numbers`** `List or np.ndarray`
 
    numbers to sample
-- **`k`** `int` `default = 1`
+- **`k`** `int` 
+
+  _Default: 1_
 
    How many numbers to sample. Choosing `k=None` will yield a single number
-- **`with_replacement`** `Boolean` `default = False`
+- **`with_replacement`** `Boolean` `Default: False`
 
    Allow replacement or not
