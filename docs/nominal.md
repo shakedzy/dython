@@ -30,7 +30,9 @@ columns are categorical, or None (default) to state none are categorical
 
    if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or
 continuous), as provided by nominal_columns
-- **`theil_u`** `Boolean` `Default: False`
+- **`theil_u`** `Boolean` 
+
+   _Default: False_
 
    In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
 - **`plot`** `Boolean` 
