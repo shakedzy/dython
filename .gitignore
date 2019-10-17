@@ -9,3 +9,5 @@ ENV/*
 dython.egg*/*
 *__pycache__*
 *run_stuff.py*
+build/*
+dist/*

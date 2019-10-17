@@ -16,7 +16,7 @@ Dython can be installed directly using `pip`:
 ```
 pip install dython
 ```
-If you wish to install directly from source:
+If you wish to install from source:
 ```
 git clone https://github.com/shakedzy/dython.git
 pip install ./dython

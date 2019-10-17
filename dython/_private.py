@@ -31,3 +31,20 @@ def convert(data, to):
         raise TypeError('cannot handle data conversion of type: {} to {}'.format(type(data),to))
     else:
         return converted
+
+
+def remove_incomplete_samples(x, y):
+    x = [v if v is not None else np.nan for v in x]
+    y = [v if v is not None else np.nan for v in y]
+    arr = np.array([x, y]).transpose()
+    arr = arr[~np.isnan(arr).any(axis=1)].transpose()
+    if isinstance(x, list):
+        return arr[0].tolist(), arr[1].tolist()
+    else:
+        return arr[0], arr[1]
+
+
+def replace_nan_with_value(x, y, value):
+    x = [v if v == v and v is not None else value for v in x]  # NaN != NaN
+    y = [v if v == v and v is not None else value for v in y]
+    return x, y

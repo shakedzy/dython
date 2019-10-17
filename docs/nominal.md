@@ -5,7 +5,51 @@ type: doc
 
 # nominal
 
-#### `conditional_entropy(x, y)`
+#### `associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, return_results=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs)`
+
+Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
+continuous features using:
+ * Pearson's R for continuous-continuous cases
+ * Correlation Ratio for categorical-continuous cases
+ * Cramer's V or Theil's U for categorical-categorical cases
+
+**Returns:** a DataFrame of the correlation/strength-of-association between all features
+
+**Example:** see `associations_example` under `dython.examples`
+
+- **`dataset`** `NumPy ndarray / Pandas DataFrame`
+
+   The data-set for which the features' correlation is computed
+- **`nominal_columns`** `string / list / NumPy ndarray`
+
+   Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
+columns are categorical, or None (default) to state none are categorical
+- **`mark_columns`** `Boolean` `default = False`
+
+   if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or
+continuous), as provided by nominal_columns
+- **`theil_u`** `Boolean` `default = False`
+
+   In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
+- **`plot`** `Boolean` `default = True`
+
+   If True, plot a heat-map of the correlation matrix
+- **`return_results`** `Boolean` `default = False`
+
+   If True, the function will return a Pandas DataFrame of the computed associations
+- **`nan_strategy`** `string` `default = 'replace'`
+
+   How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
+'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing
+values with the nan_replace_value. Missing values are None and np.nan.
+- **`nan_replace_value`** `any` `default = 0.0`
+
+   The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
+- **`kwargs`** `any key-value pairs`
+
+   Arguments to be passed to used function and methods
+
+#### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Calculates the conditional entropy of x given y: S(x|y)
 
@@ -19,44 +63,15 @@ Wikipedia: https://en.wikipedia.org/wiki/Conditional_entropy
 - **`y`** `list / NumPy ndarray / Pandas Series`
 
    A sequence of measurements
+- **`nan_strategy`** `string` `default = 'replace'`
 
-#### `cramers_v(x, y)`
+   How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+- **`nan_replace_value`** `any` `default = 0.0`
 
-Calculates Cramer's V statistic for categorical-categorical association.
-Uses correction from Bergsma and Wicher, Journal of the Korean Statistical Society 42 (2013): 323-328.
-This is a symmetric coefficient: V(x,y) = V(y,x)
+   The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
 
-Original function taken from: https://stackoverflow.com/a/46498792/5863503
-Wikipedia: https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
-
-**Returns:** float in the range of [0,1]
-
-- **`x`** `list / NumPy ndarray / Pandas Series`
-
-   A sequence of categorical measurements
-- **`y`** `list / NumPy ndarray / Pandas Series`
-
-   A sequence of categorical measurements
-
-#### `theils_u(x, y)`
-
-Calculates Theil's U statistic (Uncertainty coefficient) for categorical-categorical association.
-This is the uncertainty of x given y: value is on the range of [0,1] - where 0 means y provides no information about
-x, and 1 means y provides full information about x.
-This is an asymmetric coefficient: U(x,y) != U(y,x)
-
-Wikipedia: https://en.wikipedia.org/wiki/Uncertainty_coefficient
-
-**Returns:** float in the range of [0,1]
-
-- **`x`** `list / NumPy ndarray / Pandas Series`
-
-   A sequence of categorical measurements
-- **`y`** `list / NumPy ndarray / Pandas Series`
-
-   A sequence of categorical measurements
-
-#### `correlation_ratio(categories, measurements)`
+#### `correlation_ratio(categories, measurements, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Calculates the Correlation Ratio (sometimes marked by the greek letter Eta) for categorical-continuous association.
 Answers the question - given a continuous value of a measurement, is it possible to know which category is it
@@ -74,11 +89,40 @@ Wikipedia: https://en.wikipedia.org/wiki/Correlation_ratio
 - **`measurements`** `list / NumPy ndarray / Pandas Series`
 
    A sequence of continuous measurements
+- **`nan_strategy`** `string` `default = 'replace'`
 
-#### `associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True`
+   How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+- **`nan_replace_value`** `any` `default = 0.0`
 
+   The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
 
-#### `numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, drop_fact_dict=True)`
+#### `cramers_v(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+
+Calculates Cramer's V statistic for categorical-categorical association.
+Uses correction from Bergsma and Wicher, Journal of the Korean Statistical Society 42 (2013): 323-328.
+This is a symmetric coefficient: V(x,y) = V(y,x)
+
+Original function taken from: https://stackoverflow.com/a/46498792/5863503
+Wikipedia: https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
+
+**Returns:** float in the range of [0,1]
+
+- **`x`** `list / NumPy ndarray / Pandas Series`
+
+   A sequence of categorical measurements
+- **`y`** `list / NumPy ndarray / Pandas Series`
+
+   A sequence of categorical measurements
+- **`nan_strategy`** `string` `default = 'replace'`
+
+   How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+- **`nan_replace_value`** `any` `default = 0.0`
+
+   The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
+
+#### `numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
 using the following logic:
@@ -95,10 +139,10 @@ present in the data-set
 - **`dataset`** `NumPy ndarray / Pandas DataFrame`
 
    The data-set to encode
-- **`nominal_columns`** `sequence / string`
+- **`nominal_columns`** `sequence / string. default = 'all'`
 
    A sequence of the nominal (categorical) columns in the dataset. If string, must be 'all' to state that
-all columns are nominal. If None, nothing happens. Default: 'all'
+all columns are nominal. If None, nothing happens.
 - **`drop_single_label`** `Boolean` `default = False`
 
    If True, nominal columns with a only a single value will be dropped.
@@ -106,3 +150,36 @@ all columns are nominal. If None, nothing happens. Default: 'all'
 
    If True, the return value will be the encoded DataFrame alone. If False, it will be a tuple of
 the DataFrame and the dictionary of the binary factorization (originating from pd.factorize)
+- **`nan_strategy`** `string` `default = 'replace'`
+
+   How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
+'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing
+values with the nan_replace_value. Missing values are None and np.nan.
+- **`nan_replace_value`** `any` `default = 0.0`
+
+   The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
+
+#### `theils_u(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+
+Calculates Theil's U statistic (Uncertainty coefficient) for categorical-categorical association.
+This is the uncertainty of x given y: value is on the range of [0,1] - where 0 means y provides no information about
+x, and 1 means y provides full information about x.
+This is an asymmetric coefficient: U(x,y) != U(y,x)
+
+Wikipedia: https://en.wikipedia.org/wiki/Uncertainty_coefficient
+
+**Returns:** float in the range of [0,1]
+
+- **`x`** `list / NumPy ndarray / Pandas Series`
+
+   A sequence of categorical measurements
+- **`y`** `list / NumPy ndarray / Pandas Series`
+
+   A sequence of categorical measurements
+- **`nan_strategy`** `string` `default = 'replace'`
+
+   How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace'
+to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+- **`nan_replace_value`** `any` `default = 0.0`
+
+   The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.

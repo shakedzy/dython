@@ -36,4 +36,4 @@ def associations_example():
     X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
     y = pd.DataFrame(data=iris.target, columns=['target'])
     df = pd.concat([X, y], axis=1)
-    associations(df,nominal_columns=['target'])
+    associations(df, nominal_columns=['target'])
