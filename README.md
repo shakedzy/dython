@@ -18,8 +18,7 @@ pip install dython
 ```
 If you wish to install from source:
 ```
-git clone https://github.com/shakedzy/dython.git
-pip install ./dython
+pip install git+https://github.com/shakedzy/dython.git
 ```
 
 **Dependencies:** `numpy`, `pandas`, `seaborn`, `scipy`, `matplotlib`, `sklearn`
