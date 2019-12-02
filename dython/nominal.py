@@ -174,7 +174,8 @@ def correlation_ratio(categories, measurements, nan_strategy=REPLACE, nan_replac
     return eta
 
 
-def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, return_results=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs):
+def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, return_results=False, nan_strategy=REPLACE,
+                 nan_replace_value=DEFAULT_REPLACE_VALUE, ax=None, **kwargs):
     """
     Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
     continuous features using:
@@ -208,6 +209,8 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         values with the nan_replace_value. Missing values are None and np.nan.
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
+    ax : matplotlib ax, default = None
+      Matplotlib Axis on which the heat-map will be plotted
     kwargs : any key-value pairs
         Arguments to be passed to used function and methods
     """
@@ -224,8 +227,8 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
     elif nominal_columns == 'all':
         nominal_columns = columns
     corr = pd.DataFrame(index=columns, columns=columns)
-    for i in range(0,len(columns)):
-        for j in range(i,len(columns)):
+    for i in range(0, len(columns)):
+        for j in range(i, len(columns)):
             if i == j:
                 corr[columns[i]][columns[j]] = 1.0
             else:
@@ -257,9 +260,11 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         corr.columns = marked_columns
         corr.index = marked_columns
     if plot:
-        plt.figure(figsize=kwargs.get('figsize',None))
-        sns.heatmap(corr, annot=kwargs.get('annot',True), fmt=kwargs.get('fmt','.2f'))
-        plt.show()
+        if ax is None:
+            plt.figure(figsize=kwargs.get('figsize', None))
+        sns.heatmap(corr, annot=kwargs.get('annot', True), fmt=kwargs.get('fmt', '.2f'), ax=ax)
+        if ax is None:
+            plt.show()
     if return_results:
         return corr
 
