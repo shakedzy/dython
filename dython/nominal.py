@@ -272,7 +272,8 @@ def associations(
         nominal_columns = columns
     elif nominal_columns == 'auto':
         nominal_columns = identify_nominal_columns(dataset)
-        corr = pd.DataFrame(index=columns, columns=columns)
+
+    corr = pd.DataFrame(index=columns, columns=columns)
     for i in range(0, len(columns)):
         for j in range(i, len(columns)):
             if i == j:
