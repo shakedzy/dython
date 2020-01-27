@@ -17,7 +17,8 @@ def weighted_sampling(numbers, k=1, with_replacement=False, **kwargs):
         Allow replacement or not
     """
     sampled = np.random.choice(numbers, size=k, replace=with_replacement)
-    if (isinstance(numbers, list) or kwargs.get('to_list', False)) and k is not None:
+    if (isinstance(numbers, list) or kwargs.get(
+            'to_list', False)) and k is not None:
         sampled = sampled.tolist()
     return sampled
 
@@ -40,6 +41,12 @@ def boltzmann_sampling(numbers, k=1, with_replacement=False):
     exp_func = np.vectorize(lambda x: np.exp(x))
     exp_numbers = exp_func(numbers)
     exp_sum = exp_numbers.sum()
-    scaling_func = np.vectorize(lambda x: x/exp_sum)
+    scaling_func = np.vectorize(lambda x: x / exp_sum)
     b_numbers = scaling_func(exp_numbers)
-    return weighted_sampling(b_numbers, k=k, with_replacement=with_replacement, to_list=isinstance(numbers, list))
+    return weighted_sampling(
+        b_numbers,
+        k=k,
+        with_replacement=with_replacement,
+        to_list=isinstance(
+            numbers,
+            list))

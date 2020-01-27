@@ -51,23 +51,24 @@ def binary_roc_graph(y_true, y_pred, **kwargs):
         y_t = [np.argmax(x) for x in y_true]
         y_p = [x[1] for x in y_pred]
     fpr, tpr, _ = roc_curve(y_t, y_p)
-    auc_score = auc(fpr,tpr)
-    color = kwargs.get('color','darkorange')
+    auc_score = auc(fpr, tpr)
+    color = kwargs.get('color', 'darkorange')
     lw = kwargs.get('lw', 2)
-    ls = kwargs.get('ls','-')
+    ls = kwargs.get('ls', '-')
     ms = kwargs.get('ms', 10)
-    fmt = kwargs.get('fmt','.2f')
+    fmt = kwargs.get('fmt', '.2f')
     if 'class_label' in kwargs:
         class_label = ': {}'.format(kwargs['class_label'])
     else:
         class_label = ''
-    if kwargs.get('new_figure',True):
+    if kwargs.get('new_figure', True):
         plt.figure()
-    plt.plot(fpr, tpr, color=color, lw=lw, ls=ls, label='ROC curve{class_label} (AUC = {auc:{fmt}})'
-             .format(class_label=class_label,auc=auc_score,fmt=fmt))
-    if kwargs.get('show_graphs',True):
+    plt.plot(fpr, tpr, color=color, lw=lw, ls=ls,
+             label='ROC curve{class_label} (AUC = {auc:{fmt}})'.format(
+                 class_label=class_label, auc=auc_score, fmt=fmt))
+    if kwargs.get('show_graphs', True):
         _display_plot()
-    if kwargs.get('return_pr',False):
+    if kwargs.get('return_pr', False):
         return {'fpr': fpr, 'tpr': tpr}
 
 
@@ -82,8 +83,15 @@ def _plot_macro_roc(fpr, tpr, n, **kwargs):
     auc_macro = auc(fpr_macro, tpr_macro)
     fmt = kwargs.get('fmt', '.2f')
     lw = kwargs.get('lw', 2)
-    plt.plot(fpr_macro, tpr_macro, label='ROC curve: macro (AUC = {auc:{fmt}})'.format(auc=auc_macro,fmt=fmt),
-             color='navy', ls=':', lw=lw)
+    plt.plot(
+        fpr_macro,
+        tpr_macro,
+        label='ROC curve: macro (AUC = {auc:{fmt}})'.format(
+            auc=auc_macro,
+            fmt=fmt),
+        color='navy',
+        ls=':',
+        lw=lw)
 
 
 def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
@@ -128,16 +136,19 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
         kwargs['new_figure'] = False
         kwargs['show_graphs'] = False
         kwargs['return_pr'] = True
-        for i in range(0,n):
-            pr = binary_roc_graph(y_true[:,i], y_pred[:,i],
-                                   color=colors[i % len(colors)],class_label=i, **kwargs)
+        for i in range(0, n):
+            pr = binary_roc_graph(
+                y_true[:, i],
+                y_pred[:, i],
+                color=colors[i % len(colors)],
+                class_label=i, **kwargs)
             all_fpr.append(pr['fpr'])
             all_tpr.append(pr['tpr'])
         if micro:
             binary_roc_graph(y_true.ravel(), y_pred.ravel(), ls=':',
-                              color='deeppink', class_label='micro', **kwargs)
+                             color='deeppink', class_label='micro', **kwargs)
         if macro:
-            _plot_macro_roc(all_fpr,all_tpr,n)
+            _plot_macro_roc(all_fpr, all_tpr, n)
         _display_plot()
 
 
@@ -156,6 +167,5 @@ def random_forest_feature_importance(forest, features, **kwargs):
     kwargs : any key-value pairs
         Different options and configurations
     """
-    return sorted(zip(map(lambda x: round(x, kwargs.get('precision',4)), forest.feature_importances_), features),
-                  reverse=True)
-
+    return sorted(zip(map(lambda x: round(x, kwargs.get('precision', 4)),
+                          forest.feature_importances_), features), reverse=True)

@@ -28,7 +28,9 @@ def convert(data, to):
     else:
         raise ValueError("Unknown data conversion: {}".format(to))
     if converted is None:
-        raise TypeError('cannot handle data conversion of type: {} to {}'.format(type(data),to))
+        raise TypeError(
+            'cannot handle data conversion of type: {} to {}'.format(
+                type(data), to))
     else:
         return converted
 
