@@ -174,7 +174,17 @@ def correlation_ratio(categories, measurements, nan_strategy=REPLACE, nan_replac
     return eta
 
 
-def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=False, plot=True, return_results=False, nan_strategy=REPLACE,
+def identify_nominal_columns(dataset):
+    dataset = convert(dataset, 'dataframe')
+    nominal_columns = list(
+        dataset.select_dtypes(include=[
+            'category', 'object'
+        ]).columns
+    )
+    return nominal_columns
+
+
+def associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, return_results=False, nan_strategy=REPLACE,
                  nan_replace_value=DEFAULT_REPLACE_VALUE, ax=None, **kwargs):
     """
     Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
@@ -193,7 +203,7 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         The data-set for which the features' correlation is computed
     nominal_columns : string / list / NumPy ndarray
         Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
-        columns are categorical, or None (default) to state none are categorical
+        columns are categorical, 'auto' (default) to try to identify nominal columns, or None to state none are categorical
     mark_columns : Boolean, default = False
         if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or
         continuous), as provided by nominal_columns
@@ -226,7 +236,9 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         nominal_columns = list()
     elif nominal_columns == 'all':
         nominal_columns = columns
-    corr = pd.DataFrame(index=columns, columns=columns)
+    elif nominal_columns == 'auto':
+        nominal_columns = identify_nominal_columns(dataset)
+        corr = pd.DataFrame(index=columns, columns=columns)
     for i in range(0, len(columns)):
         for j in range(i, len(columns)):
             if i == j:
@@ -269,7 +281,7 @@ def associations(dataset, nominal_columns=None, mark_columns=False, theil_u=Fals
         return corr
 
 
-def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE):
+def numerical_encoding(dataset, nominal_columns='auto', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE):
     """
     Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
     using the following logic:
@@ -289,7 +301,8 @@ def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, 
         The data-set to encode
     nominal_columns : sequence / string. default = 'all'
         A sequence of the nominal (categorical) columns in the dataset. If string, must be 'all' to state that
-        all columns are nominal. If None, nothing happens.
+        all columns are nominal. If None, nothing happens. If 'auto', categorical columns will be identified based
+        on dtype.
     drop_single_label : Boolean, default = False
         If True, nominal columns with a only a single value will be dropped.
     drop_fact_dict : Boolean, default = True
@@ -313,6 +326,8 @@ def numerical_encoding(dataset, nominal_columns='all', drop_single_label=False, 
         return dataset
     elif nominal_columns == 'all':
         nominal_columns = dataset.columns
+    elif nominal_columns == 'auto':
+        nominal_columns = identify_nominal_columns(dataset)
     converted_dataset = pd.DataFrame()
     binary_columns_dict = dict()
     for col in dataset.columns:
