@@ -225,19 +225,14 @@ to replace all missing values with the nan_replace_value. Missing values are Non
 Given a dataset, identify categorical columns. This is used internally in `associations` and `numerical_encoding`,
 but can also be used directly.
 
-**Parameters:**
------------
-dataset : a pandas dataframe
-include : which column types to filter by; default: ['object', 'category'])
-
 **Returns:** 
-----------
-categorical_columns : a list of categorical columns
+**`categorical_columns`** : a list of categorical columns
+
+- dataset : a pandas dataframe
+- include : which column types to filter by; default: ['object', 'category'])
 
 **Example:**
---------
->> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
->> identify_nominal_columns(df)
-['col1']
-
+    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
+    >> identify_nominal_columns(df)
+    ['col1']
 
