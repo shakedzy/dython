@@ -232,7 +232,8 @@ but can also be used directly.
 - include : which column types to filter by; default: ['object', 'category'])
 
 **Example:**
-    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
-    >> identify_nominal_columns(df)
-    ['col1']
-
+```python
+>> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
+>> identify_nominal_columns(df)
+['col1']
+```
