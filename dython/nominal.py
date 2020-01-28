@@ -199,12 +199,28 @@ def correlation_ratio(
     return eta
 
 
-def identify_nominal_columns(dataset):
+def identify_nominal_columns(dataset, include=['object', 'category']):
+    """Given a dataset, identify categorical columns.
+
+    Parameters:
+    -----------
+    dataset : a pandas dataframe
+    include : which column types to filter by; default: ['object', 'category'])
+
+    Returns:
+    --------
+    categorical_columns : a list of categorical columns
+
+    Example:
+    --------
+    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
+    >> identify_nominal_columns(df)
+    ['col1']
+
+    """
     dataset = convert(dataset, 'dataframe')
     nominal_columns = list(
-        dataset.select_dtypes(include=[
-            'category', 'object'
-        ]).columns
+        dataset.select_dtypes(include=include).columns
     )
     return nominal_columns
 
