@@ -144,6 +144,23 @@ to replace all missing values with the nan_replace_value. Missing values are Non
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
 
+#### `identify_nominal_columns(dataset, include=['object', 'category'])`
+Given a dataset, identify categorical columns. This is used internally in `associations` and `numerical_encoding`,
+but can also be used directly.
+
+**Returns:** 
+**`categorical_columns`** : a list of categorical columns
+
+- dataset : a pandas dataframe
+- include : which column types to filter by; default: ['object', 'category'])
+
+**Example:**
+```python
+>> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
+>> identify_nominal_columns(df)
+['col1']
+```
+
 #### `numerical_encoding(dataset, nominal_columns='auto', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
@@ -221,19 +238,3 @@ to replace all missing values with the nan_replace_value. Missing values are Non
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
 
-#### `identify_nominal_columns(dataset, include=['object', 'category'])`
-Given a dataset, identify categorical columns. This is used internally in `associations` and `numerical_encoding`,
-but can also be used directly.
-
-**Returns:** 
-**`categorical_columns`** : a list of categorical columns
-
-- dataset : a pandas dataframe
-- include : which column types to filter by; default: ['object', 'category'])
-
-**Example:**
-```python
->> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
->> identify_nominal_columns(df)
-['col1']
-```
