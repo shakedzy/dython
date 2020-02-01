@@ -38,7 +38,11 @@ def associations_example():
     Plot an example of an associations heat-map of the Iris dataset features
     """
     iris = datasets.load_iris()
+
+    # Convert int classes to strings to allow associations method auto recognition of categorical columns
+    target = ['C{}'.format(i) for i in iris.target]
+
     X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
-    y = pd.DataFrame(data=iris.target, columns=['target'])
+    y = pd.DataFrame(data=target, columns=['target'])
     df = pd.concat([X, y], axis=1)
-    associations(df, nominal_columns=['target'])
+    associations(df)
