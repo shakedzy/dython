@@ -355,10 +355,13 @@ def associations(dataset,
     if plot:
         if ax is None:
             plt.figure(figsize=kwargs.get('figsize', None))
-        sns.heatmap(corr,
-                    annot=kwargs.get('annot', True),
-                    fmt=kwargs.get('fmt', '.2f'),
-                    ax=ax)
+        sns.heatmap(
+            corr,
+            cmap=kwargs.get('cmap', None),
+            annot=kwargs.get('annot', True),
+            fmt=kwargs.get('fmt', '.2f'),
+            ax=ax
+        )
         if ax is None:
             plt.show()
     if return_results:
