@@ -5,7 +5,7 @@ type: doc
 
 # nominal
 
-#### `associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, return_results=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs)`
+#### `associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, return_results=False, clustering=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
 continuous features using:
@@ -45,6 +45,12 @@ continuous), as provided by nominal_columns
    _Default: False_
 
    If True, the function will return a Pandas DataFrame of the computed associations
+- **`clustering`** : `Boolean` 
+
+   _Default: False_
+
+   If True, the computed associations will be sorted into groups by similar correlations
+
 - **`nan_strategy`** : `string` `Default: 'replace'`
 
    How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
@@ -226,7 +232,7 @@ Wikipedia: https://en.wikipedia.org/wiki/Uncertainty_coefficient
 - **`y`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of categorical measurements
-- **`nan_strategy`** : `string` 
+- **`nan_strategy`** : `string`
 
    _Default: 'replace'_
 
@@ -237,4 +243,17 @@ to replace all missing values with the nan_replace_value. Missing values are Non
    _Default: 0.0_
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
+
+#### `cluster_correlations(corr_mat, indexes=None)`
+Apply agglomerative clustering in order to sort a correlation matrix.
+Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
+
+**Returns:** a sorted correlation matrix (DataFrame), cluster indexes based on the original dataset (list)
+
+- **`corr_mat`** : `Pandas DataFrame`
+
+   A correlation matrix (as output from `associations`)
+- **`indexes`** : `list / NumPy ndarray / Pandas Series`
+
+   A sequence of cluster indexes for sorting. If not present, a clustering is performed.
 
