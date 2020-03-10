@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import scipy.stats as ss
+import scipy.cluster.hierarchy as sch
 import matplotlib.pyplot as plt
 from dython._private import (
     convert, remove_incomplete_samples, replace_nan_with_value
@@ -237,6 +238,7 @@ def associations(dataset,
                  theil_u=False,
                  plot=True,
                  return_results=False,
+                 clustering=False,
                  nan_strategy=REPLACE,
                  nan_replace_value=DEFAULT_REPLACE_VALUE,
                  ax=None,
@@ -274,6 +276,9 @@ def associations(dataset,
     return_results : Boolean, default = False
         If True, the function will return a Pandas DataFrame of the computed
         associations
+    clustering : Boolean, default = False
+        If True, hierarchical clustering is applied in order to sort
+        features into meaningful groups
     nan_strategy : string, default = 'replace'
         How to handle missing values: can be either 'drop_samples' to remove
         samples with missing values, 'drop_features' to remove features
@@ -352,13 +357,18 @@ def associations(dataset,
         ]
         corr.columns = marked_columns
         corr.index = marked_columns
+    if clustering:
+        corr, _ = cluster_correlations(corr)
     if plot:
         if ax is None:
             plt.figure(figsize=kwargs.get('figsize', None))
-        sns.heatmap(corr,
-                    annot=kwargs.get('annot', True),
-                    fmt=kwargs.get('fmt', '.2f'),
-                    ax=ax)
+        sns.heatmap(
+            corr,
+            cmap=kwargs.get('cmap', None),
+            annot=kwargs.get('annot', True),
+            fmt=kwargs.get('fmt', '.2f'),
+            ax=ax
+        )
         if ax is None:
             plt.show()
     if return_results:
@@ -446,3 +456,41 @@ def numerical_encoding(dataset,
         return converted_dataset
     else:
         return converted_dataset, binary_columns_dict
+
+
+def cluster_correlations(corr_mat, indices=None):
+    '''
+    Apply agglomerative clustering in order to sort
+    a correlation matrix.
+
+    Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
+
+    Parameters
+    ----------
+    - corr_mat : a square correlation matrix (pandas DataFrame)
+    - indices : cluster labels [None]; if not provided we'll do
+        an aglomerative clustering to get cluster labels.
+
+    Returns
+    -------
+    - corr : a sorted correlation matrix
+    - indices : cluster indexes based on the original dataset
+
+    Example
+    -------
+    >> correlations = associations(
+        customers,
+        return_results=True,
+        plot=False
+    )
+    >> correlations, _ = cluster_correlations(correlations)
+    '''
+    if indices is None:
+        X = corr_mat.values
+        d = sch.distance.pdist(X)
+        L = sch.linkage(d, method='complete')
+        indices = sch.fcluster(L, 0.5*d.max(), 'distance')
+    columns = [corr_mat.columns.tolist()[i]
+               for i in list((np.argsort(indices)))]
+    corr_mat = corr_mat.reindex(columns=columns).reindex(index=columns)
+    return corr_mat, indices
