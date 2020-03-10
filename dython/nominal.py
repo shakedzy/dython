@@ -463,8 +463,7 @@ def cluster_correlations(corr_mat, indices=None):
     Apply agglomerative clustering in order to sort
     a correlation matrix.
 
-    Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/
-    blob/master/CorrelationMatrixClustering.ipynb
+    Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
 
     Parameters
     ----------
