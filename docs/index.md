@@ -34,8 +34,9 @@ pip install git+https://github.com/shakedzy/dython.git
   {% endif %}
 {% endfor %}
 
-### Examples:
-Some examples are available, see descriptions [here]({{'examples.html' | relative_url}}).
+## Examples:
+Examples of `nominal.associations` and `model_utils.roc_graph` are available as part of the package. 
+Descriptions and expected outputs can be seen [here]({{'examples.html' | relative_url}}).
 
 -------------
 
