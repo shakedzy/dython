@@ -65,6 +65,19 @@ values with the nan_replace_value. Missing values are None and np.nan.
 
    Arguments to be passed to used function and methods
 ---------
+#### `cluster_correlations(corr_mat, indexes=None)`
+Apply agglomerative clustering in order to sort a correlation matrix.
+Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
+
+**Returns:** a sorted correlation matrix (DataFrame), cluster indexes based on the original dataset (list)
+
+- **`corr_mat`** : `Pandas DataFrame`
+
+   A correlation matrix (as output from `associations`)
+- **`indexes`** : `list / NumPy ndarray / Pandas Series`
+
+   A sequence of cluster indexes for sorting. If not present, a clustering is performed.
+---------
 #### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Calculates the conditional entropy of x given y: `S(x|y)`
@@ -243,17 +256,3 @@ to replace all missing values with the nan_replace_value. Missing values are Non
    _Default: 0.0_
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
----------
-#### `cluster_correlations(corr_mat, indexes=None)`
-Apply agglomerative clustering in order to sort a correlation matrix.
-Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
-
-**Returns:** a sorted correlation matrix (DataFrame), cluster indexes based on the original dataset (list)
-
-- **`corr_mat`** : `Pandas DataFrame`
-
-   A correlation matrix (as output from `associations`)
-- **`indexes`** : `list / NumPy ndarray / Pandas Series`
-
-   A sequence of cluster indexes for sorting. If not present, a clustering is performed.
-
