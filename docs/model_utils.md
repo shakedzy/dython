@@ -28,6 +28,8 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 - **`kwargs`** : `any key-value pairs`
 
    Different options and configurations
+   
+__________________
 
 #### `roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs)`
 
@@ -62,6 +64,8 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 - **`kwargs`** : `any key-value pairs`
 
    Different options and configurations
+
+__________________
 
 #### `random_forest_feature_importance(forest, features, **kwargs)`
 
