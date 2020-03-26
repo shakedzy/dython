@@ -5,7 +5,7 @@ type: doc
 
 # nominal
 
-#### **`associations`**`(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, return_results=False, clustering=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs)`
+#### `associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, return_results=False, clustering=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
 continuous features using:
@@ -64,7 +64,7 @@ values with the nan_replace_value. Missing values are None and np.nan.
 - **`kwargs`** : `any key-value pairs`
 
    Arguments to be passed to used function and methods
-
+---------
 #### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Calculates the conditional entropy of x given y: `S(x|y)`
