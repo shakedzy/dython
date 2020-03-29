@@ -81,6 +81,10 @@ def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
         The true classes of the predicted data
     y_pred : list / NumPy ndarray
         The predicted classes
+    eoptimal_threshold : Boolean, default = True
+        Whether to calculate and display the estimated-optimal threshold
+        for each ROC graph. The estimated-optimal threshold is the closest
+        computed threshold with (fpr,tpr) values closest to (0,1)
     kwargs : any key-value pairs
         Different options and configurations
     """
@@ -152,6 +156,10 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, *
     macro : Boolean, default = True
         Whether to calculate a Macro ROC graph (not applicable for binary
         cases)
+    eoptimal_threshold : Boolean, default = True
+        Whether to calculate and display the estimated-optimal threshold
+        for each ROC graph. The estimated-optimal threshold is the closest
+        computed threshold with (fpr,tpr) values closest to (0,1)
     kwargs : any key-value pairs
         Different options and configurations
     """
