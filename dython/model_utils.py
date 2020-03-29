@@ -4,6 +4,18 @@ from scipy import interp
 from sklearn.metrics import roc_curve, auc
 from dython._private import convert
 
+# ROC graphs defaults
+_DEFAULT_FORMAT = '.2f'
+_DEFAULT_LINE_WIDTH = 2
+_DEFAULT_MARKER_SIZE = 10
+_DEFAULT_COLORS = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+_DEFAULT_COLOR = 'darkorange'
+_DEFAULT_MICRO_COLOR = 'deeppink'
+_DEFAULT_MACRO_COLOR = 'navy'
+_DEFAULT_LINE_STYLE = '-'
+_DEFAULT_MICRO_MACRO_LINE_STYLE = ':'
+_DEFAULT_THRESHOLD_ANNOTATION_OFFSET = (-.027, .03)
+
 
 def _display_roc_plot():
     plt.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--')
@@ -23,7 +35,9 @@ def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms):
     dist = lambda row: row[0]**2 + (1 - row[1])**2
     amin = np.apply_along_axis(dist, 1, a).argmin()
     plt.plot(fpr[amin], tpr[amin], color=color, marker='o', ms=ms)
-    plt.gca().annotate("{th:.2f}".format(th=thresholds[amin]), (fpr[amin]-.027, tpr[amin]+.03), color=color)
+    plt.gca().annotate("{th:.2f}".format(th=thresholds[amin]), xy=(fpr[amin], tpr[amin]), color=color,
+                       xytext=(fpr[amin]+_DEFAULT_THRESHOLD_ANNOTATION_OFFSET[0],
+                               tpr[amin]+_DEFAULT_THRESHOLD_ANNOTATION_OFFSET[1]))
     return thresholds[amin]
 
 
@@ -45,15 +59,16 @@ def _plot_macro_roc(fpr, tpr, thresholds, n, eoptimal, **kwargs):
     lw = kwargs.get('lw', 2)
     label = 'ROC curve: macro (AUC = {auc:{fmt}}'.format(auc=auc_macro, fmt=fmt)
     if eoptimal:
-        eopt = _draw_estimated_optimal_threshold_mark(fpr_macro, tpr_macro, th_macro, 'navy', kwargs.get('ms', 10))
+        eopt = _draw_estimated_optimal_threshold_mark(fpr_macro, tpr_macro, th_macro, 'navy',
+                                                      kwargs.get('ms', _DEFAULT_MARKER_SIZE))
         label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
     else:
         label += ')'
     plt.plot(fpr_macro,
              tpr_macro,
              label=label,
-             color='navy',
-             ls=':',
+             color=_DEFAULT_MACRO_COLOR,
+             ls=_DEFAULT_MICRO_MACRO_LINE_STYLE,
              lw=lw)
 
 
@@ -86,7 +101,9 @@ def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
         for each ROC graph. The estimated-optimal threshold is the closest
         computed threshold with (fpr,tpr) values closest to (0,1)
     kwargs : any key-value pairs
-        Different options and configurations
+        Different options and configurations. Some possible options: figsize,
+        color, lw (line-width), ls (line-style), ms (marker-size), fmt (number
+        format)
     """
     y_true = convert(y_true, 'array')
     y_pred = convert(y_pred, 'array')
@@ -100,10 +117,10 @@ def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
         y_p = [x[1] for x in y_pred]
     fpr, tpr, th = roc_curve(y_t, y_p)
     auc_score = auc(fpr, tpr)
-    color = kwargs.get('color', 'darkorange')
-    lw = kwargs.get('lw', 2)
-    ls = kwargs.get('ls', '-')
-    fmt = kwargs.get('fmt', '.2f')
+    color = kwargs.get('color', _DEFAULT_COLOR)
+    lw = kwargs.get('lw', _DEFAULT_LINE_WIDTH)
+    ls = kwargs.get('ls', _DEFAULT_LINE_STYLE)
+    fmt = kwargs.get('fmt', _DEFAULT_FORMAT)
     if 'class_label' in kwargs:
         class_label = ': {}'.format(kwargs['class_label'])
     else:
@@ -112,7 +129,7 @@ def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
         plt.figure(figsize=kwargs.get('figsize', None))
     label = 'ROC curve{class_label} (AUC = {auc:{fmt}})'.format(class_label=class_label, auc=auc_score, fmt=fmt)
     if eoptimal_threshold:
-        eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, kwargs.get('ms', 10))
+        eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, kwargs.get('ms', _DEFAULT_MARKER_SIZE))
         label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
     else:
         label += ')'
@@ -161,7 +178,9 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, *
         for each ROC graph. The estimated-optimal threshold is the closest
         computed threshold with (fpr,tpr) values closest to (0,1)
     kwargs : any key-value pairs
-        Different options and configurations
+        Different options and configurations. Some possible options: figsize,
+        color, lw (line-width), ls (line-style), ms (marker-size), fmt (number
+        format)
     """
     all_fpr = list()
     all_tpr = list()
@@ -173,7 +192,7 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, *
     elif len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
         return binary_roc_graph(y_true, y_pred, **kwargs)
     else:
-        colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+        colors = _DEFAULT_COLORS
         n = y_pred.shape[1]
         plt.figure(figsize=kwargs.get('figsize', None))
         kwargs['new_figure'] = False
@@ -193,12 +212,12 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, *
             binary_roc_graph(y_true.ravel(),
                              y_pred.ravel(),
                              eoptimal_threshold=eoptimal_threshold,
-                             ls=':',
-                             color='deeppink',
+                             ls=_DEFAULT_MICRO_MACRO_LINE_STYLE,
+                             color=_DEFAULT_MICRO_COLOR,
                              class_label='micro',
                              **kwargs)
         if macro:
-            _plot_macro_roc(all_fpr, all_tpr, all_th, n, eoptimal_threshold)
+            _plot_macro_roc(all_fpr, all_tpr, all_th, n, eoptimal_threshold, **kwargs)
         _display_roc_plot()
 
 
