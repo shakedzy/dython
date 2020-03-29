@@ -5,7 +5,7 @@ from sklearn.metrics import roc_curve, auc
 from dython._private import convert
 
 
-def _display_plot():
+def _display_roc_plot():
     plt.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.02])
@@ -16,7 +16,48 @@ def _display_plot():
     plt.show()
 
 
-def binary_roc_graph(y_true, y_pred, **kwargs):
+def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms):
+    a = np.zeros((len(fpr), 2))
+    a[:, 0] = fpr
+    a[:, 1] = tpr
+    dist = lambda row: row[0]**2 + (1 - row[1])**2
+    amin = np.apply_along_axis(dist, 1, a).argmin()
+    plt.plot(fpr[amin], tpr[amin], color=color, marker='o', ms=ms)
+    plt.gca().annotate("{th:.2f}".format(th=thresholds[amin]), (fpr[amin]-.027, tpr[amin]+.03), color=color)
+    return thresholds[amin]
+
+
+def _plot_macro_roc(fpr, tpr, thresholds, n, eoptimal, **kwargs):
+    all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n)]))
+    mean_tpr = np.zeros_like(all_fpr)
+    for i in range(n):
+        mean_tpr += interp(all_fpr, fpr[i], tpr[i])
+    mean_tpr /= n
+    mean_th = np.zeros_like(all_fpr)
+    for i in range(n):
+        mean_th += interp(all_fpr, fpr[i], thresholds[i])
+    mean_th /= n
+    fpr_macro = all_fpr
+    tpr_macro = mean_tpr
+    th_macro = mean_th
+    auc_macro = auc(fpr_macro, tpr_macro)
+    fmt = kwargs.get('fmt', '.2f')
+    lw = kwargs.get('lw', 2)
+    label = 'ROC curve: macro (AUC = {auc:{fmt}}'.format(auc=auc_macro, fmt=fmt)
+    if eoptimal:
+        eopt = _draw_estimated_optimal_threshold_mark(fpr_macro, tpr_macro, th_macro, 'navy', kwargs.get('ms', 10))
+        label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
+    else:
+        label += ')'
+    plt.plot(fpr_macro,
+             tpr_macro,
+             label=label,
+             color='navy',
+             ls=':',
+             lw=lw)
+
+
+def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
     """
     This function plots a ROC graph of a binary-class predictor. AUC
     calculation are presented as-well.  Data can be either: (1) one
@@ -53,7 +94,7 @@ def binary_roc_graph(y_true, y_pred, **kwargs):
     else:
         y_t = [np.argmax(x) for x in y_true]
         y_p = [x[1] for x in y_pred]
-    fpr, tpr, _ = roc_curve(y_t, y_p)
+    fpr, tpr, th = roc_curve(y_t, y_p)
     auc_score = auc(fpr, tpr)
     color = kwargs.get('color', 'darkorange')
     lw = kwargs.get('lw', 2)
@@ -64,41 +105,26 @@ def binary_roc_graph(y_true, y_pred, **kwargs):
     else:
         class_label = ''
     if kwargs.get('new_figure', True):
-        plt.figure()
+        plt.figure(figsize=kwargs.get('figsize', None))
+    label = 'ROC curve{class_label} (AUC = {auc:{fmt}})'.format(class_label=class_label, auc=auc_score, fmt=fmt)
+    if eoptimal_threshold:
+        eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, kwargs.get('ms', 10))
+        label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
+    else:
+        label += ')'
     plt.plot(fpr,
              tpr,
              color=color,
              lw=lw,
              ls=ls,
-             label='ROC curve{class_label} (AUC = {auc:{fmt}})'.format(
-                 class_label=class_label, auc=auc_score, fmt=fmt))
+             label=label)
     if kwargs.get('show_graphs', True):
-        _display_plot()
+        _display_roc_plot()
     if kwargs.get('return_pr', False):
-        return {'fpr': fpr, 'tpr': tpr}
+        return {'fpr': fpr, 'tpr': tpr, 'thresholds': th}
 
 
-def _plot_macro_roc(fpr, tpr, n, **kwargs):
-    all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n)]))
-    mean_tpr = np.zeros_like(all_fpr)
-    for i in range(n):
-        mean_tpr += interp(all_fpr, fpr[i], tpr[i])
-    mean_tpr /= n
-    fpr_macro = all_fpr
-    tpr_macro = mean_tpr
-    auc_macro = auc(fpr_macro, tpr_macro)
-    fmt = kwargs.get('fmt', '.2f')
-    lw = kwargs.get('lw', 2)
-    plt.plot(fpr_macro,
-             tpr_macro,
-             label='ROC curve: macro (AUC = {auc:{fmt}})'.format(auc=auc_macro,
-                                                                 fmt=fmt),
-             color='navy',
-             ls=':',
-             lw=lw)
-
-
-def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
+def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, **kwargs):
     """
     Plot a ROC graph of predictor's results (inclusding AUC scores), where each
     row of y_true and y_pred represent a single example.
@@ -131,6 +157,7 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
     """
     all_fpr = list()
     all_tpr = list()
+    all_th = list()
     y_true = convert(y_true, 'array')
     y_pred = convert(y_pred, 'array')
     if y_pred.shape != y_true.shape:
@@ -140,28 +167,31 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs):
     else:
         colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
         n = y_pred.shape[1]
-        plt.figure()
+        plt.figure(figsize=kwargs.get('figsize', None))
         kwargs['new_figure'] = False
         kwargs['show_graphs'] = False
         kwargs['return_pr'] = True
         for i in range(0, n):
             pr = binary_roc_graph(y_true[:, i],
                                   y_pred[:, i],
+                                  eoptimal_threshold=eoptimal_threshold,
                                   color=colors[i % len(colors)],
                                   class_label=i,
                                   **kwargs)
             all_fpr.append(pr['fpr'])
             all_tpr.append(pr['tpr'])
+            all_th.append((pr['thresholds']))
         if micro:
             binary_roc_graph(y_true.ravel(),
                              y_pred.ravel(),
+                             eoptimal_threshold=eoptimal_threshold,
                              ls=':',
                              color='deeppink',
                              class_label='micro',
                              **kwargs)
         if macro:
-            _plot_macro_roc(all_fpr, all_tpr, n)
-        _display_plot()
+            _plot_macro_roc(all_fpr, all_tpr, all_th, n, eoptimal_threshold)
+        _display_roc_plot()
 
 
 def random_forest_feature_importance(forest, features, **kwargs):
