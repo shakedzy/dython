@@ -5,7 +5,7 @@ type: doc
 
 # model_utils
 
-#### `binary_roc_graph(y_true, y_pred, **kwargs)`
+#### `binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs)`
 
 This function plots a ROC graph of a binary-class predictor. AUC calculation are presented as-well.
 Data can be either: (1) one dimensional, where the values of y_true represent the true class and y_pred the
@@ -32,13 +32,22 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 - **`y_pred`** : `list / NumPy ndarray`
 
    The predicted classes
+- **`eoptimal_threshold`** : `Boolean`
+
+    _Default = True_
+    
+    Whether to calculate and display the estimated-optimal threshold
+    for each ROC graph. The estimated-optimal threshold is the closest
+    computed threshold with (fpr,tpr) values closest to (0,1)     
 - **`kwargs`** : `any key-value pairs`
 
-   Different options and configurations
+   Different options and configurations. Some possible options: `figsize`,
+   `color`, `lw` (line-width), `ls` (line-style), `ms` (marker-size), `fmt` 
+   (number format)
    
 __________________
 
-#### `roc_graph(y_true, y_pred, micro=True, macro=True, **kwargs)`
+#### `roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, **kwargs)`
 
 Plot a ROC graph of predictor's results (inclusding AUC scores), where each row of y_true and y_pred
 represent a single example.
@@ -68,9 +77,18 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
   _Default = True_
 
    Whether to calculate a Macro ROC graph (not applicable for binary cases)
+- **`eoptimal_threshold`** : `Boolean`
+
+    _Default = True_
+    
+    Whether to calculate and display the estimated-optimal threshold
+    for each ROC graph. The estimated-optimal threshold is the closest
+    computed threshold with (fpr,tpr) values closest to (0,1) 
 - **`kwargs`** : `any key-value pairs`
 
-   Different options and configurations
+   Different options and configurations. Some possible options: `figsize`,
+   `color`, `lw` (line-width), `ls` (line-style), `ms` (marker-size), `fmt` 
+   (number format)
 
 __________________
 

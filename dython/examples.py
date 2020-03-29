@@ -29,7 +29,7 @@ def roc_graph_example():
                                                         random_state=0)
     classifier = OneVsRestClassifier(
         svm.SVC(kernel='linear', probability=True, random_state=random_state))
-    y_score = classifier.fit(X_train, y_train).decision_function(X_test)
+    y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
     roc_graph(y_test, y_score)
 
 
