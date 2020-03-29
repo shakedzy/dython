@@ -41,7 +41,9 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
     computed threshold with (fpr,tpr) values closest to (0,1)     
 - **`kwargs`** : `any key-value pairs`
 
-   Different options and configurations
+   Different options and configurations. Some possible options: `figsize`,
+   `color`, `lw` (line-width), `ls` (line-style), `ms` (marker-size), `fmt` 
+   (number format)
    
 __________________
 
@@ -84,7 +86,9 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
     computed threshold with (fpr,tpr) values closest to (0,1) 
 - **`kwargs`** : `any key-value pairs`
 
-   Different options and configurations
+   Different options and configurations. Some possible options: `figsize`,
+   `color`, `lw` (line-width), `ls` (line-style), `ms` (marker-size), `fmt` 
+   (number format)
 
 __________________
 
