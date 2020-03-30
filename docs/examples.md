@@ -28,4 +28,5 @@ http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
 ![roc_example](roc_example.png)
 
-(0,1,2 are the different target classes of the Iris dataset)
+Note that due to the nature of `np.random.RandomState` which is used in this 
+example, the output graph may vary from one machine to another.
