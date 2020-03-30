@@ -20,8 +20,8 @@ from dython.nominal import associations
 # Load data 
 iris = datasets.load_iris()
 
-# Convert int classes to strings to allow associations method 
-# to automatically recognize categorical columns
+# Convert int classes to strings to allow associations 
+# method to automatically recognize categorical columns
 target = ['C{}'.format(i) for i in iris.target]
 
 # Prepare data
