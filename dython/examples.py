@@ -20,7 +20,7 @@ def roc_graph_example():
     iris = datasets.load_iris()
     X = iris.data
     y = label_binarize(iris.target, classes=[0, 1, 2])
-    random_state = np.random.RandomState(0)
+    random_state = np.random.RandomState(4)
     n_samples, n_features = X.shape
     X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
     X_train, X_test, y_train, y_test = train_test_split(X,
@@ -28,7 +28,7 @@ def roc_graph_example():
                                                         test_size=.5,
                                                         random_state=0)
     classifier = OneVsRestClassifier(
-        svm.SVC(kernel='linear', probability=True, random_state=random_state))
+        svm.SVC(kernel='linear', probability=True, random_state=0))
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
     roc_graph(y_test, y_score)
 
