@@ -8,7 +8,7 @@ from dython._private import convert
 _DEFAULT_FORMAT = '.2f'
 _DEFAULT_LINE_WIDTH = 2
 _DEFAULT_MARKER_SIZE = 10
-_DEFAULT_COLORS = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+_DEFAULT_COLORS = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'darkorange']
 _DEFAULT_COLOR = 'darkorange'
 _DEFAULT_MICRO_COLOR = 'deeppink'
 _DEFAULT_MACRO_COLOR = 'navy'
@@ -41,29 +41,18 @@ def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms):
     return thresholds[amin]
 
 
-def _plot_macro_roc(fpr, tpr, thresholds, n, eoptimal, **kwargs):
+def _plot_macro_roc(fpr, tpr, n, **kwargs):
     all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n)]))
     mean_tpr = np.zeros_like(all_fpr)
     for i in range(n):
         mean_tpr += interp(all_fpr, fpr[i], tpr[i])
     mean_tpr /= n
-    mean_th = np.zeros_like(all_fpr)
-    for i in range(n):
-        mean_th += interp(all_fpr, fpr[i], thresholds[i])
-    mean_th /= n
     fpr_macro = all_fpr
     tpr_macro = mean_tpr
-    th_macro = mean_th
     auc_macro = auc(fpr_macro, tpr_macro)
     fmt = kwargs.get('fmt', '.2f')
     lw = kwargs.get('lw', 2)
-    label = 'ROC curve: macro (AUC = {auc:{fmt}}'.format(auc=auc_macro, fmt=fmt)
-    if eoptimal:
-        eopt = _draw_estimated_optimal_threshold_mark(fpr_macro, tpr_macro, th_macro, 'navy',
-                                                      kwargs.get('ms', _DEFAULT_MARKER_SIZE))
-        label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
-    else:
-        label += ')'
+    label = 'ROC curve: macro (AUC = {auc:{fmt}})'.format(auc=auc_macro, fmt=fmt)
     plt.plot(fpr_macro,
              tpr_macro,
              label=label,
@@ -72,39 +61,7 @@ def _plot_macro_roc(fpr, tpr, thresholds, n, eoptimal, **kwargs):
              lw=lw)
 
 
-def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
-    """
-    This function plots a ROC graph of a binary-class predictor. AUC
-    calculation are presented as-well.  Data can be either: (1) one
-    dimensional, where the values of y_true represent the true class and
-    y_pred the predicted probability of that class, or (2) two-dimensional,
-    where each line in y_true is a one-hot-encoding of the true class and
-    y_pred holds the predicted probabilities of each class. For example,
-    consider a data-set of two data-points where the true class of the first
-    line is class 0, which was predicted with a probability of 0.6, and the
-    second line's true class is 1, with predicted probability of 0.8. In the
-    first configuration, the input will be: y_true = [0,1],
-    y_pred = [0.6,0.8]. In the second configuration, the input will be:
-    y_true = [[1,0],[0,1]], y_pred = [[0.6,0.4],[0.2,0.8]].
-
-    Based on sklearn examples (as was seen on April 2018):
-    http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
-
-    Parameters
-    ----------
-    y_true : list / NumPy ndarray
-        The true classes of the predicted data
-    y_pred : list / NumPy ndarray
-        The predicted classes
-    eoptimal_threshold : Boolean, default = True
-        Whether to calculate and display the estimated-optimal threshold
-        for each ROC graph. The estimated-optimal threshold is the closest
-        computed threshold with (fpr,tpr) values closest to (0,1)
-    kwargs : any key-value pairs
-        Different options and configurations. Some possible options: figsize,
-        color, lw (line-width), ls (line-style), ms (marker-size), fmt (number
-        format)
-    """
+def _binary_roc_graph(y_true, y_pred, eoptimal, **kwargs):
     y_true = convert(y_true, 'array')
     y_pred = convert(y_pred, 'array')
     if y_pred.shape != y_true.shape:
@@ -121,14 +78,12 @@ def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
     lw = kwargs.get('lw', _DEFAULT_LINE_WIDTH)
     ls = kwargs.get('ls', _DEFAULT_LINE_STYLE)
     fmt = kwargs.get('fmt', _DEFAULT_FORMAT)
-    if 'class_label' in kwargs:
+    if 'class_label' in kwargs and kwargs['class_label'] is not None:
         class_label = ': {}'.format(kwargs['class_label'])
     else:
         class_label = ''
-    if kwargs.get('new_figure', True):
-        plt.figure(figsize=kwargs.get('figsize', None))
-    label = 'ROC curve{class_label} (AUC = {auc:{fmt}})'.format(class_label=class_label, auc=auc_score, fmt=fmt)
-    if eoptimal_threshold:
+    label = 'ROC curve{class_label} (AUC = {auc:{fmt}}'.format(class_label=class_label, auc=auc_score, fmt=fmt)
+    if eoptimal:
         eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, kwargs.get('ms', _DEFAULT_MARKER_SIZE))
         label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
     else:
@@ -139,27 +94,35 @@ def binary_roc_graph(y_true, y_pred, eoptimal_threshold=True, **kwargs):
              lw=lw,
              ls=ls,
              label=label)
-    if kwargs.get('show_graphs', True):
-        _display_roc_plot()
-    if kwargs.get('return_pr', False):
-        return {'fpr': fpr, 'tpr': tpr, 'thresholds': th}
+    return {'fpr': fpr, 'tpr': tpr, 'thresholds': th}
 
 
-def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, **kwargs):
+def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, class_names=None, **kwargs):
     """
     Plot a ROC graph of predictor's results (inclusding AUC scores), where each
     row of y_true and y_pred represent a single example.
     If there are 1 or two columns only, the data is treated as a binary
-    classification, in which the result is similar to the `binary_roc_graph`
-    method, see its documentation for more information. If there are more then
-    2 columns, each column is considered a unique class, and a ROC graph and
-    AUC score will be computed for each. A Macro-ROC and Micro-ROC are
-    computed and plotted too by default.
+    classification (see input example below).
+    If there are more then 2 columns, each column is considered a
+    unique class, and a ROC graph and AUC score will be computed for each.
+    A Macro-ROC and Micro-ROC are computed and plotted too by default.
 
     Based on sklearn examples (as was seen on April 2018):
     http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
     **Example:** See `roc_graph_example` under `dython.examples`
+
+    **Binary Classification Input Example:**
+    Consider a data-set of two data-points where the true class of the first line
+    is class 0, which was predicted with a probability of 0.6, and the second line's
+    true class is 1, with predicted probability of 0.8.
+    ```python
+    # First option:
+    >> binary_roc_graph(y_true=[0,1], y_pred=[0.6,0.8])
+    # Second option:
+    >> binary_roc_graph(y_true=[[1,0],[0,1]], y_pred=[[0.6,0.4],[0.2,0.8]])
+    # Both yield the same result
+    ```
 
     Parameters
     ----------
@@ -177,6 +140,11 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, *
         Whether to calculate and display the estimated-optimal threshold
         for each ROC graph. The estimated-optimal threshold is the closest
         computed threshold with (fpr,tpr) values closest to (0,1)
+    class_names: list or string, default = None
+        Names of the different classes. In a multi-class classification, the
+        order must match the order of the classes probabilities in the input
+        data. In a binary classification, can be a string or a list. If a list,
+        only the last element will be used.
     kwargs : any key-value pairs
         Different options and configurations. Some possible options: figsize,
         color, lw (line-width), ls (line-style), ms (marker-size), fmt (number
@@ -184,41 +152,48 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, *
     """
     all_fpr = list()
     all_tpr = list()
-    all_th = list()
     y_true = convert(y_true, 'array')
     y_pred = convert(y_pred, 'array')
     if y_pred.shape != y_true.shape:
         raise ValueError('y_true and y_pred must have the same shape')
-    elif len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
-        return binary_roc_graph(y_true, y_pred, **kwargs)
+    if class_names is not None:
+        if not isinstance(class_names, str):
+            class_names = convert(class_names, 'list')
+        else:
+            class_names = [class_names]
+    plt.figure(figsize=kwargs.get('figsize', None))
+    if len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
+        class_label = class_names[-1] if class_names is not None else None
+        _binary_roc_graph(y_true, y_pred, eoptimal=eoptimal_threshold, class_label=class_label, **kwargs)
     else:
         colors = _DEFAULT_COLORS
         n = y_pred.shape[1]
-        plt.figure(figsize=kwargs.get('figsize', None))
-        kwargs['new_figure'] = False
-        kwargs['show_graphs'] = False
-        kwargs['return_pr'] = True
+        if class_names is not None:
+            if not isinstance(class_names, list):
+                raise ValueError('class_names must be a list of items in multi-class classification.')
+            if len(class_names) != n:
+                raise ValueError('Number of class names does not match input data size.')
         for i in range(0, n):
-            pr = binary_roc_graph(y_true[:, i],
-                                  y_pred[:, i],
-                                  eoptimal_threshold=eoptimal_threshold,
-                                  color=colors[i % len(colors)],
-                                  class_label=i,
-                                  **kwargs)
+            class_label = class_names[i] if class_names is not None else str(i)
+            pr = _binary_roc_graph(y_true[:, i],
+                                   y_pred[:, i],
+                                   eoptimal=eoptimal_threshold,
+                                   color=colors[i % len(colors)],
+                                   class_label=class_label,
+                                   **kwargs)
             all_fpr.append(pr['fpr'])
             all_tpr.append(pr['tpr'])
-            all_th.append((pr['thresholds']))
         if micro:
-            binary_roc_graph(y_true.ravel(),
-                             y_pred.ravel(),
-                             eoptimal_threshold=eoptimal_threshold,
-                             ls=_DEFAULT_MICRO_MACRO_LINE_STYLE,
-                             color=_DEFAULT_MICRO_COLOR,
-                             class_label='micro',
-                             **kwargs)
+            _binary_roc_graph(y_true.ravel(),
+                              y_pred.ravel(),
+                              eoptimal=False,
+                              ls=_DEFAULT_MICRO_MACRO_LINE_STYLE,
+                              color=_DEFAULT_MICRO_COLOR,
+                              class_label='micro',
+                              **kwargs)
         if macro:
-            _plot_macro_roc(all_fpr, all_tpr, all_th, n, eoptimal_threshold, **kwargs)
-        _display_roc_plot()
+            _plot_macro_roc(all_fpr, all_tpr, n, **kwargs)
+    _display_roc_plot()
 
 
 def random_forest_feature_importance(forest, features, **kwargs):
