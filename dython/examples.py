@@ -46,4 +46,3 @@ def associations_example():
     y = pd.DataFrame(data=target, columns=['target'])
     df = pd.concat([X, y], axis=1)
     associations(df)
-roc_graph_example()
