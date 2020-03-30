@@ -30,7 +30,7 @@ def roc_graph_example():
     classifier = OneVsRestClassifier(
         svm.SVC(kernel='linear', probability=True, random_state=0))
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
-    roc_graph(y_test, y_score)
+    roc_graph(y_test, y_score, class_names=iris.target_names)
 
 
 def associations_example():
@@ -46,3 +46,4 @@ def associations_example():
     y = pd.DataFrame(data=target, columns=['target'])
     df = pd.concat([X, y], axis=1)
     associations(df)
+roc_graph_example()
