@@ -15,12 +15,13 @@ _DEFAULT_MACRO_COLOR = 'navy'
 _DEFAULT_LINE_STYLE = '-'
 _DEFAULT_MICRO_MACRO_LINE_STYLE = ':'
 _DEFAULT_THRESHOLD_ANNOTATION_OFFSET = (-.027, .03)
+_DEFAULT_MARKER = 'o'
 
 
-def _display_roc_plot():
+def _display_roc_plot(xlim, ylim):
     plt.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.02])
+    plt.xlim(xlim)
+    plt.ylim(ylim)
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
@@ -28,14 +29,15 @@ def _display_roc_plot():
     plt.show()
 
 
-def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms):
+def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms, fmt):
     a = np.zeros((len(fpr), 2))
     a[:, 0] = fpr
     a[:, 1] = tpr
     dist = lambda row: row[0]**2 + (1 - row[1])**2
     amin = np.apply_along_axis(dist, 1, a).argmin()
-    plt.plot(fpr[amin], tpr[amin], color=color, marker='o', ms=ms)
-    plt.gca().annotate("{th:.2f}".format(th=thresholds[amin]), xy=(fpr[amin], tpr[amin]), color=color,
+    plt.plot(fpr[amin], tpr[amin], color=color, marker=_DEFAULT_MARKER, ms=ms)
+    plt.gca().annotate("{th:{fmt}}".format(th=thresholds[amin], fmt=fmt),
+                       xy=(fpr[amin], tpr[amin]), color=color,
                        xytext=(fpr[amin]+_DEFAULT_THRESHOLD_ANNOTATION_OFFSET[0],
                                tpr[amin]+_DEFAULT_THRESHOLD_ANNOTATION_OFFSET[1]))
     return thresholds[amin]
@@ -84,7 +86,7 @@ def _binary_roc_graph(y_true, y_pred, eoptimal, **kwargs):
         class_label = ''
     label = 'ROC curve{class_label} (AUC = {auc:{fmt}}'.format(class_label=class_label, auc=auc_score, fmt=fmt)
     if eoptimal:
-        eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, kwargs.get('ms', _DEFAULT_MARKER_SIZE))
+        eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, kwargs.get('ms', _DEFAULT_MARKER_SIZE), fmt)
         label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
     else:
         label += ')'
@@ -193,7 +195,8 @@ def roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, c
                               **kwargs)
         if macro:
             _plot_macro_roc(all_fpr, all_tpr, n, **kwargs)
-    _display_roc_plot()
+    _display_roc_plot(xlim=kwargs.get('xlim', (0, 1)),
+                      ylim=kwargs.get('ylim', (0, 1.02)))
 
 
 def random_forest_feature_importance(forest, features, **kwargs):
