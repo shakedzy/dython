@@ -34,7 +34,7 @@ associations(df)
 ```
 **Output:**
 
-![associations_example](associations_example.png)
+![associations_example](images/associations_example.png)
 
 __________________
 
@@ -77,7 +77,7 @@ roc_graph(y_test, y_score, class_names=iris.target_names)
 
 **Output:**
 
-![roc_example](roc_example.png)
+![roc_example](images/roc_example.png)
 
 Note that due to the nature of `np.random.RandomState` which is used in this 
 example, the output graph may vary from one machine to another.
