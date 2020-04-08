@@ -35,7 +35,7 @@ setup(name=PACKAGE_NAME,
       author_email=AUTHOR_EMAIL,
       url=URL,
       download_url=DOWNLOAD_URL,
-      python_requiers=PYTHON_REQUIRES,
+      python_requires=PYTHON_REQUIRES,
       install_requires=INSTALL_REQUIRES,
       packages=find_packages()
       )
