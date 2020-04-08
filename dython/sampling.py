@@ -1,5 +1,10 @@
 import numpy as np
 
+__all__ = [
+    'boltzmann_sampling',
+    'weighted_sampling'
+]
+
 
 def weighted_sampling(numbers, k=1, with_replacement=False, **kwargs):
     """

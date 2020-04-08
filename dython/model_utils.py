@@ -2,7 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interp
 from sklearn.metrics import roc_curve, auc
-from dython._private import convert
+from ._private import convert
+
+__all__ = [
+    'random_forest_feature_importance',
+    'roc_graph'
+]
 
 # ROC graphs defaults
 _DEFAULT_FORMAT = '.2f'

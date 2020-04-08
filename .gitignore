@@ -11,3 +11,4 @@ dython.egg*/*
 *run_stuff.py*
 build/*
 dist/*
+build_deploy.sh

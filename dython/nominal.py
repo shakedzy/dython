@@ -6,22 +6,33 @@ import seaborn as sns
 import scipy.stats as ss
 import scipy.cluster.hierarchy as sch
 import matplotlib.pyplot as plt
-from dython._private import (
+from ._private import (
     convert, remove_incomplete_samples, replace_nan_with_value
 )
 
-REPLACE = 'replace'
-DROP = 'drop'
-DROP_SAMPLES = 'drop_samples'
-DROP_FEATURES = 'drop_features'
-SKIP = 'skip'
-DEFAULT_REPLACE_VALUE = 0.0
+__all__ = [
+    'associations',
+    'cluster_correlations',
+    'conditional_entropy',
+    'correlation_ratio',
+    'cramers_v',
+    'identify_nominal_columns',
+    'numerical_encoding',
+    'theils_u'
+]
+
+_REPLACE = 'replace'
+_DROP = 'drop'
+_DROP_SAMPLES = 'drop_samples'
+_DROP_FEATURES = 'drop_features'
+_SKIP = 'skip'
+_DEFAULT_REPLACE_VALUE = 0.0
 
 
 def conditional_entropy(x,
                         y,
-                        nan_strategy=REPLACE,
-                        nan_replace_value=DEFAULT_REPLACE_VALUE):
+                        nan_strategy=_REPLACE,
+                        nan_replace_value=_DEFAULT_REPLACE_VALUE):
     """
     Calculates the conditional entropy of x given y: S(x|y)
 
@@ -43,9 +54,9 @@ def conditional_entropy(x,
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
     """
-    if nan_strategy == REPLACE:
+    if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
-    elif nan_strategy == DROP:
+    elif nan_strategy == _DROP:
         x, y = remove_incomplete_samples(x, y)
     y_counter = Counter(y)
     xy_counter = Counter(list(zip(x, y)))
@@ -60,8 +71,8 @@ def conditional_entropy(x,
 
 def cramers_v(x,
               y,
-              nan_strategy=REPLACE,
-              nan_replace_value=DEFAULT_REPLACE_VALUE):
+              nan_strategy=_REPLACE,
+              nan_replace_value=_DEFAULT_REPLACE_VALUE):
     """
     Calculates Cramer's V statistic for categorical-categorical association.
     Uses correction from Bergsma and Wicher, Journal of the Korean Statistical
@@ -87,9 +98,9 @@ def cramers_v(x,
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
     """
-    if nan_strategy == REPLACE:
+    if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
-    elif nan_strategy == DROP:
+    elif nan_strategy == _DROP:
         x, y = remove_incomplete_samples(x, y)
     confusion_matrix = pd.crosstab(x, y)
     chi2 = ss.chi2_contingency(confusion_matrix)[0]
@@ -104,8 +115,8 @@ def cramers_v(x,
 
 def theils_u(x,
              y,
-             nan_strategy=REPLACE,
-             nan_replace_value=DEFAULT_REPLACE_VALUE):
+             nan_strategy=_REPLACE,
+             nan_replace_value=_DEFAULT_REPLACE_VALUE):
     """
     Calculates Theil's U statistic (Uncertainty coefficient) for categorical-
     categorical association. This is the uncertainty of x given y: value is
@@ -132,9 +143,9 @@ def theils_u(x,
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
     """
-    if nan_strategy == REPLACE:
+    if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
-    elif nan_strategy == DROP:
+    elif nan_strategy == _DROP:
         x, y = remove_incomplete_samples(x, y)
     s_xy = conditional_entropy(x, y)
     x_counter = Counter(x)
@@ -149,8 +160,8 @@ def theils_u(x,
 
 def correlation_ratio(categories,
                       measurements,
-                      nan_strategy=REPLACE,
-                      nan_replace_value=DEFAULT_REPLACE_VALUE):
+                      nan_strategy=_REPLACE,
+                      nan_replace_value=_DEFAULT_REPLACE_VALUE):
     """
     Calculates the Correlation Ratio (sometimes marked by the greek letter Eta)
     for categorical-continuous association.
@@ -180,10 +191,10 @@ def correlation_ratio(categories,
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
     """
-    if nan_strategy == REPLACE:
+    if nan_strategy == _REPLACE:
         categories, measurements = replace_nan_with_value(
             categories, measurements, nan_replace_value)
-    elif nan_strategy == DROP:
+    elif nan_strategy == _DROP:
         categories, measurements = remove_incomplete_samples(
             categories, measurements)
     categories = convert(categories, 'array')
@@ -239,8 +250,8 @@ def associations(dataset,
                  plot=True,
                  return_results=False,
                  clustering=False,
-                 nan_strategy=REPLACE,
-                 nan_replace_value=DEFAULT_REPLACE_VALUE,
+                 nan_strategy=_REPLACE,
+                 nan_replace_value=_DEFAULT_REPLACE_VALUE,
                  ax=None,
                  **kwargs):
     """
@@ -293,11 +304,11 @@ def associations(dataset,
         Arguments to be passed to used function and methods
     """
     dataset = convert(dataset, 'dataframe')
-    if nan_strategy == REPLACE:
+    if nan_strategy == _REPLACE:
         dataset.fillna(nan_replace_value, inplace=True)
-    elif nan_strategy == DROP_SAMPLES:
+    elif nan_strategy == _DROP_SAMPLES:
         dataset.dropna(axis=0, inplace=True)
-    elif nan_strategy == DROP_FEATURES:
+    elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
     columns = dataset.columns
     if nominal_columns is None:
@@ -319,28 +330,28 @@ def associations(dataset,
                             corr[columns[j]][columns[i]] = theils_u(
                                 dataset[columns[i]],
                                 dataset[columns[j]],
-                                nan_strategy=SKIP)
+                                nan_strategy=_SKIP)
                             corr[columns[i]][columns[j]] = theils_u(
                                 dataset[columns[j]],
                                 dataset[columns[i]],
-                                nan_strategy=SKIP)
+                                nan_strategy=_SKIP)
                         else:
                             cell = cramers_v(dataset[columns[i]],
                                              dataset[columns[j]],
-                                             nan_strategy=SKIP)
+                                             nan_strategy=_SKIP)
                             corr[columns[i]][columns[j]] = cell
                             corr[columns[j]][columns[i]] = cell
                     else:
                         cell = correlation_ratio(dataset[columns[i]],
                                                  dataset[columns[j]],
-                                                 nan_strategy=SKIP)
+                                                 nan_strategy=_SKIP)
                         corr[columns[i]][columns[j]] = cell
                         corr[columns[j]][columns[i]] = cell
                 else:
                     if columns[j] in nominal_columns:
                         cell = correlation_ratio(dataset[columns[j]],
                                                  dataset[columns[i]],
-                                                 nan_strategy=SKIP)
+                                                 nan_strategy=_SKIP)
                         corr[columns[i]][columns[j]] = cell
                         corr[columns[j]][columns[i]] = cell
                     else:
@@ -379,8 +390,8 @@ def numerical_encoding(dataset,
                        nominal_columns='auto',
                        drop_single_label=False,
                        drop_fact_dict=True,
-                       nan_strategy=REPLACE,
-                       nan_replace_value=DEFAULT_REPLACE_VALUE):
+                       nan_strategy=_REPLACE,
+                       nan_replace_value=_DEFAULT_REPLACE_VALUE):
     """
     Encoding a data-set with mixed data (numerical and categorical) to a
     numerical-only data-set using the following logic:
@@ -424,11 +435,11 @@ def numerical_encoding(dataset,
         _strategy is set to 'replace'
     """
     dataset = convert(dataset, 'dataframe')
-    if nan_strategy == REPLACE:
+    if nan_strategy == _REPLACE:
         dataset.fillna(nan_replace_value, inplace=True)
-    elif nan_strategy == DROP_SAMPLES:
+    elif nan_strategy == _DROP_SAMPLES:
         dataset.dropna(axis=0, inplace=True)
-    elif nan_strategy == DROP_FEATURES:
+    elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
     if nominal_columns is None:
         return dataset

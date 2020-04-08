@@ -1,19 +1,41 @@
 import pathlib
 from setuptools import setup, find_packages
 
-VERSION = '0.4.4'
 HERE = pathlib.Path(__file__).parent
-README = (HERE / "README.md").read_text()
 
-setup(name='dython',
+PACKAGE_NAME = 'dython'
+AUTHOR = 'Shaked Zychlinski'
+AUTHOR_EMAIL = 'shakedzy@gmail.com'
+URL = 'http://shakedzy.xyz/dython'
+DOWNLOAD_URL = 'https://github.com/shakedzy/dython'
+
+LICENSE = 'Apache License 2.0'
+VERSION = (HERE / "VERSION").read_text()
+DESCRIPTION = 'A set of data tools in Python'
+LONG_DESCRIPTION = (HERE / "README.md").read_text()
+LONG_DESC_TYPE = "text/markdown"
+
+PYTHON_REQUIRES = '>=3.4'
+INSTALL_REQUIRES = [
+      'numpy',
+      'pandas',
+      'seaborn',
+      'scipy',
+      'matplotlib',
+      'scikit-learn'
+]
+
+setup(name=PACKAGE_NAME,
       version=VERSION,
-      description='Data tools for Python',
-      long_description=README,
-      long_description_content_type="text/markdown",
-      author='Shaked Zychlinski',
-      license='Apache License 2.0',
-      author_email='shakedzy@gmail.com',
-      url='https://github.com/shakedzy/dython',
-      install_requires=['numpy','pandas','seaborn','scipy','matplotlib','scikit-learn'],
-      packages=find_packages(),
+      description=DESCRIPTION,
+      long_description=LONG_DESCRIPTION,
+      long_description_content_type=LONG_DESC_TYPE,
+      author=AUTHOR,
+      license=LICENSE,
+      author_email=AUTHOR_EMAIL,
+      url=URL,
+      download_url=DOWNLOAD_URL,
+      python_requiers=PYTHON_REQUIRES,
+      install_requires=INSTALL_REQUIRES,
+      packages=find_packages()
       )
