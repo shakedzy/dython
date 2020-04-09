@@ -5,6 +5,7 @@ title: dython
 # Dython
 
 [![PyPI Version](https://img.shields.io/pypi/v/dython?style=for-the-badge)](https://pypi.org/project/dython/)
+[![Python Version](https://img.shields.io/badge/python-3.5%2B-blue?style=for-the-badge)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython?style=for-the-badge)](https://pypi.org/project/dython/)
 [![Stars](https://img.shields.io/github/stars/shakedzy/dython?style=for-the-badge&logo=github)](https://github.com/shakedzy/dython)
 [![Forks](https://img.shields.io/github/forks/shakedzy/dython?style=for-the-badge&logo=github)](https://github.com/shakedzy/dython)
