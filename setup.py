@@ -15,7 +15,7 @@ DESCRIPTION = 'A set of data tools in Python'
 LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
-PYTHON_REQUIRES = '>=3.4'
+PYTHON_REQUIRES = '>=3.5'
 INSTALL_REQUIRES = [
       'numpy',
       'pandas',
