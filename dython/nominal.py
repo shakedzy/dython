@@ -54,9 +54,9 @@ def conditional_entropy(x,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
-    base : number, default = None
+    base : float, default = None
         The base to use for the logarithm in conditional entropy calculations.
-        Defaults to natural logarithm if None.
+        Must be positive. Defaults to natural logarithm if None.
     """
     if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
