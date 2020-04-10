@@ -32,7 +32,8 @@ _DEFAULT_REPLACE_VALUE = 0.0
 def conditional_entropy(x,
                         y,
                         nan_strategy=_REPLACE,
-                        nan_replace_value=_DEFAULT_REPLACE_VALUE):
+                        nan_replace_value=_DEFAULT_REPLACE_VALUE,
+                        base=None):
     """
     Calculates the conditional entropy of x given y: S(x|y)
 
@@ -53,6 +54,9 @@ def conditional_entropy(x,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
+    base : number, default = None
+        The base to use for the logarithm in conditional entropy calculations.
+        Defaults to natural logarithm if None.
     """
     if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
@@ -65,7 +69,8 @@ def conditional_entropy(x,
     for xy in xy_counter.keys():
         p_xy = xy_counter[xy] / total_occurrences
         p_y = y_counter[xy[1]] / total_occurrences
-        entropy += p_xy * math.log(p_y / p_xy)
+        lg = math.log(p_y / p_xy) if base is None else math.log(p_y / p_xy, base)
+        entropy += p_xy * lg
     return entropy
 
 
@@ -470,7 +475,7 @@ def numerical_encoding(dataset,
 
 
 def cluster_correlations(corr_mat, indices=None):
-    '''
+    """
     Apply agglomerative clustering in order to sort
     a correlation matrix.
 
@@ -495,7 +500,7 @@ def cluster_correlations(corr_mat, indices=None):
         plot=False
     )
     >> correlations, _ = cluster_correlations(correlations)
-    '''
+    """
     if indices is None:
         X = corr_mat.values
         d = sch.distance.pdist(X)
