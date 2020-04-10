@@ -33,7 +33,7 @@ def conditional_entropy(x,
                         y,
                         nan_strategy=_REPLACE,
                         nan_replace_value=_DEFAULT_REPLACE_VALUE,
-                        log_base: float = 2):
+                        log_base: float = math.e):
     """
     Calculates the conditional entropy of x given y: S(x|y)
 
@@ -54,8 +54,8 @@ def conditional_entropy(x,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
-    log_base: float, default = 2.0
-        specifying base for calculating entropy. Default is base 2 which returns value in bits.
+    log_base: float, default = e
+        specifying base for calculating entropy. Default is base e.
     """
     if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
@@ -68,7 +68,7 @@ def conditional_entropy(x,
     for xy in xy_counter.keys():
         p_xy = xy_counter[xy] / total_occurrences
         p_y = y_counter[xy[1]] / total_occurrences
-        entropy += p_xy * math.log(p_y / p_xy, base=log_base)
+        entropy += p_xy * math.log(p_y / p_xy, log_base)
     return entropy
 
 
