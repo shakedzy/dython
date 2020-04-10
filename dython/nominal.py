@@ -473,7 +473,7 @@ def numerical_encoding(dataset,
 
 
 def cluster_correlations(corr_mat, indices=None):
-    '''
+    """
     Apply agglomerative clustering in order to sort
     a correlation matrix.
 
@@ -498,7 +498,7 @@ def cluster_correlations(corr_mat, indices=None):
         plot=False
     )
     >> correlations, _ = cluster_correlations(correlations)
-    '''
+    """
     if indices is None:
         X = corr_mat.values
         d = sch.distance.pdist(X)
