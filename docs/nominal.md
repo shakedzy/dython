@@ -82,7 +82,7 @@ Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/C
 
 __________________
 
-#### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+#### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, base=None)`
 
 Calculates the conditional entropy of x given y: `S(x|y)`
 
@@ -107,6 +107,12 @@ to replace all missing values with the nan_replace_value. Missing values are Non
    _Default: 0.0_
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.
+- **`base`** : `float` 
+
+    _Default: None_
+    
+    The base to use for the logarithm in conditional entropy calculations. Must be positive.
+    Defaults to natural logarithm if `None`.
 
 __________________
  

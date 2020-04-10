@@ -6,10 +6,10 @@ type: examples-doc
 
 _Examples can be imported and executed from `dython.examples`._
 
-#### `associations_example()`
+#### `associations_iris_example()`
 
-Plot an example of an associations heat-map of the Iris dataset features 
-(using Cramer's V).
+Plot an example of an associations heat-map of the Iris dataset features.
+All features of this dataset are numerical (except for the target).
 
 **Example code:**
 ```python
@@ -34,7 +34,36 @@ associations(df)
 ```
 **Output:**
 
-![associations_example](images/associations_example.png)
+![associations_iris_example](images/associations_iris_example.png)
+
+__________________
+
+#### `associations_mushrooms_example()`
+
+Plot an example of an associations heat-map of the UCI Mushrooms dataset features.
+All features of this dataset are categorical. This example will use Theil's U.
+
+**Example code:**
+```python
+import pandas as pd
+from dython.nominal import associations
+
+# Download and load data from UCI
+df = pd.read_csv('http://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data')
+df.columns = ['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 'gill-attachment',
+              'gill-spacing', 'gill-size', 'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
+              'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type',
+              'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
+
+# Remove redundant features
+df = df.drop(['veil-type'], axis=1)
+
+# Plot features associations
+associations(df, theil_u=True, figsize=(15, 15))
+```
+**Output:**
+
+![associations_mushrooms_example](images/associations_mushrooms_example.png)
 
 __________________
 
