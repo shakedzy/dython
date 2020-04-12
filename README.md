@@ -28,8 +28,9 @@ pip install git+https://github.com/shakedzy/dython.git
 ## Contributing:
 Contributions are always welcomed - if you found something you can fix, or have an idea for a new feature, feel free to write it and open a pull request. Please make sure to go over the [contributions guidelines](CONTRIBUTING.md).
 
--------------
+## Change log:
+Change log is available, see [CHANGELOG.md](CHANGELOG.md).
 
-### Related blogposts:
+## Related blogposts:
 * Read more about the Nominal tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
 * Read more about using ROC graphs on [Hard ROC: Really Understanding & Properly Using ROC and AUC](https://medium.com/@shakedzy/hard-roc-really-understanding-and-properly-using-roc-and-auc-13413cf0dc24)
