@@ -6,9 +6,17 @@ labels: ''
 assignees: ''
 
 ---
+Thank you for taking the time to file a bug report. Please follow the guidelines
+below in order to create an effective report:
 
 ## Before submitting a bug/error:
-* **Verify packge version:** Please make sure you are using the latest version of Dython, and a supported Python version. Latest version and supported versions of Python are listed on the README file.
+* **Verify package version:** Please make sure you are using the latest version of Dython, 
+and a supported Python version. Latest version and supported versions of Python are listed on the README file.
+To find your version of Dython, run:
+```python
+import dython
+print(dython.__version__)
+```
 
 ## What to add to any bug/error issue:
 * **Describe the bug:** A clear and concise description of what the bug is.
