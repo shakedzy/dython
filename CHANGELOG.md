@@ -15,7 +15,7 @@
 * introducing `__all__` to all modules
 
 ## 0.4.3
-* `binary_roc_graph` is now a private methos, only `roc_graph` is exposed
+* `binary_roc_graph` is now a private method, only `roc_graph` is exposed
 
 ## 0.4.2
 * Added new functionality to `model_utils.roc_graph` (Plot best threshold, print class names)
