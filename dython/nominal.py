@@ -322,19 +322,29 @@ def associations(dataset,
         nominal_columns = identify_nominal_columns(dataset)
 
     corr = pd.DataFrame(index=columns, columns=columns)
+    single_value_columns = []
+    for c in columns:
+        if dataset[c].unique().size == 1:
+            single_value_columns.append(c)
     for i in range(0, len(columns)):
+        if columns[i] in single_value_columns:
+            corr.loc[:, columns[i]] = 0.0
+            corr.loc[columns[i], :] = 0.0
+            continue
         for j in range(i, len(columns)):
-            if i == j:
-                corr[columns[i]][columns[j]] = 1.0
+            if columns[j] in single_value_columns:
+                continue
+            elif i == j:
+                corr.loc[columns[i], columns[j]] = 1.0
             else:
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
                         if theil_u:
-                            corr[columns[j]][columns[i]] = theils_u(
+                            corr.loc[columns[j], columns[i]] = theils_u(
                                 dataset[columns[i]],
                                 dataset[columns[j]],
                                 nan_strategy=_SKIP)
-                            corr[columns[i]][columns[j]] = theils_u(
+                            corr.loc[columns[i], columns[j]] = theils_u(
                                 dataset[columns[j]],
                                 dataset[columns[i]],
                                 nan_strategy=_SKIP)
@@ -342,26 +352,26 @@ def associations(dataset,
                             cell = cramers_v(dataset[columns[i]],
                                              dataset[columns[j]],
                                              nan_strategy=_SKIP)
-                            corr[columns[i]][columns[j]] = cell
-                            corr[columns[j]][columns[i]] = cell
+                            corr.loc[columns[i], columns[j]] = cell
+                            corr.loc[columns[j], columns[i]] = cell
                     else:
                         cell = correlation_ratio(dataset[columns[i]],
                                                  dataset[columns[j]],
                                                  nan_strategy=_SKIP)
-                        corr[columns[i]][columns[j]] = cell
-                        corr[columns[j]][columns[i]] = cell
+                        corr.loc[columns[i], columns[j]] = cell
+                        corr.loc[columns[j], columns[i]] = cell
                 else:
                     if columns[j] in nominal_columns:
                         cell = correlation_ratio(dataset[columns[j]],
                                                  dataset[columns[i]],
                                                  nan_strategy=_SKIP)
-                        corr[columns[i]][columns[j]] = cell
-                        corr[columns[j]][columns[i]] = cell
+                        corr.loc[columns[i], columns[j]] = cell
+                        corr.loc[columns[j], columns[i]] = cell
                     else:
                         cell, _ = ss.pearsonr(dataset[columns[i]],
                                               dataset[columns[j]])
-                        corr[columns[i]][columns[j]] = cell
-                        corr[columns[j]][columns[i]] = cell
+                        corr.loc[columns[i], columns[j]] = cell
+                        corr.loc[columns[j], columns[i]] = cell
     corr.fillna(value=np.nan, inplace=True)
     if mark_columns:
         marked_columns = [
@@ -374,16 +384,40 @@ def associations(dataset,
     if clustering:
         corr, _ = cluster_correlations(corr)
     if plot:
+        should_plot = False
         if ax is None:
             plt.figure(figsize=kwargs.get('figsize', None))
+            should_plot = True
+        annot = pd.DataFrame(data=np.zeros_like(corr),
+                            columns=columns,
+                            index=columns)
+        for c in single_value_columns:
+            annot.loc[:,c] = ' '
+            annot.loc[c,:] = ' '
+            annot.loc[c,c] = 'SV'
+        annot_mask = np.vectorize(lambda x: not bool(x))(annot.values)
+        ax = sns.heatmap(annot_mask,
+                         cmap=['grey'],
+                         annot=annot,
+                         fmt='',
+                         center=0,
+                         square=True,
+                         ax=ax,
+                         mask=annot_mask,
+                         cbar=False)
         sns.heatmap(
             corr,
             cmap=kwargs.get('cmap', None),
             annot=kwargs.get('annot', True),
             fmt=kwargs.get('fmt', '.2f'),
+            center=0,
+            vmax=1.0,
+            vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
+            square=True,
+            mask=np.vectorize(lambda b: not b)(annot_mask),
             ax=ax
         )
-        if ax is None:
+        if should_plot:
             plt.show()
     if return_results:
         return corr

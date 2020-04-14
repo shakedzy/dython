@@ -68,14 +68,16 @@ def associations_mushrooms_example():
     """
 
     # Download and load data from UCI
-    df = pd.read_csv('http://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data')
+    # df = pd.read_csv('http://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data')
+    df = pd.read_csv('agaricus-lepiota.data')
     df.columns = ['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 'gill-attachment',
                   'gill-spacing', 'gill-size', 'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
                   'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type',
                   'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
     # Remove redundant features
-    df = df.drop(['veil-type'], axis=1)
+    #df = df.drop(['veil-type'], axis=1)
 
     # Plot features associations
-    associations(df, theil_u=True, figsize=(15, 15))
+    associations(df, theil_u=False, figsize=(15, 15))
+associations_mushrooms_example()
