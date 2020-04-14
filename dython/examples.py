@@ -79,5 +79,4 @@ def associations_mushrooms_example():
     #df = df.drop(['veil-type'], axis=1)
 
     # Plot features associations
-    associations(df, theil_u=False, figsize=(15, 15))
-associations_mushrooms_example()
+    associations(df, theil_u=True, figsize=(15, 15))
