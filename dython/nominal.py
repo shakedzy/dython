@@ -383,38 +383,43 @@ def associations(dataset,
         corr.index = marked_columns
     if clustering:
         corr, _ = cluster_correlations(corr)
+        columns = corr.columns
     if plot:
         should_plot = False
+        annot = kwargs.get('annot', True)
         if ax is None:
             plt.figure(figsize=kwargs.get('figsize', None))
             should_plot = True
-        annot = pd.DataFrame(data=np.zeros_like(corr),
-                            columns=columns,
-                            index=columns)
-        for c in single_value_columns:
-            annot.loc[:,c] = ' '
-            annot.loc[c,:] = ' '
-            annot.loc[c,c] = 'SV'
-        annot_mask = np.vectorize(lambda x: not bool(x))(annot.values)
-        ax = sns.heatmap(annot_mask,
-                         cmap=['grey'],
-                         annot=annot,
-                         fmt='',
-                         center=0,
-                         square=True,
-                         ax=ax,
-                         mask=annot_mask,
-                         cbar=False)
+        if len(single_value_columns) > 0:
+            sv = pd.DataFrame(data=np.zeros_like(corr),
+                              columns=columns,
+                              index=columns)
+            for c in single_value_columns:
+                sv.loc[:, c] = ' '
+                sv.loc[c, :] = ' '
+                sv.loc[c, c] = 'SV'
+            annot_mask = np.vectorize(lambda x: not bool(x))(sv.values)
+            ax = sns.heatmap(annot_mask,
+                             cmap=[kwargs.get('sv_color', 'grey')],
+                             annot=sv if annot else None,
+                             fmt='',
+                             center=0,
+                             square=True,
+                             ax=ax,
+                             mask=annot_mask,
+                             cbar=False)
+        else:
+            annot_mask = np.ones_like(corr)
         sns.heatmap(
             corr,
             cmap=kwargs.get('cmap', None),
-            annot=kwargs.get('annot', True),
+            annot=annot,
             fmt=kwargs.get('fmt', '.2f'),
             center=0,
             vmax=1.0,
             vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
             square=True,
-            mask=np.vectorize(lambda b: not b)(annot_mask),
+            mask=np.vectorize(lambda x: not x)(annot_mask),
             ax=ax
         )
         if should_plot:
