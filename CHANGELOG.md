@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.4.7
+* `nominal.associations` now handles single-value features (issue [#38](https://github.com/shakedzy/dython/issues/38))
+
 ## 0.4.6
 * Added log-base selection in `nominal.conditional_entropy` (issue [#35](https://github.com/shakedzy/dython/issues/35), by **[@ahmedsalhin](https://github.com/ahmedsalhin)**)
 * Added new example: `associations_mushrooms_example`
