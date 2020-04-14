@@ -74,8 +74,5 @@ def associations_mushrooms_example():
                   'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type',
                   'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
-    # Remove redundant features
-    df = df.drop(['veil-type'], axis=1)
-
     # Plot features associations
     associations(df, theil_u=True, figsize=(15, 15))

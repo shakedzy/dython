@@ -39,7 +39,9 @@ continuous), as provided by nominal_columns
 
   _Default: True_
 
-   If True, plot a heat-map of the correlation matrix
+   If True, plot a heat-map of the correlation matrix. Note that the plot
+   will be automatically displayed only if `ax=None`. Otherwise, it is
+   assumed the plot will be explicitly displayed by the user.
 - **`return_results`** : `Boolean` 
 
    _Default: False_

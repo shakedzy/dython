@@ -286,7 +286,9 @@ def associations(dataset,
         In the case of categorical-categorical feaures, use Theil's U instead
         of Cramer's V
     plot : Boolean, default = True
-        If True, plot a heat-map of the correlation matrix
+        If True, plot a heat-map of the correlation matrix. Note that the plot
+        will be automatically displayed only if `ax=None`. Otherwise, it is
+        assumed the plot will be explicitly displayed by the user.
     return_results : Boolean, default = False
         If True, the function will return a Pandas DataFrame of the computed
         associations
@@ -322,19 +324,29 @@ def associations(dataset,
         nominal_columns = identify_nominal_columns(dataset)
 
     corr = pd.DataFrame(index=columns, columns=columns)
+    single_value_columns = []
+    for c in columns:
+        if dataset[c].unique().size == 1:
+            single_value_columns.append(c)
     for i in range(0, len(columns)):
+        if columns[i] in single_value_columns:
+            corr.loc[:, columns[i]] = 0.0
+            corr.loc[columns[i], :] = 0.0
+            continue
         for j in range(i, len(columns)):
-            if i == j:
-                corr[columns[i]][columns[j]] = 1.0
+            if columns[j] in single_value_columns:
+                continue
+            elif i == j:
+                corr.loc[columns[i], columns[j]] = 1.0
             else:
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
                         if theil_u:
-                            corr[columns[j]][columns[i]] = theils_u(
+                            corr.loc[columns[j], columns[i]] = theils_u(
                                 dataset[columns[i]],
                                 dataset[columns[j]],
                                 nan_strategy=_SKIP)
-                            corr[columns[i]][columns[j]] = theils_u(
+                            corr.loc[columns[i], columns[j]] = theils_u(
                                 dataset[columns[j]],
                                 dataset[columns[i]],
                                 nan_strategy=_SKIP)
@@ -342,26 +354,26 @@ def associations(dataset,
                             cell = cramers_v(dataset[columns[i]],
                                              dataset[columns[j]],
                                              nan_strategy=_SKIP)
-                            corr[columns[i]][columns[j]] = cell
-                            corr[columns[j]][columns[i]] = cell
+                            corr.loc[columns[i], columns[j]] = cell
+                            corr.loc[columns[j], columns[i]] = cell
                     else:
                         cell = correlation_ratio(dataset[columns[i]],
                                                  dataset[columns[j]],
                                                  nan_strategy=_SKIP)
-                        corr[columns[i]][columns[j]] = cell
-                        corr[columns[j]][columns[i]] = cell
+                        corr.loc[columns[i], columns[j]] = cell
+                        corr.loc[columns[j], columns[i]] = cell
                 else:
                     if columns[j] in nominal_columns:
                         cell = correlation_ratio(dataset[columns[j]],
                                                  dataset[columns[i]],
                                                  nan_strategy=_SKIP)
-                        corr[columns[i]][columns[j]] = cell
-                        corr[columns[j]][columns[i]] = cell
+                        corr.loc[columns[i], columns[j]] = cell
+                        corr.loc[columns[j], columns[i]] = cell
                     else:
                         cell, _ = ss.pearsonr(dataset[columns[i]],
                                               dataset[columns[j]])
-                        corr[columns[i]][columns[j]] = cell
-                        corr[columns[j]][columns[i]] = cell
+                        corr.loc[columns[i], columns[j]] = cell
+                        corr.loc[columns[j], columns[i]] = cell
     corr.fillna(value=np.nan, inplace=True)
     if mark_columns:
         marked_columns = [
@@ -373,17 +385,46 @@ def associations(dataset,
         corr.index = marked_columns
     if clustering:
         corr, _ = cluster_correlations(corr)
+        columns = corr.columns
     if plot:
+        should_plot = False
+        annot = kwargs.get('annot', True)
         if ax is None:
             plt.figure(figsize=kwargs.get('figsize', None))
+            should_plot = True
+        if len(single_value_columns) > 0:
+            sv = pd.DataFrame(data=np.zeros_like(corr),
+                              columns=columns,
+                              index=columns)
+            for c in single_value_columns:
+                sv.loc[:, c] = ' '
+                sv.loc[c, :] = ' '
+                sv.loc[c, c] = 'SV'
+            annot_mask = np.vectorize(lambda x: not bool(x))(sv.values)
+            ax = sns.heatmap(annot_mask,
+                             cmap=[kwargs.get('sv_color', 'grey')],
+                             annot=sv if annot else None,
+                             fmt='',
+                             center=0,
+                             square=True,
+                             ax=ax,
+                             mask=annot_mask,
+                             cbar=False)
+        else:
+            annot_mask = np.ones_like(corr)
         sns.heatmap(
             corr,
             cmap=kwargs.get('cmap', None),
-            annot=kwargs.get('annot', True),
+            annot=annot,
             fmt=kwargs.get('fmt', '.2f'),
+            center=0,
+            vmax=1.0,
+            vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
+            square=True,
+            mask=np.vectorize(lambda x: not x)(annot_mask),
             ax=ax
         )
-        if ax is None:
+        if should_plot:
             plt.show()
     if return_results:
         return corr
