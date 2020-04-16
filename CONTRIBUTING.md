@@ -1,14 +1,15 @@
 # How to Contribute to Dython
 If you'd like to contribute or assist - then first of all, thanks. This isn't obvious and I appreciate it.
 
-## If you found a bug:
-* First, make sure you do not use Python 2.x. Dython does not support it.
-* Please make sure there's no open issue regarding this, and no closed issue explaining why this isn't a bug.
-* If the above doesn't apply, open a new issue. Please make sure to explain _exactly_ how you reached the bug, and 
-make sure to add any input and code fractions required to recreate it.
+### Reporting a bug:
+If you found a bug, please open an new _error/bug issue_ [here](https://github.com/shakedzy/dython/issues/new/choose). 
+Please make sure you are using the latest version of Dython befoe reporting.
 
-## If you would like to add a feature or merge a bug fix:
-* Before anything, make sure to test your code. Remember that Dython doesn't support Python 2.x.
-* Please make sure there's an issue open regarding the issue you address.
-* Explain on the issue's page what does your change affect.
-* After an approval was received on the issue page, open a pull request
+### Suggesting a new feature:
+New features are always welcomed. Please describe it in a _new feature request_ [here](https://github.com/shakedzy/dython/issues/new/choose). 
+
+### Adding things yourself:
+If you want to take an open issue and work on it, or would like to merge something you coded yourself, pleae open a pull request and explain what it is you're adding. If there's an open issue about it, please state you're working on it. Contibutions are always welcomed, and are very much appreciated.
+
+### Anything else?
+If there's anything else you'd like to discuss, feel free top open a _general question_ [here](https://github.com/shakedzy/dython/issues/new/choose) on any topic.
