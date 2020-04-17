@@ -1,7 +1,7 @@
 # Change Log
 
-### 0.5.0a0
-* Removed `kwargs` from all methods, and replaced with expicit API
+## 0.5.0a0
+* Removed `kwargs` from all methods, replaced with explicit API
 * `nominal.associations` and `model_utils.roc_graph` now return a dictionary of output values
 * `model_utils.roc_graph` can accept an `ax`
 * license replaced to BSD-3
