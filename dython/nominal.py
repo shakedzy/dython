@@ -39,10 +39,8 @@ def conditional_entropy(x,
 
     Wikipedia: https://en.wikipedia.org/wiki/Conditional_entropy
 
-    **Returns:** float
-
-    Parameters
-    ----------
+    Parameters:
+    -----------
     x : list / NumPy ndarray / Pandas Series
         A sequence of measurements
     y : list / NumPy ndarray / Pandas Series
@@ -56,6 +54,10 @@ def conditional_entropy(x,
         nan_strategy is set to 'replace'.
     log_base: float, default = e
         specifying base for calculating entropy. Default is base e.
+
+    Returns:
+    --------
+    float
     """
     if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
@@ -85,10 +87,8 @@ def cramers_v(x,
     Original function taken from: https://stackoverflow.com/a/46498792/5863503
     Wikipedia: https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
 
-    **Returns:** float in the range of [0,1]
-
-    Parameters
-    ----------
+    Parameters:
+    -----------
     x : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
     y : list / NumPy ndarray / Pandas Series
@@ -100,6 +100,10 @@ def cramers_v(x,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
+
+    Returns:
+    --------
+    float in the range of [0,1]
     """
     if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
@@ -130,10 +134,8 @@ def theils_u(x,
 
     Wikipedia: https://en.wikipedia.org/wiki/Uncertainty_coefficient
 
-    **Returns:** float in the range of [0,1]
-
-    Parameters
-    ----------
+    Parameters:
+    -----------
     x : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
     y : list / NumPy ndarray / Pandas Series
@@ -145,6 +147,10 @@ def theils_u(x,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
+
+    Returns:
+    --------
+    float in the range of [0,1]
     """
     if nan_strategy == _REPLACE:
         x, y = replace_nan_with_value(x, y, nan_replace_value)
@@ -178,10 +184,8 @@ def correlation_ratio(categories,
 
     Wikipedia: https://en.wikipedia.org/wiki/Correlation_ratio
 
-    **Returns:** float in the range of [0,1]
-
-    Parameters
-    ----------
+    Parameters:
+    -----------
     categories : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
     measurements : list / NumPy ndarray / Pandas Series
@@ -193,6 +197,10 @@ def correlation_ratio(categories,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'.
+
+    Returns:
+    --------
+    float in the range of [0,1]
     """
     if nan_strategy == _REPLACE:
         categories, measurements = replace_nan_with_value(
@@ -251,12 +259,16 @@ def associations(dataset,
                  mark_columns=False,
                  theil_u=False,
                  plot=True,
-                 return_results=False,
                  clustering=False,
                  nan_strategy=_REPLACE,
                  nan_replace_value=_DEFAULT_REPLACE_VALUE,
                  ax=None,
-                 **kwargs):
+                 figsize=None,
+                 annot=True,
+                 fmt='.2f',
+                 cmap=None,
+                 sv_color='grey'
+                 ):
     """
     Calculate the correlation/strength-of-association of features in data-set
     with both categorical (eda_tools) and continuous features using:
@@ -264,13 +276,8 @@ def associations(dataset,
      * Correlation Ratio for categorical-continuous cases
      * Cramer's V or Theil's U for categorical-categorical cases
 
-    **Returns:** a DataFrame of the correlation/strength-of-association between
-    all features
-
-    **Example:** see `associations_example` under `dython.examples`
-
-    Parameters
-    ----------
+    Parameters:
+    -----------
     dataset : NumPy ndarray / Pandas DataFrame
         The data-set for which the features' correlation is computed
     nominal_columns : string / list / NumPy ndarray
@@ -286,12 +293,7 @@ def associations(dataset,
         In the case of categorical-categorical feaures, use Theil's U instead
         of Cramer's V
     plot : Boolean, default = True
-        If True, plot a heat-map of the correlation matrix. Note that the plot
-        will be automatically displayed only if `ax=None`. Otherwise, it is
-        assumed the plot will be explicitly displayed by the user.
-    return_results : Boolean, default = False
-        If True, the function will return a Pandas DataFrame of the computed
-        associations
+        If True, plot a heat-map of the correlation matrix.
     clustering : Boolean, default = False
         If True, hierarchical clustering is applied in order to sort
         features into meaningful groups
@@ -304,9 +306,31 @@ def associations(dataset,
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'
     ax : matplotlib ax, default = None
-      Matplotlib Axis on which the heat-map will be plotted
-    kwargs : any key-value pairs
-        Arguments to be passed to used function and methods
+        Matplotlib Axis on which the heat-map will be plotted
+    figsize : (int,int) or None, default = None
+        a Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
+        default. Only used if `ax=None`.
+    annot : Boolean, default = True
+        If True, plot number annotations on the heat-map
+    fmt : string, default = '.2f'
+        String formatting of annotations
+    cmap : Matplotlib colormap or None, default = None
+        A colormap to be used for the heat-map. If None, falls back to Seaborn's
+        heat-map default
+    sv_color : string , default = 'grey'
+        A Matplotlib color. The color to be used when displaying single-value
+        features over the heat-map
+
+    Returns:
+    --------
+    A dictionary with the following keys:
+    - `corr`: A DataFrame of the correlation/strength-of-association between
+    all features
+    - `ax`: A Matplotlib `Axe`
+
+    Example:
+    --------
+    See examples under `dython.examples`
     """
     dataset = convert(dataset, 'dataframe')
     if nan_strategy == _REPLACE:
@@ -386,48 +410,42 @@ def associations(dataset,
     if clustering:
         corr, _ = cluster_correlations(corr)
         columns = corr.columns
+    if ax is None:
+        plt.figure(figsize=figsize)
+    if len(single_value_columns) > 0:
+        sv = pd.DataFrame(data=np.zeros_like(corr),
+                          columns=columns,
+                          index=columns)
+        for c in single_value_columns:
+            sv.loc[:, c] = ' '
+            sv.loc[c, :] = ' '
+            sv.loc[c, c] = 'SV'
+        annot_mask = np.vectorize(lambda x: not bool(x))(sv.values)
+        ax = sns.heatmap(annot_mask,
+                         cmap=[sv_color],
+                         annot=sv if annot else None,
+                         fmt='',
+                         center=0,
+                         square=True,
+                         ax=ax,
+                         mask=annot_mask,
+                         cbar=False)
+    else:
+        annot_mask = np.ones_like(corr)
+    ax = sns.heatmap(corr,
+                     cmap=cmap,
+                     annot=annot,
+                     fmt=fmt,
+                     center=0,
+                     vmax=1.0,
+                     vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
+                     square=True,
+                     mask=np.vectorize(lambda x: not x)(annot_mask),
+                     ax=ax)
     if plot:
-        should_plot = False
-        annot = kwargs.get('annot', True)
-        if ax is None:
-            plt.figure(figsize=kwargs.get('figsize', None))
-            should_plot = True
-        if len(single_value_columns) > 0:
-            sv = pd.DataFrame(data=np.zeros_like(corr),
-                              columns=columns,
-                              index=columns)
-            for c in single_value_columns:
-                sv.loc[:, c] = ' '
-                sv.loc[c, :] = ' '
-                sv.loc[c, c] = 'SV'
-            annot_mask = np.vectorize(lambda x: not bool(x))(sv.values)
-            ax = sns.heatmap(annot_mask,
-                             cmap=[kwargs.get('sv_color', 'grey')],
-                             annot=sv if annot else None,
-                             fmt='',
-                             center=0,
-                             square=True,
-                             ax=ax,
-                             mask=annot_mask,
-                             cbar=False)
-        else:
-            annot_mask = np.ones_like(corr)
-        sns.heatmap(
-            corr,
-            cmap=kwargs.get('cmap', None),
-            annot=annot,
-            fmt=kwargs.get('fmt', '.2f'),
-            center=0,
-            vmax=1.0,
-            vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
-            square=True,
-            mask=np.vectorize(lambda x: not x)(annot_mask),
-            ax=ax
-        )
-        if should_plot:
-            plt.show()
-    if return_results:
-        return corr
+        plt.show()
+    return {'corr': corr,
+            'ax': ax}
 
 
 def numerical_encoding(dataset,
@@ -447,15 +465,8 @@ def numerical_encoding(dataset,
         of Pandas `get_dummies`
     * numerical columns will not be modified
 
-    **Returns:** DataFrame or (DataFrame, dict). If `drop_fact_dict` is True,
-    returns the encoded DataFrame.
-    else, returns a tuple of the encoded DataFrame and dictionary, where each
-    key is a two-value column, and the value is the original labels, as
-    supplied by Pandas `factorize`. Will be empty if no two-value columns are
-    present in the data-set
-
-    Parameters
-    ----------
+    Parameters:
+    -----------
     dataset : NumPy ndarray / Pandas DataFrame
         The data-set to encode
     nominal_columns : sequence / string. default = 'all'
@@ -477,6 +488,15 @@ def numerical_encoding(dataset,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when nan
         _strategy is set to 'replace'
+
+    Returns:
+    --------
+    DataFrame or (DataFrame, dict). If `drop_fact_dict` is True,
+    returns the encoded DataFrame.
+    else, returns a tuple of the encoded DataFrame and dictionary, where each
+    key is a two-value column, and the value is the original labels, as
+    supplied by Pandas `factorize`. Will be empty if no two-value columns are
+    present in the data-set
     """
     dataset = convert(dataset, 'dataframe')
     if nan_strategy == _REPLACE:
@@ -520,19 +540,19 @@ def cluster_correlations(corr_mat, indices=None):
 
     Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     - corr_mat : a square correlation matrix (pandas DataFrame)
     - indices : cluster labels [None]; if not provided we'll do
         an aglomerative clustering to get cluster labels.
 
-    Returns
-    -------
+    Returns:
+    --------
     - corr : a sorted correlation matrix
     - indices : cluster indexes based on the original dataset
 
-    Example
-    -------
+    Example:
+    --------
     >> correlations = associations(
         customers,
         return_results=True,

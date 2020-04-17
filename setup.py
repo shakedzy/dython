@@ -15,7 +15,6 @@ DESCRIPTION = 'A set of data tools in Python'
 LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
-PYTHON_REQUIRES = '>=3.5'
 INSTALL_REQUIRES = [
       'numpy',
       'pandas',
@@ -24,6 +23,14 @@ INSTALL_REQUIRES = [
       'matplotlib',
       'scikit-learn'
 ]
+
+CLASSIFIERS = [
+      'Programming Language :: Python :: 3.5',
+      'Programming Language :: Python :: 3.6',
+      'Programming Language :: Python :: 3.7',
+      'Programming Language :: Python :: 3.8',
+]
+PYTHON_REQUIRES = '>=3.5'
 
 setup(name=PACKAGE_NAME,
       version=VERSION,
@@ -37,5 +44,6 @@ setup(name=PACKAGE_NAME,
       download_url=DOWNLOAD_URL,
       python_requires=PYTHON_REQUIRES,
       install_requires=INSTALL_REQUIRES,
-      packages=find_packages()
+      packages=find_packages(),
+      classifiers=CLASSIFIERS
       )

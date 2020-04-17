@@ -36,7 +36,7 @@ def roc_graph_example():
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
     # Plot ROC graphs
-    roc_graph(y_test, y_score, class_names=iris.target_names)
+    return roc_graph(y_test, y_score, class_names=iris.target_names)
 
 
 def associations_iris_example():
@@ -58,7 +58,7 @@ def associations_iris_example():
     df = pd.concat([X, y], axis=1)
 
     # Plot features associations
-    associations(df)
+    return associations(df)
 
 
 def associations_mushrooms_example():
@@ -75,4 +75,4 @@ def associations_mushrooms_example():
                   'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
     # Plot features associations
-    associations(df, theil_u=True, figsize=(15, 15))
+    return associations(df, theil_u=True, figsize=(15, 15))
