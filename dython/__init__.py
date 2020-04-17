@@ -1,4 +1,6 @@
-__all__ = ['__version__']
+from . import (
+    nominal, model_utils, sampling
+)
 
 
 def _get_version_from_setuptools():
@@ -6,4 +8,5 @@ def _get_version_from_setuptools():
     return get_distribution("dython").version
 
 
+__all__ = ['__version__']
 __version__ = _get_version_from_setuptools()
