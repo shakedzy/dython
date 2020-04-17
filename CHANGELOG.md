@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.5.0a0
+* Removed `kwargs` from all methods, and replaced with expicit API
+* `nominal.associations` and `model_utils.roc_graph` now return a dictionary of output values
+* `model_utils.roc_graph` can accept an `ax`
+* license replaced to BSD-3
+
 ## 0.4.7
 * `nominal.associations` now handles single-value features (issue [#38](https://github.com/shakedzy/dython/issues/38))
 
