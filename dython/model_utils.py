@@ -21,7 +21,7 @@ def _display_roc_plot(xlim, ylim):
     plt.show()
 
 
-def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms, fmt):
+def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms, fmt, ax):
     annotation_offset = (-.027, .03)
     a = np.zeros((len(fpr), 2))
     a[:, 0] = fpr
@@ -29,14 +29,14 @@ def _draw_estimated_optimal_threshold_mark(fpr, tpr, thresholds, color, ms, fmt)
     dist = lambda row: row[0]**2 + (1 - row[1])**2
     amin = np.apply_along_axis(dist, 1, a).argmin()
     plt.plot(fpr[amin], tpr[amin], color=color, marker='o', ms=ms)
-    plt.gca().annotate("{th:{fmt}}".format(th=thresholds[amin], fmt=fmt),
-                       xy=(fpr[amin], tpr[amin]), color=color,
-                       xytext=(fpr[amin]+annotation_offset[0],
-                               tpr[amin]+annotation_offset[1]))
+    ax.annotate("{th:{fmt}}".format(th=thresholds[amin], fmt=fmt),
+                xy=(fpr[amin], tpr[amin]), color=color,
+                xytext=(fpr[amin]+annotation_offset[0],
+                        tpr[amin]+annotation_offset[1]))
     return thresholds[amin]
 
 
-def _plot_macro_roc(fpr, tpr, n, lw, fmt):
+def _plot_macro_roc(fpr, tpr, n, lw, fmt, ax):
     all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n)]))
     mean_tpr = np.zeros_like(all_fpr)
     for i in range(n):
@@ -46,15 +46,15 @@ def _plot_macro_roc(fpr, tpr, n, lw, fmt):
     tpr_macro = mean_tpr
     auc_macro = auc(fpr_macro, tpr_macro)
     label = 'ROC curve: macro (AUC = {auc:{fmt}})'.format(auc=auc_macro, fmt=fmt)
-    plt.plot(fpr_macro,
-             tpr_macro,
-             label=label,
-             color='navy',
-             ls=':',
-             lw=lw)
+    ax.plot(fpr_macro,
+            tpr_macro,
+            label=label,
+            color='navy',
+            ls=':',
+            lw=lw)
 
 
-def _binary_roc_graph(y_true, y_pred, eoptimal, class_label, color, lw, ls, ms, fmt):
+def _binary_roc_graph(y_true, y_pred, eoptimal, class_label, color, lw, ls, ms, fmt, ax):
     y_true = convert(y_true, 'array')
     y_pred = convert(y_pred, 'array')
     if y_pred.shape != y_true.shape:
@@ -73,17 +73,17 @@ def _binary_roc_graph(y_true, y_pred, eoptimal, class_label, color, lw, ls, ms, 
         class_label = ''
     label = 'ROC curve{class_label} (AUC = {auc:{fmt}}'.format(class_label=class_label, auc=auc_score, fmt=fmt)
     if eoptimal:
-        eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, ms, fmt)
+        eopt = _draw_estimated_optimal_threshold_mark(fpr, tpr, th, color, ms, fmt, ax)
         label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
     else:
         eopt = None
         label += ')'
-    plt.plot(fpr,
-             tpr,
-             color=color,
-             lw=lw,
-             ls=ls,
-             label=label)
+    ax.plot(fpr,
+            tpr,
+            color=color,
+            lw=lw,
+            ls=ls,
+            label=label)
     return {'fpr': fpr, 'tpr': tpr, 'thresholds': th,
             'auc': auc_score, 'eopt': eopt}
 
@@ -191,14 +191,16 @@ def roc_graph(y_true,
             class_names = convert(class_names, 'list')
         else:
             class_names = [class_names]
-    plt.figure(figsize=figsize)
+    if ax is None:
+        plt.figure(figsize=figsize)
+        ax = plt.gca()
     colors = colors or ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'darkorange']
     output_dict = dict()
     if len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
         class_label = class_names[-1] if class_names is not None else None
         d = _binary_roc_graph(y_true, y_pred, eoptimal=eoptimal_threshold,
                               class_label=class_label, color=colors[-1],
-                              lw=lw, ls=ls, ms=ms, fmt=fmt)
+                              lw=lw, ls=ls, ms=ms, fmt=fmt, ax=ax)
         class_label = class_label or '0'
         output_dict[class_label] = {'auc': d['auc'],
                                     'eopt': d['eopt']}
@@ -216,7 +218,7 @@ def roc_graph(y_true,
                                   eoptimal=eoptimal_threshold,
                                   color=colors[i % len(colors)],
                                   class_label=class_label,
-                                  lw=lw, ls=ls, ms=ms, fmt=fmt)
+                                  lw=lw, ls=ls, ms=ms, fmt=fmt, ax=ax)
             all_fpr.append(d['fpr'])
             all_tpr.append(d['tpr'])
             output_dict[class_label] = {'auc': d['auc'],
@@ -228,10 +230,11 @@ def roc_graph(y_true,
                               ls=':',
                               color='deeppink',
                               class_label='micro',
-                              lw=lw, ms=ms, fmt=fmt)
+                              lw=lw, ms=ms, fmt=fmt, ax=ax)
         if macro:
-            _plot_macro_roc(all_fpr, all_tpr, n, lw, fmt)
+            _plot_macro_roc(all_fpr, all_tpr, n, lw, fmt, ax)
     _display_roc_plot(xlim=xlim, ylim=ylim)
+    output_dict['ax'] = ax
     return output_dict
 
 
