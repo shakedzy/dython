@@ -47,6 +47,6 @@ def remove_incomplete_samples(x, y):
 
 
 def replace_nan_with_value(x, y, value):
-    x = [v if v == v and v is not None else value for v in x]  # NaN != NaN
-    y = [v if v == v and v is not None else value for v in y]
+    x = np.array([v if v == v and v is not None else value for v in x])  # NaN != NaN
+    y = np.array([v if v == v and v is not None else value for v in y])
     return x, y
