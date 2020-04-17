@@ -17,7 +17,7 @@ Work on the next version of Dython has begun. This includes fixes to open bugs, 
 
 Bugs and features added from this point forward will be considered, but not guaranteed, to be a part of the new version.
 
-If you'd like to contribute, please see how on [CONTRIBUTING.md](CONTRIBUTING.md).
+If you'd like to contribute, please see how on [CONTRIBUTING.md](https://github.com/shakedzy/dython/blob/master/CONTRIBUTING.md).
 
 _________
 
@@ -37,10 +37,10 @@ pip install git+https://github.com/shakedzy/dython.git
 **Dependencies:** `numpy`, `pandas`, `seaborn`, `scipy`, `matplotlib`, `sklearn`
 
 ## Contributing:
-Contributions are always welcomed - if you found something you can fix, or have an idea for a new feature, feel free to write it and open a pull request. Please make sure to go over the [contributions guidelines](CONTRIBUTING.md).
+Contributions are always welcomed - if you found something you can fix, or have an idea for a new feature, feel free to write it and open a pull request. Please make sure to go over the [contributions guidelines](https://github.com/shakedzy/dython/blob/master/CONTRIBUTING.md).
 
 ## Change log:
-Change log is available, see [CHANGELOG.md](CHANGELOG.md).
+Change log is available, see [CHANGELOG.md](https://github.com/shakedzy/dython/blob/master/CHANGELOG.md).
 
 ## Related blogposts:
 * Read more about the Nominal tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
