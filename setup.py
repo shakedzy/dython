@@ -12,7 +12,7 @@ DOWNLOAD_URL = 'https://github.com/shakedzy/dython'
 LICENSE = 'Apache License 2.0'
 VERSION = (HERE / "VERSION").read_text()
 DESCRIPTION = 'A set of data tools in Python'
-LONG_DESCRIPTION = (HERE / "README.md").read_text()
+LONG_DESCRIPTION = (HERE / "DESCRIPTION.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
