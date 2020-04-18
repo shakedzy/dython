@@ -128,7 +128,7 @@ def cramers_v(x,
         kcorr = k - ((k - 1)**2) / (n - 1)
         if min((kcorr - 1), (rcorr - 1)) == 0:
             warnings.warn(
-                "Unable to calculate Cramer's V using bias correction. Consider trying using bias_correction=False",
+                "Unable to calculate Cramer's V using bias correction. Consider using bias_correction=False",
                 RuntimeWarning)
             return np.nan
         else:
