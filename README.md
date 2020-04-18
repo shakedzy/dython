@@ -43,5 +43,5 @@ Contributions are always welcomed - if you found something you can fix, or have 
 Change log is available, see [CHANGELOG.md](https://github.com/shakedzy/dython/blob/master/CHANGELOG.md).
 
 ## Related blogposts:
-* Read more about the Nominal tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
+* Read more about the categorical tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
 * Read more about using ROC graphs on [Hard ROC: Really Understanding & Properly Using ROC and AUC](https://medium.com/@shakedzy/hard-roc-really-understanding-and-properly-using-roc-and-auc-13413cf0dc24)
