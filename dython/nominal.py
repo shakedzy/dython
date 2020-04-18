@@ -1,11 +1,12 @@
 import math
-from collections import Counter
+import warnings
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import scipy.stats as ss
 import scipy.cluster.hierarchy as sch
 import matplotlib.pyplot as plt
+from collections import Counter
 from ._private import (
     convert, remove_incomplete_samples, replace_nan_with_value
 )
@@ -28,6 +29,11 @@ _DROP_FEATURES = 'drop_features'
 _SKIP = 'skip'
 _DEFAULT_REPLACE_VALUE = 0.0
 
+
+def _inf_nan_str(x):
+    if np.isnan(x): return 'NaN'
+    elif abs(x) == np.inf: return 'inf'
+    else: return ''
 
 def conditional_entropy(x,
                         y,
@@ -76,12 +82,11 @@ def conditional_entropy(x,
 
 def cramers_v(x,
               y,
+              bias_correction=True,
               nan_strategy=_REPLACE,
               nan_replace_value=_DEFAULT_REPLACE_VALUE):
     """
     Calculates Cramer's V statistic for categorical-categorical association.
-    Uses correction from Bergsma and Wicher, Journal of the Korean Statistical
-    Society 42 (2013): 323-328.
     This is a symmetric coefficient: V(x,y) = V(y,x)
 
     Original function taken from: https://stackoverflow.com/a/46498792/5863503
@@ -93,6 +98,9 @@ def cramers_v(x,
         A sequence of categorical measurements
     y : list / NumPy ndarray / Pandas Series
         A sequence of categorical measurements
+    bias_correction : Boolean, default = True
+        Use bias correction from Bergsma and Wicher,
+        Journal of the Korean Statistical Society 42 (2013): 323-328.
     nan_strategy : string, default = 'replace'
         How to handle missing values: can be either 'drop' to remove samples
         with missing values, or 'replace' to replace all missing values with
@@ -114,10 +122,19 @@ def cramers_v(x,
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
     r, k = confusion_matrix.shape
-    phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (n - 1))
-    rcorr = r - ((r - 1)**2) / (n - 1)
-    kcorr = k - ((k - 1)**2) / (n - 1)
-    return np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
+    if bias_correction:
+        phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (n - 1))
+        rcorr = r - ((r - 1)**2) / (n - 1)
+        kcorr = k - ((k - 1)**2) / (n - 1)
+        if min((kcorr - 1), (rcorr - 1)) == 0:
+            warnings.warn(
+                "Unable to calculate Cramer's V using bias correction. Consider using bias_correction=False",
+                RuntimeWarning)
+            return np.nan
+        else:
+            return np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
+    else:
+        return np.sqrt(phi2 / min(k - 1, r - 1))
 
 
 def theils_u(x,
@@ -260,6 +277,7 @@ def associations(dataset,
                  theil_u=False,
                  plot=True,
                  clustering=False,
+                 bias_correction=True,
                  nan_strategy=_REPLACE,
                  nan_replace_value=_DEFAULT_REPLACE_VALUE,
                  ax=None,
@@ -267,7 +285,7 @@ def associations(dataset,
                  annot=True,
                  fmt='.2f',
                  cmap=None,
-                 sv_color='grey'
+                 sv_color='silver'
                  ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -297,6 +315,9 @@ def associations(dataset,
     clustering : Boolean, default = False
         If True, hierarchical clustering is applied in order to sort
         features into meaningful groups
+    bias_correction : Boolean, default = True
+        Use bias correction for Cramer's V from Bergsma and Wicher,
+        Journal of the Korean Statistical Society 42 (2013): 323-328.
     nan_strategy : string, default = 'replace'
         How to handle missing values: can be either 'drop_samples' to remove
         samples with missing values, 'drop_features' to remove features
@@ -349,6 +370,9 @@ def associations(dataset,
 
     corr = pd.DataFrame(index=columns, columns=columns)
     single_value_columns = []
+    inf_nan = pd.DataFrame(data=np.zeros_like(corr),
+                           columns=columns,
+                           index=columns)
     for c in columns:
         if dataset[c].unique().size == 1:
             single_value_columns.append(c)
@@ -366,38 +390,43 @@ def associations(dataset,
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
                         if theil_u:
-                            corr.loc[columns[j], columns[i]] = theils_u(
+                            ji = theils_u(
                                 dataset[columns[i]],
                                 dataset[columns[j]],
                                 nan_strategy=_SKIP)
-                            corr.loc[columns[i], columns[j]] = theils_u(
+                            ij = theils_u(
                                 dataset[columns[j]],
                                 dataset[columns[i]],
                                 nan_strategy=_SKIP)
                         else:
                             cell = cramers_v(dataset[columns[i]],
                                              dataset[columns[j]],
+                                             bias_correction=bias_correction,
                                              nan_strategy=_SKIP)
-                            corr.loc[columns[i], columns[j]] = cell
-                            corr.loc[columns[j], columns[i]] = cell
+                            ij = cell
+                            ji = cell
                     else:
                         cell = correlation_ratio(dataset[columns[i]],
                                                  dataset[columns[j]],
                                                  nan_strategy=_SKIP)
-                        corr.loc[columns[i], columns[j]] = cell
-                        corr.loc[columns[j], columns[i]] = cell
+                        ij = cell
+                        ji = cell
                 else:
                     if columns[j] in nominal_columns:
                         cell = correlation_ratio(dataset[columns[j]],
                                                  dataset[columns[i]],
                                                  nan_strategy=_SKIP)
-                        corr.loc[columns[i], columns[j]] = cell
-                        corr.loc[columns[j], columns[i]] = cell
+                        ij = cell
+                        ji = cell
                     else:
                         cell, _ = ss.pearsonr(dataset[columns[i]],
                                               dataset[columns[j]])
-                        corr.loc[columns[i], columns[j]] = cell
-                        corr.loc[columns[j], columns[i]] = cell
+                        ij = cell
+                        ji = cell
+                corr.loc[columns[i], columns[j]] = ij if not np.isnan(ij) and abs(ij) < np.inf else 0.0
+                corr.loc[columns[j], columns[i]] = ji if not np.isnan(ji) and abs(ji) < np.inf else 0.0
+                inf_nan.loc[columns[i], columns[j]] = _inf_nan_str(ij)
+                inf_nan.loc[columns[j], columns[i]] = _inf_nan_str(ji)
     corr.fillna(value=np.nan, inplace=True)
     if mark_columns:
         marked_columns = [
@@ -407,11 +436,26 @@ def associations(dataset,
         ]
         corr.columns = marked_columns
         corr.index = marked_columns
+        inf_nan.columns = marked_columns
+        inf_nan.index = marked_columns
     if clustering:
         corr, _ = cluster_correlations(corr)
         columns = corr.columns
     if ax is None:
         plt.figure(figsize=figsize)
+    if inf_nan.any(axis=None):
+        inf_nan_mask = np.vectorize(lambda x: not bool(x))(inf_nan.values)
+        ax = sns.heatmap(inf_nan_mask,
+                         cmap=['white'],
+                         annot=inf_nan if annot else None,
+                         fmt='',
+                         center=0,
+                         square=True,
+                         ax=ax,
+                         mask=inf_nan_mask,
+                         cbar=False)
+    else:
+        inf_nan_mask = np.ones_like(corr)
     if len(single_value_columns) > 0:
         sv = pd.DataFrame(data=np.zeros_like(corr),
                           columns=columns,
@@ -420,18 +464,19 @@ def associations(dataset,
             sv.loc[:, c] = ' '
             sv.loc[c, :] = ' '
             sv.loc[c, c] = 'SV'
-        annot_mask = np.vectorize(lambda x: not bool(x))(sv.values)
-        ax = sns.heatmap(annot_mask,
+        sv_mask = np.vectorize(lambda x: not bool(x))(sv.values)
+        ax = sns.heatmap(sv_mask,
                          cmap=[sv_color],
                          annot=sv if annot else None,
                          fmt='',
                          center=0,
                          square=True,
                          ax=ax,
-                         mask=annot_mask,
+                         mask=sv_mask,
                          cbar=False)
     else:
-        annot_mask = np.ones_like(corr)
+        sv_mask = np.ones_like(corr)
+    mask = np.vectorize(lambda x: not bool(x))(inf_nan_mask) + np.vectorize(lambda x: not bool(x))(sv_mask)
     ax = sns.heatmap(corr,
                      cmap=cmap,
                      annot=annot,
@@ -440,7 +485,7 @@ def associations(dataset,
                      vmax=1.0,
                      vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
                      square=True,
-                     mask=np.vectorize(lambda x: not x)(annot_mask),
+                     mask=mask,
                      ax=ax)
     if plot:
         plt.show()
