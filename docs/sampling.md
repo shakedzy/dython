@@ -25,7 +25,7 @@ Return k numbers from a boltzmann-sampling over the supplied numbers
 
 __________________
  
-#### `weighted_sampling(numbers, k=1, with_replacement=False, **kwargs)`
+#### `weighted_sampling(numbers, k=1, with_replacement=False)`
 
 Return k numbers from a weighted-sampling over the supplied numbers
 

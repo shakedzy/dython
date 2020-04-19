@@ -5,7 +5,7 @@ type: doc
 
 # model_utils
 
-#### `roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, class_names=None, **kwargs)`
+#### `roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, class_names=None, colors=None, ax=None, figsize=None, xlim=(0.,1.), ylim=(0.,1.02), lw=2, ls='-',ms=10,fmt='.2f')`
 
 Plot a ROC graph of predictor's results (inclusding AUC scores), where each
 row of y_true and y_pred represent a single example.
@@ -17,6 +17,9 @@ A Macro-ROC and Micro-ROC are computed and plotted too by default.
 
 Based on sklearn examples (as was seen on April 2018):
 http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
+
+**Returns:** A dictionary, one key for each class. Each value is another dictionary,
+holding AUC and eOpT values.
 
 **Example:** See `roc_graph_example` under `dython.examples`
 
@@ -55,7 +58,7 @@ true class is 1, with predicted probability of 0.8.
     Whether to calculate and display the estimated-optimal threshold
     for each ROC graph. The estimated-optimal threshold is the closest
     computed threshold with (fpr,tpr) values closest to (0,1) 
-- **`class_names`**: `list or string` 
+- **`class_names`**: `list` or `string` 
 
     _Default = None_
     
@@ -63,15 +66,57 @@ true class is 1, with predicted probability of 0.8.
     order must match the order of the classes probabilities in the input
     data. In a binary classification, can be a string or a list. If a list, 
     only the last element will be used.
-- **`kwargs`** : `any key-value pairs`
+- **`colors`** : list of Matplotlib color strings or `None`
 
-   Different options and configurations. Some possible options: `figsize`,
-   `color`, `lw` (line-width), `ls` (line-style), `ms` (marker-size), `fmt` 
-   (number format)
+    _Default = None_
+    
+    List of colors to be used for the plotted curves. If `None`, falls back
+    to a predefined default.
+- **`ax`** : matplotlib `ax` 
+
+    _Default = None_
+    
+    Matplotlib Axis on which the curves will be plotted
+- **`figsize`** : `(int,int)` or `None`
+
+    _Default = None_
+    
+    A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
+    default. Only used if `ax=None`.
+- **`xlim`** : `(float, float)`
+
+    _Default = (0.,1.)_
+    
+    X-axis limits.
+- **`ylim`** : `(float,float)`
+
+    _Default = (0.,1.02)_
+    
+    Y-axis limits.
+- **`lw`** : `int`
+
+    _Default = 2_
+    
+    Line-width.
+- **`ls`** : `string`
+
+    _Default = '-'_
+    
+    Matplotlib line-style string
+- **`ms`** : `int`
+
+    _Default = 10_
+    
+    Marker-size.
+-  **`fmt`** : `string`
+
+    _Default = '.2f'_
+    
+    String formatting of displayed AUC and threshold numbers.
 
 __________________
 
-#### `random_forest_feature_importance(forest, features, **kwargs)`
+#### `random_forest_feature_importance(forest, features, precision=4)`
 
 Given a trained `sklearn.ensemble.RandomForestClassifier`, plot the different features based on their
 importance according to the classifier, from the most important to the least.
@@ -83,6 +128,8 @@ importance according to the classifier, from the most important to the least.
 
    A list of the names of the features the classifier was trained on, ordered by the same order the appeared
 in the training data
-- **`kwargs`** : `any key-value pairs`
+- **`precision`** : `int`
 
-   Different options and configurations
+    _Default = 4_
+    
+    Precision of feature importance.

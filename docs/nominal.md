@@ -5,7 +5,7 @@ type: doc
 
 # nominal
 
-#### `associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, return_results=False, clustering=False, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, **kwargs)`
+#### `associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver')`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
 continuous features using:
@@ -13,9 +13,12 @@ continuous features using:
  * Correlation Ratio for categorical-continuous cases
  * Cramer's V or Theil's U for categorical-categorical cases
 
-**Returns:** a DataFrame of the correlation/strength-of-association between all features
+**Returns:** A dictionary with the following keys:
 
-**Example:** see `associations_example` under `dython.examples`
+- `corr`: A DataFrame of the correlation/strength-of-association between all features
+- `ax`: A Matplotlib `Axe`
+
+**Example:** see examples under `dython.examples`.
 
 - **`dataset`** : `NumPy ndarray / Pandas DataFrame`
 
@@ -39,21 +42,21 @@ continuous), as provided by nominal_columns
 
   _Default: True_
 
-   If True, plot a heat-map of the correlation matrix. Note that the plot
-   will be automatically displayed only if `ax=None`. Otherwise, it is
-   assumed the plot will be explicitly displayed by the user.
-- **`return_results`** : `Boolean` 
-
-   _Default: False_
-
-   If True, the function will return a Pandas DataFrame of the computed associations
+   Plot a heat-map of the correlation matrix
 - **`clustering`** : `Boolean` 
 
    _Default: False_
 
    If True, the computed associations will be sorted into groups by similar correlations
+- **`bias_correction`** : `Boolean`
 
-- **`nan_strategy`** : `string` `Default: 'replace'`
+    _Default = True_
+    
+    Use bias correction for Cramer's V from Bergsma and Wicher, Journal of the Korean 
+    Statistical Society 42 (2013): 323-328.
+- **`nan_strategy`** : `string` 
+
+   _Default: 'replace'_
 
    How to handle missing values: can be either 'drop_samples' to remove samples with missing values,
 'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing
@@ -63,9 +66,39 @@ values with the nan_replace_value. Missing values are None and np.nan.
    _Default: 0.0_
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
-- **`kwargs`** : `any key-value pairs`
+- **`ax`** : matplotlib `ax`
 
-   Arguments to be passed to used function and methods
+    _Default = None_
+    
+    Matplotlib Axis on which the heat-map will be plotted
+- **`figsize`** : `(int,int)` or `None`
+
+    _Default = None_
+    
+    A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
+    default. Only used if `ax=None`.
+- **`annot`** : `Boolean` 
+
+    _Default = True_
+    
+    Plot number annotations on the heat-map
+- **`fmt` : `string`
+ 
+    _Default = '.2f'_
+    
+    String formatting of annotations
+- **`cmap`** : Matplotlib colormap or `None` 
+
+    _Default = None_
+    
+    A colormap to be used for the heat-map. If None, falls back to Seaborn's
+    heat-map default
+- **`sv_color`** : `string`
+    
+    _Default = 'silver'_
+    
+    A Matplotlib color. The color to be used when displaying single-value
+    features over the heat-map
 
 __________________
 
@@ -149,10 +182,9 @@ to replace all missing values with the nan_replace_value. Missing values are Non
 
 __________________
  
-#### `cramers_v(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+#### `cramers_v(x, y, bias_correction=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Calculates Cramer's V statistic for categorical-categorical association.
-Uses correction from Bergsma and Wicher, Journal of the Korean Statistical Society 42 (2013): 323-328.
 This is a symmetric coefficient: V(x,y) = V(y,x)
 
 Original function taken from: https://stackoverflow.com/a/46498792/5863503
@@ -166,6 +198,12 @@ Wikipedia: https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
 - **`y`** : `list / NumPy ndarray / Pandas Series`
 
    A sequence of categorical measurements
+- **`bias_correction`** : `Boolean` 
+
+    _Default = True_
+    
+    Use bias correction from Bergsma and Wicher, Journal of the Korean Statistical 
+    Society 42 (2013): 323-328.
 - **`nan_strategy`** : `string` 
 
    _Default: 'replace'_
