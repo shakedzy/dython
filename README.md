@@ -10,17 +10,6 @@ A set of **D**ata analysis tools in p**YTHON** 3.x.
 Dython was designed with analysis usage in mind - meaning ease-of-use, functionality and readability are the core 
 values of this library. Production-grade performance, on the other hand, were not considered.
 
-_________
-
-### Version 0.5.0 is under way!
-Work on the next version of Dython has begun. This includes fixes to open bugs, new features and a deterministic explicit API (removal of `kwargs` from methods). You can check project's status on the [Version 0.5.0 Project Page](https://github.com/shakedzy/dython/projects/1).
-
-Bugs and features added from this point forward will be considered, but not guaranteed, to be a part of the new version.
-
-If you'd like to contribute, please see how on [CONTRIBUTING.md](https://github.com/shakedzy/dython/blob/master/CONTRIBUTING.md).
-
-_________
-
 ## Documentation:
 Modules documentation can be found on [shakedzy.xyz/dython](http://shakedzy.xyz/dython)
 
