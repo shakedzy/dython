@@ -3,7 +3,6 @@
 [![PyPI Version](https://img.shields.io/pypi/v/dython.svg)](https://pypi.org/project/dython/)
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython)](https://pypistats.org/packages/dython)
-[![License](https://img.shields.io/pypi/l/dython.svg)](https://github.com/shakedzy/dython/blob/master/LICENSE)
 
 A set of **D**ata analysis tools in p**YTHON** 3.x.
 
