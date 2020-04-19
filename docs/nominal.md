@@ -66,7 +66,7 @@ values with the nan_replace_value. Missing values are None and np.nan.
    _Default: 0.0_
 
    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
-- **`ax`** : matplotlib `ax`
+- **`ax`** : matplotlib `Axe`
 
     _Default = None_
     
@@ -82,7 +82,7 @@ values with the nan_replace_value. Missing values are None and np.nan.
     _Default = True_
     
     Plot number annotations on the heat-map
-- **`fmt` : `string`
+- **`fmt`** : `string`
  
     _Default = '.2f'_
     
