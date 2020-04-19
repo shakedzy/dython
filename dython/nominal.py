@@ -311,7 +311,7 @@ def associations(dataset,
         In the case of categorical-categorical feaures, use Theil's U instead
         of Cramer's V
     plot : Boolean, default = True
-        If True, plot a heat-map of the correlation matrix.
+        Plot a heat-map of the correlation matrix
     clustering : Boolean, default = False
         If True, hierarchical clustering is applied in order to sort
         features into meaningful groups
@@ -332,13 +332,13 @@ def associations(dataset,
         a Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
         default. Only used if `ax=None`.
     annot : Boolean, default = True
-        If True, plot number annotations on the heat-map
+        Plot number annotations on the heat-map
     fmt : string, default = '.2f'
         String formatting of annotations
     cmap : Matplotlib colormap or None, default = None
         A colormap to be used for the heat-map. If None, falls back to Seaborn's
         heat-map default
-    sv_color : string , default = 'grey'
+    sv_color : string , default = 'silver'
         A Matplotlib color. The color to be used when displaying single-value
         features over the heat-map
 
