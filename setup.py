@@ -9,7 +9,7 @@ AUTHOR_EMAIL = 'shakedzy@gmail.com'
 URL = 'http://shakedzy.xyz/dython'
 DOWNLOAD_URL = 'https://github.com/shakedzy/dython'
 
-LICENSE = 'Apache License 2.0'
+LICENSE = 'BSD (3-clause)'
 VERSION = (HERE / "VERSION").read_text()
 DESCRIPTION = 'A set of data tools in Python'
 LONG_DESCRIPTION = (HERE / "DESCRIPTION.md").read_text()
