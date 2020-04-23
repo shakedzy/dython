@@ -115,6 +115,16 @@ Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/C
 
    A sequence of cluster indexes for sorting. If not present, a clustering is performed.
 
+**Example:** 
+```python
+>> assoc = associations(
+  customers,
+  plot=False
+)
+>> correlations = assoc['corr']
+>> correlations, _ = cluster_correlations(correlations)
+```
+
 __________________
 
 #### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, log_base=math.e)`
