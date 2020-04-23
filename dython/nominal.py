@@ -598,11 +598,11 @@ def cluster_correlations(corr_mat, indices=None):
 
     Example:
     --------
-    >> correlations = associations(
+    >> assoc = associations(
         customers,
-        return_results=True,
         plot=False
     )
+    >> correlations = assoc['corr']
     >> correlations, _ = cluster_correlations(correlations)
     """
     if indices is None:
