@@ -1,7 +1,7 @@
 # Change Log
 
-## 0.5.0
-* Fix issues [#28](https://github.com/shakedzy/dython/issues/28), [#31](https://github.com/shakedzy/dython/issues/31), [#41](https://github.com/shakedzy/dython/issues/41)
+## 0.5.0 (_post2_)
+* Fix issues [#28](https://github.com/shakedzy/dython/issues/28), [#31](https://github.com/shakedzy/dython/issues/31), [#41](https://github.com/shakedzy/dython/issues/41), [#46](https://github.com/shakedzy/dython/issues/46)
 * `nominal.cramers_v` can be used without bias correction
 * Removed `kwargs` from all methods, replaced with explicit API
 * `nominal.associations` and `model_utils.roc_graph` now return a dictionary of output values
