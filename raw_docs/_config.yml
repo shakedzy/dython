@@ -1,0 +1,6 @@
+theme: jekyll-theme-minimal
+logo: /images/logo.png
+show_downloads: true
+google_analytics: UA-141245946-1
+plugins:
+- jekyll-seo-tag
