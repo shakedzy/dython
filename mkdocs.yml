@@ -3,7 +3,6 @@ repo_name: shakedzy/dython
 repo_url: https://github.com/shakedzy/dython
 theme:
   name: material
-  theme_dir: theme/material
   palette:
     primary: black
     accent: blue
