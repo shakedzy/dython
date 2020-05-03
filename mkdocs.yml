@@ -1,8 +1,6 @@
 site_name: dython
 repo_name: shakedzy/dython
 repo_url: https://github.com/shakedzy/dython
-docs_dir: raw_docs
-site_dir: docs
 theme:
   name: material
   theme_dir: theme/material
@@ -13,11 +11,11 @@ theme:
   favicon: images/favicon.png
 nav:
   - Home: 'index.md'
-  - Examples: 'examples.md'
   - Modules:
     - nominal: 'nominal.md'
     - model_utils: 'model_utils.md'
     - sampling: 'sampling.md'
+  - Examples: 'examples.md'
   - Related Blogosts:
     - The Search for Categorical Correlation: "https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9"
     - Hard ROC - Really Understanding & Properly Using ROC and AUC: https://medium.com/@shakedzy/hard-roc-really-understanding-and-properly-using-roc-and-auc-13413cf0dc24"
