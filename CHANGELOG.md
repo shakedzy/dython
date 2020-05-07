@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.5.1
+* Resolve issues [#48](https://github.com/shakedzy/dython/issues/48) and [#49](https://github.com/shakedzy/dython/issues/49)
+
 ## 0.5.0 (_post2_)
 * Fix issues [#28](https://github.com/shakedzy/dython/issues/28), [#31](https://github.com/shakedzy/dython/issues/31), [#41](https://github.com/shakedzy/dython/issues/41), [#46](https://github.com/shakedzy/dython/issues/46)
 * `nominal.cramers_v` can be used without bias correction
