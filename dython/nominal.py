@@ -364,7 +364,7 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
     if clustering:
         corr, _ = cluster_correlations(corr)
         columns = corr.columns
-    return corr, columns, inf_nan, single_value_columns
+    return corr, columns, nominal_columns, inf_nan, single_value_columns
 
 
 def compute_associations(dataset,
@@ -424,8 +424,8 @@ def compute_associations(dataset,
     --------
     A DataFrame of the correlation/strength-of-association between all features
     """
-    corr, _, _, _ = _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
-                                bias_correction, nan_strategy, nan_replace_value)
+    corr, _, _, _, _ = _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
+                                   bias_correction, nan_strategy, nan_replace_value)
     return corr
 
 
@@ -514,9 +514,9 @@ def associations(dataset,
     --------
     See examples under `dython.examples`
     """
-    corr, columns, inf_nan, single_value_columns = _comp_assoc(dataset, nominal_columns, mark_columns,
-                                                               theil_u, clustering, bias_correction,
-                                                               nan_strategy, nan_replace_value)
+    corr, columns, nominal_columns, inf_nan, single_value_columns = _comp_assoc(dataset, nominal_columns, mark_columns,
+                                                                                theil_u, clustering, bias_correction,
+                                                                                nan_strategy, nan_replace_value)
     if ax is None:
         plt.figure(figsize=figsize)
     if inf_nan.any(axis=None):
