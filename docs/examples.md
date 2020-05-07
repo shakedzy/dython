@@ -47,6 +47,7 @@ All features of this dataset are categorical. This example will use Theil's U.
 ```python
 import pandas as pd
 from dython.nominal import associations
+
 # Download and load data from UCI
 df = pd.read_csv('http://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data')
 df.columns = ['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 'gill-attachment',
