@@ -271,87 +271,10 @@ def identify_nominal_columns(dataset, include=['object', 'category']):
     return nominal_columns
 
 
-def associations(dataset,
-                 nominal_columns='auto',
-                 mark_columns=False,
-                 theil_u=False,
-                 plot=True,
-                 clustering=False,
-                 bias_correction=True,
-                 nan_strategy=_REPLACE,
-                 nan_replace_value=_DEFAULT_REPLACE_VALUE,
-                 ax=None,
-                 figsize=None,
-                 annot=True,
-                 fmt='.2f',
-                 cmap=None,
-                 sv_color='silver'
-                 ):
+def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
+                bias_correction, nan_strategy, nan_replace_value):
     """
-    Calculate the correlation/strength-of-association of features in data-set
-    with both categorical (eda_tools) and continuous features using:
-     * Pearson's R for continuous-continuous cases
-     * Correlation Ratio for categorical-continuous cases
-     * Cramer's V or Theil's U for categorical-categorical cases
-
-    Parameters:
-    -----------
-    dataset : NumPy ndarray / Pandas DataFrame
-        The data-set for which the features' correlation is computed
-    nominal_columns : string / list / NumPy ndarray
-        Names of columns of the data-set which hold categorical values. Can
-        also be the string 'all' to state that all columns are categorical,
-        'auto' (default) to try to identify nominal columns, or None to state
-        none are categorical
-    mark_columns : Boolean, default = False
-        if True, output's columns' names will have a suffix of '(nom)' or
-        '(con)' based on there type (eda_tools or continuous), as provided
-        by nominal_columns
-    theil_u : Boolean, default = False
-        In the case of categorical-categorical feaures, use Theil's U instead
-        of Cramer's V
-    plot : Boolean, default = True
-        Plot a heat-map of the correlation matrix
-    clustering : Boolean, default = False
-        If True, hierarchical clustering is applied in order to sort
-        features into meaningful groups
-    bias_correction : Boolean, default = True
-        Use bias correction for Cramer's V from Bergsma and Wicher,
-        Journal of the Korean Statistical Society 42 (2013): 323-328.
-    nan_strategy : string, default = 'replace'
-        How to handle missing values: can be either 'drop_samples' to remove
-        samples with missing values, 'drop_features' to remove features
-        (columns) with missing values, or 'replace' to replace all missing
-        values with the nan_replace_value. Missing values are None and np.nan.
-    nan_replace_value : any, default = 0.0
-        The value used to replace missing values with. Only applicable when
-        nan_strategy is set to 'replace'
-    ax : matplotlib ax, default = None
-        Matplotlib Axis on which the heat-map will be plotted
-    figsize : (int,int) or None, default = None
-        a Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
-        default. Only used if `ax=None`.
-    annot : Boolean, default = True
-        Plot number annotations on the heat-map
-    fmt : string, default = '.2f'
-        String formatting of annotations
-    cmap : Matplotlib colormap or None, default = None
-        A colormap to be used for the heat-map. If None, falls back to Seaborn's
-        heat-map default
-    sv_color : string , default = 'silver'
-        A Matplotlib color. The color to be used when displaying single-value
-        features over the heat-map
-
-    Returns:
-    --------
-    A dictionary with the following keys:
-    - `corr`: A DataFrame of the correlation/strength-of-association between
-    all features
-    - `ax`: A Matplotlib `Axe`
-
-    Example:
-    --------
-    See examples under `dython.examples`
+    This is a helper function for compute_associations and associations
     """
     dataset = convert(dataset, 'dataframe')
     if nan_strategy == _REPLACE:
@@ -441,6 +364,156 @@ def associations(dataset,
     if clustering:
         corr, _ = cluster_correlations(corr)
         columns = corr.columns
+    return corr, columns, inf_nan, single_value_columns
+
+
+def compute_associations(dataset,
+                         nominal_columns='auto',
+                         mark_columns=False,
+                         theil_u=False,
+                         clustering=False,
+                         bias_correction=True,
+                         nan_strategy=_REPLACE,
+                         nan_replace_value=_DEFAULT_REPLACE_VALUE,
+                         ):
+    """
+    Calculate the correlation/strength-of-association of features in data-set
+    with both categorical and continuous features using:
+     * Pearson's R for continuous-continuous cases
+     * Correlation Ratio for categorical-continuous cases
+     * Cramer's V or Theil's U for categorical-categorical cases
+
+    It is equivalent to run `associations(data, plot=False, ...)['corr']`, only
+    it skips entirely on the drawing phase of the heat-map (See
+    https://github.com/shakedzy/dython/issues/49)
+
+    Parameters:
+    -----------
+    dataset : NumPy ndarray / Pandas DataFrame
+        The data-set for which the features' correlation is computed
+    nominal_columns : string / list / NumPy ndarray
+        Names of columns of the data-set which hold categorical values. Can
+        also be the string 'all' to state that all columns are categorical,
+        'auto' (default) to try to identify nominal columns, or None to state
+        none are categorical
+    mark_columns : Boolean, default = False
+        if True, output's columns' names will have a suffix of '(nom)' or
+        '(con)' based on there type (eda_tools or continuous), as provided
+        by nominal_columns
+    theil_u : Boolean, default = False
+        In the case of categorical-categorical feaures, use Theil's U instead
+        of Cramer's V
+    plot : Boolean, default = True
+        Plot a heat-map of the correlation matrix
+    clustering : Boolean, default = False
+        If True, hierarchical clustering is applied in order to sort
+        features into meaningful groups
+    bias_correction : Boolean, default = True
+        Use bias correction for Cramer's V from Bergsma and Wicher,
+        Journal of the Korean Statistical Society 42 (2013): 323-328.
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop_samples' to remove
+        samples with missing values, 'drop_features' to remove features
+        (columns) with missing values, or 'replace' to replace all missing
+        values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when
+        nan_strategy is set to 'replace'
+
+    Returns:
+    --------
+    A DataFrame of the correlation/strength-of-association between all features
+    """
+    corr, _, _, _ = _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
+                                bias_correction, nan_strategy, nan_replace_value)
+    return corr
+
+
+def associations(dataset,
+                 nominal_columns='auto',
+                 mark_columns=False,
+                 theil_u=False,
+                 plot=True,
+                 clustering=False,
+                 bias_correction=True,
+                 nan_strategy=_REPLACE,
+                 nan_replace_value=_DEFAULT_REPLACE_VALUE,
+                 ax=None,
+                 figsize=None,
+                 annot=True,
+                 fmt='.2f',
+                 cmap=None,
+                 sv_color='silver'
+                 ):
+    """
+    Calculate the correlation/strength-of-association of features in data-set
+    with both categorical and continuous features using:
+     * Pearson's R for continuous-continuous cases
+     * Correlation Ratio for categorical-continuous cases
+     * Cramer's V or Theil's U for categorical-categorical cases
+
+    Parameters:
+    -----------
+    dataset : NumPy ndarray / Pandas DataFrame
+        The data-set for which the features' correlation is computed
+    nominal_columns : string / list / NumPy ndarray
+        Names of columns of the data-set which hold categorical values. Can
+        also be the string 'all' to state that all columns are categorical,
+        'auto' (default) to try to identify nominal columns, or None to state
+        none are categorical
+    mark_columns : Boolean, default = False
+        if True, output's columns' names will have a suffix of '(nom)' or
+        '(con)' based on there type (eda_tools or continuous), as provided
+        by nominal_columns
+    theil_u : Boolean, default = False
+        In the case of categorical-categorical feaures, use Theil's U instead
+        of Cramer's V
+    plot : Boolean, default = True
+        Plot a heat-map of the correlation matrix
+    clustering : Boolean, default = False
+        If True, hierarchical clustering is applied in order to sort
+        features into meaningful groups
+    bias_correction : Boolean, default = True
+        Use bias correction for Cramer's V from Bergsma and Wicher,
+        Journal of the Korean Statistical Society 42 (2013): 323-328.
+    nan_strategy : string, default = 'replace'
+        How to handle missing values: can be either 'drop_samples' to remove
+        samples with missing values, 'drop_features' to remove features
+        (columns) with missing values, or 'replace' to replace all missing
+        values with the nan_replace_value. Missing values are None and np.nan.
+    nan_replace_value : any, default = 0.0
+        The value used to replace missing values with. Only applicable when
+        nan_strategy is set to 'replace'
+    ax : matplotlib ax, default = None
+        Matplotlib Axis on which the heat-map will be plotted
+    figsize : (int,int) or None, default = None
+        a Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
+        default. Only used if `ax=None`.
+    annot : Boolean, default = True
+        Plot number annotations on the heat-map
+    fmt : string, default = '.2f'
+        String formatting of annotations
+    cmap : Matplotlib colormap or None, default = None
+        A colormap to be used for the heat-map. If None, falls back to Seaborn's
+        heat-map default
+    sv_color : string , default = 'silver'
+        A Matplotlib color. The color to be used when displaying single-value
+        features over the heat-map
+
+    Returns:
+    --------
+    A dictionary with the following keys:
+    - `corr`: A DataFrame of the correlation/strength-of-association between
+    all features
+    - `ax`: A Matplotlib `Axe`
+
+    Example:
+    --------
+    See examples under `dython.examples`
+    """
+    corr, columns, inf_nan, single_value_columns = _comp_assoc(dataset, nominal_columns, mark_columns,
+                                                               theil_u, clustering, bias_correction,
+                                                               nan_strategy, nan_replace_value)
     if ax is None:
         plt.figure(figsize=figsize)
     if inf_nan.any(axis=None):

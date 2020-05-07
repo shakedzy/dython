@@ -138,9 +138,79 @@ Based on [this clustering example](https://github.com/TheLoneNut/CorrelationMatr
 
 __________________
 
+#### `compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE)`
+
+Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
+continuous features using:
+ * Pearson's R for continuous-continuous cases
+ * Correlation Ratio for categorical-continuous cases
+ * Cramer's V or Theil's U for categorical-categorical cases
+ 
+!!! info ""
+
+    It is equivalent to executing `associations(data, plot=False, ...)['corr']`, only
+    it skips entirely on the drawing phase of the heat-map (See 
+    [issue #49](https://github.com/shakedzy/dython/issues/49)).
+
+- **`dataset`** : `NumPy ndarray / Pandas DataFrame`
+
+    The data-set for which the features' correlation is computed
+
+- **`nominal_columns`** : `string / list / NumPy ndarray`
+
+    Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
+    columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are categorical
+
+- **`mark_columns`** : `Boolean` 
+
+    _Default: False_
+
+    if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or continuous), as provided by nominal_columns
+
+- **`theil_u`** : `Boolean` 
+
+    _Default: False_
+
+    In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
+
+- **`plot`** : `Boolean` 
+
+    _Default: True_
+
+    Plot a heat-map of the correlation matrix
+
+- **`clustering`** : `Boolean` 
+
+    _Default: False_
+
+    If True, the computed associations will be sorted into groups by similar correlations
+
+- **`bias_correction`** : `Boolean`
+
+      _Default = True_
+    
+      Use bias correction for Cramer's V from Bergsma and Wicher, Journal of the Korean 
+      Statistical Society 42 (2013): 323-328.
+
+- **`nan_strategy`** : `string` 
+
+    _Default: 'replace'_
+
+    How to handle missing values: can be either 'drop_samples' to remove samples with missing values, 'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+
+- **`nan_replace_value`** : `any` 
+
+    _Default: 0.0_
+
+    The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
+
+**Returns:** A DataFrame of the correlation/strength-of-association between all features
+
+__________________
+
 #### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, log_base=math.e)`
 
-Calculates the conditional entropy of x given y: `S(x|y)`. 
+Calculates the conditional entropy of x given y: $S(x|y)$. 
 Read more on [Wikipedia](https://en.wikipedia.org/wiki/Conditional_entropy).
 
 - **`x`** : `list / NumPy ndarray / Pandas Series`
