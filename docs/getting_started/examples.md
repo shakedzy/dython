@@ -34,7 +34,7 @@ associations(df)
 ```
 **Output:**
 
-![associations_iris_example](images/associations_iris_example.png)
+![associations_iris_example](../images/associations_iris_example.png)
 
 __________________
 
@@ -60,7 +60,7 @@ associations(df, theil_u=True, figsize=(15, 15))
 ```
 **Output:**
 
-![associations_mushrooms_example](images/associations_mushrooms_example.png)
+![associations_mushrooms_example](../images/associations_mushrooms_example.png)
 
 __________________
 
@@ -68,8 +68,8 @@ __________________
 
 Plot an example ROC graph of an SVM model predictions over the Iris dataset.
 
-Based on `sklearn` examples (as was seen on April 2018):
-http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
+Based on `sklearn` [examples](http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html) 
+(as was seen on April 2018).
 
 **Example code:**
 ```python
@@ -103,7 +103,9 @@ roc_graph(y_test, y_score, class_names=iris.target_names)
 
 **Output:**
 
-![roc_example](images/roc_example.png)
+![roc_example](../images/roc_example.png)
 
-Note that due to the nature of `np.random.RandomState` which is used in this 
-example, the output graph may vary from one machine to another.
+!!! warning "Note:" 
+
+	Due to the nature of `np.random.RandomState` which is used in this 
+	example, the output graph may vary from one machine to another.

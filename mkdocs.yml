@@ -4,17 +4,19 @@ repo_url: https://github.com/shakedzy/dython
 theme:
   name: material
   palette:
-    primary: black
+    primary: light blue
     accent: blue
   logo: images/favicon.png
   favicon: images/favicon.png
 nav:
   - Home: 'index.md'
+  - Getting Started:
+    - Installation: 'getting_started/installation.md'
+    - Examples: 'getting_started/examples.md'
   - Modules:
-    - nominal: 'nominal.md'
-    - model_utils: 'model_utils.md'
-    - sampling: 'sampling.md'
-  - Examples: 'examples.md'
+    - nominal: 'modules/nominal.md'
+    - model_utils: 'modules/model_utils.md'
+    - sampling: 'modules/sampling.md'
   - Related Blogosts:
     - The Search for Categorical Correlation: "https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9"
     - Hard ROC - Really Understanding & Properly Using ROC and AUC: https://medium.com/@shakedzy/hard-roc-really-understanding-and-properly-using-roc-and-auc-13413cf0dc24"
@@ -29,3 +31,5 @@ markdown_extensions:
   - pymdownx.arithmatex
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
+plugins:
+  - search

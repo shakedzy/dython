@@ -11,42 +11,62 @@ title: dython
 [![Forks](https://img.shields.io/github/forks/shakedzy/dython?style=for-the-badge&logo=github)](https://github.com/shakedzy/dython)
 [![License](https://img.shields.io/pypi/l/dython?style=for-the-badge)](https://github.com/shakedzy/dython/blob/master/LICENSE)
 
-A set of **D**ata analysis tools in p**YTHON** 3.x.
+![banner](images/banner.png)
 
-Dython was designed with analysis usage in mind - meaning ease-of-use, functionality and readability are the core 
-values of this library. Production-grade performance, on the other hand, were not considered.
+## Welcome!
+
+Dython is a set of **D**ata analysis tools in p**YTHON** 3.x, which can let you get more insights about your data.
+
+!!! info ""
+
+	Dython was designed with analysis usage in mind - meaning ease-of-use, functionality and readability are the core 
+	values of this library. Production-grade performance, on the other hand, were not considered.
+
+**Here are some cool things you can do with it:**
+
+Given a dataset, Dython will automatically find which features are categorical and which are numerical,
+compute a relevant measure of association between each and every feature, and plot it all as an easy-to-read 
+heat-map. And all this is done with a single line:
+
+```python
+from dython.nominal import associations
+associations(data)
+```
+The result:
+
+![associations_iris_example](images/associations_iris_example.png)
+
+Here's another thing - given a machine-learning multi-class model's predictions, you can easily display
+each class' ROC curve, AUC score and find the estimated-optimal thresholds - again, with a single line of code:
+
+```python
+from dython.model_utils import roc_graph
+roc_graph(y_true, y_pred)
+```
+The result:
+
+![roc_example](images/roc_example.png)
 
 ## Installation
 Dython can be installed directly using `pip`:
-```
+```bash
 pip install dython
 ```
-If you wish to install from source:
-```
-pip install git+https://github.com/shakedzy/dython.git
-```
+Other installation options are available, see the [installation page](getting_started/installation.md)
+for more information.
 
-**Dependencies:** `numpy`, `pandas`, `seaborn`, `scipy`, `matplotlib`, `sklearn`
+## Examples
+See some usage examples of `nominal.associations` and `model_utils.roc_graph` on the [examples page](examples.md).
+All examples can also be imported and executed from `dython.examples`.
 
 ## Modules Documentation
+Full documentation of all modues and public methods is available:
 
 * [nominal](nominal.md)
 
 * [model_utils](model_utils.md)
 
 * [sampling](sampling.md)
-
-<!--
-{% for page in site.pages %}
-  {% if page.type == 'doc' %}
-* [{{page.title}}]({{page.url | relative_url}})
-  {% endif %}
-{% endfor %}
--->
-
-## Examples
-Examples of `nominal.associations` and `model_utils.roc_graph` are available as part of the package. 
-Descriptions and expected outputs can be seen [here](examples.md).
 
 -------------
 
