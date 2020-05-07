@@ -443,7 +443,8 @@ def associations(dataset,
                  annot=True,
                  fmt='.2f',
                  cmap=None,
-                 sv_color='silver'
+                 sv_color='silver',
+                 cbar=True
                  ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -496,9 +497,11 @@ def associations(dataset,
     cmap : Matplotlib colormap or None, default = None
         A colormap to be used for the heat-map. If None, falls back to Seaborn's
         heat-map default
-    sv_color : string , default = 'silver'
+    sv_color : string, default = 'silver'
         A Matplotlib color. The color to be used when displaying single-value
         features over the heat-map
+    cbar: Boolean, default = True
+        Display heat-map's color-bar
 
     Returns:
     --------
@@ -559,7 +562,8 @@ def associations(dataset,
                      vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
                      square=True,
                      mask=mask,
-                     ax=ax)
+                     ax=ax,
+                     cbar=cbar)
     if plot:
         plt.show()
     return {'corr': corr,

@@ -101,6 +101,12 @@ continuous features using:
     
       A Matplotlib color. The color to be used when displaying single-value features over the heat-map
 
+- **`cbar`** : `Boolean` 
+
+    _Default = True_
+    
+    Display heat-map's color-bar
+
 **Returns:** A dictionary with the following keys:
 
 - `corr`: A DataFrame of the correlation/strength-of-association between all features
