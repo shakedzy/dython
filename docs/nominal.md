@@ -154,7 +154,7 @@ continuous features using:
  
 !!! info ""
 
-    It is equivalent to executing `associations(data, plot=False, ...)['corr']`, only
+    This is equivalent to executing `associations(data, plot=False, ...)['corr']`, only
     it skips entirely on the drawing phase of the heat-map (See 
     [issue #49](https://github.com/shakedzy/dython/issues/49)).
 
