@@ -1,5 +1,6 @@
 site_name: dython
-site_description: "Dython is a set of data-analysis tools written in Python 3.x, which can let you get more insights about your data. Dython was designed with analysis usage in mind - meaning ease-of-use, functionality and readability are the core values of this library."
+site_description: A set of data-analysis tools for Python 3.x
+site_long_description: Dython is a set of data-analysis tools written in Python 3.x, which can let you get more insights about your data. Dython was designed with analysis usage in mind - meaning ease-of-use, functionality and readability are the core values of this library.
 site_author: Shaked Zychlinski
 site_url: http://shakedzy.xyz/dython/
 repo_name: shakedzy/dython
