@@ -1,6 +1,5 @@
 ---
 title: examples
-type: examples-doc
 ---
 # Examples
 

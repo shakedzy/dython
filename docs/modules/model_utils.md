@@ -1,6 +1,5 @@
 ---
 title: model_utils
-type: doc
 ---
 
 # model_utils
@@ -111,7 +110,7 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 **Returns:** A dictionary, one key for each class. Each value is another dictionary,
 holding AUC and eOpT values.
 
-**Example:** See [examples](examples.md).
+**Example:** See [examples](../getting_started/examples.md).
 
 **Binary Classification Input Example:** 
 Consider a data-set of two data-points where the true class of the first line 

@@ -1,6 +1,5 @@
 ---
 title: nominal
-type: doc
 ---
 
 # nominal
@@ -112,7 +111,7 @@ continuous features using:
 - `corr`: A DataFrame of the correlation/strength-of-association between all features
 - `ax`: A Matplotlib `Axe`
 
-**Example:** See [examples](examples.md).
+**Example:** See [examples](../getting_started/examples.md).
 __________________
 
 #### `cluster_correlations(corr_mat, indexes=None)`

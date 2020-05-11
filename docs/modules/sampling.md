@@ -1,6 +1,5 @@
 ---
 title: sampling
-type: doc
 ---
 
 # sampling

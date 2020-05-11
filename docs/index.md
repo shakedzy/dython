@@ -1,5 +1,5 @@
 ---
-title: dython
+is_homepage:
 ---
 
 # Dython
@@ -11,7 +11,7 @@ title: dython
 [![Forks](https://img.shields.io/github/forks/shakedzy/dython?style=for-the-badge&logo=github)](https://github.com/shakedzy/dython)
 [![License](https://img.shields.io/pypi/l/dython?style=for-the-badge)](https://github.com/shakedzy/dython/blob/master/LICENSE)
 
-![banner](images/banner.png)
+![banner](images/index_banner.png)
 
 ## Welcome!
 
@@ -56,17 +56,17 @@ Other installation options are available, see the [installation page](getting_st
 for more information.
 
 ## Examples
-See some usage examples of `nominal.associations` and `model_utils.roc_graph` on the [examples page](examples.md).
+See some usage examples of `nominal.associations` and `model_utils.roc_graph` on the [examples page](getting_started/examples.md).
 All examples can also be imported and executed from `dython.examples`.
 
 ## Modules Documentation
 Full documentation of all modues and public methods is available:
 
-* [nominal](nominal.md)
+* [nominal](modules/nominal.md)
 
-* [model_utils](model_utils.md)
+* [model_utils](modules/model_utils.md)
 
-* [sampling](sampling.md)
+* [sampling](modules/sampling.md)
 
 -------------
 
