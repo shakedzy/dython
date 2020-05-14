@@ -35,6 +35,7 @@ def _inf_nan_str(x):
     elif abs(x) == np.inf: return 'inf'
     else: return ''
 
+
 def conditional_entropy(x,
                         y,
                         nan_strategy=_REPLACE,
