@@ -4,7 +4,9 @@ title: nominal
 
 # nominal
 
-#### `associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver')`
+#### `associations`
+
+`associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver')`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -114,7 +116,10 @@ continuous features using:
 **Example:** See [examples](../getting_started/examples.md).
 __________________
 
-#### `cluster_correlations(corr_mat, indexes=None)`
+#### `cluster_correlations`
+
+`cluster_correlations(corr_mat, indexes=None)`
+
 Apply agglomerative clustering in order to sort a correlation matrix.
 Based on [this clustering example](https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb).
 
@@ -143,7 +148,9 @@ Based on [this clustering example](https://github.com/TheLoneNut/CorrelationMatr
 
 __________________
 
-#### `compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE)`
+#### `compute_associations`
+
+`compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -213,9 +220,14 @@ continuous features using:
 
 __________________
 
-#### `conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, log_base=math.e)`
+#### `conditional_entropy`
 
-Calculates the conditional entropy of x given y: $S(x|y)$. 
+`conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, log_base=math.e)`
+
+Given measurements `x` and `y` of random variables $X$ and $Y$, calculates the conditional entropy of $X$ given $Y$:  
+
+$$ S(X|Y) = - \sum_{x,y} p(x,y) \log\frac{p(x,y)}{p(y)} $$
+
 Read more on [Wikipedia](https://en.wikipedia.org/wiki/Conditional_entropy).
 
 - **`x`** : `list / NumPy ndarray / Pandas Series`
@@ -248,9 +260,18 @@ Read more on [Wikipedia](https://en.wikipedia.org/wiki/Conditional_entropy).
 
 __________________
  
-#### `correlation_ratio(categories, measurements, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+#### `correlation_ratio`
 
-Calculates the Correlation Ratio (sometimes marked by the greek letter $\eta$) for categorical-continuous association.
+`correlation_ratio(categories, measurements, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+
+Calculates the Correlation Ratio ($\eta$) for categorical-continuous association:
+
+$$ \eta = \sqrt{\frac{\sum_x{n_x (\bar{y}_x - \bar{y})^2}}{\sum_{x,i}{(y_{xi}-\bar{y})^2}}} $$
+
+where $n_x$ is the number of observations in category $x$, and we define: 
+
+$$\bar{y}_x = \frac{\sum_i{y_{xi}}}{n_x} , \bar{y} = \frac{\sum_i{n_x \bar{y}_x}}{\sum_x{n_x}}$$
+
 Answers the question - given a continuous value of a measurement, is it possible to know which category is it
 associated with?
 Value is in the range [0,1], where 0 means a category cannot be determined by a continuous measurement, and 1 means
@@ -281,7 +302,9 @@ Read more on [Wikipedia](https://en.wikipedia.org/wiki/Correlation_ratio).
 
 __________________
  
-#### `cramers_v(x, y, bias_correction=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+#### `cramers_v`
+
+`cramers_v(x, y, bias_correction=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Calculates Cramer's V statistic for categorical-categorical association.
 This is a symmetric coefficient: $V(x,y) = V(y,x)$. Read more on [Wikipedia](https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V).
@@ -318,7 +341,10 @@ Original function taken from [this answer](https://stackoverflow.com/a/46498792/
 
 __________________
  
-#### `identify_nominal_columns(dataset, include=['object', 'category'])`
+#### `identify_nominal_columns`
+
+`identify_nominal_columns(dataset, include=['object', 'category'])`
+
 Given a dataset, identify categorical columns. This is used internally in `associations` and `numerical_encoding`,
 but can also be used directly.
 
@@ -341,7 +367,9 @@ but can also be used directly.
 
 __________________
  
-#### `numerical_encoding(dataset, nominal_columns='auto', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+#### `numerical_encoding`
+
+`numerical_encoding(dataset, nominal_columns='auto', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
 
 Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
 using the following logic:
@@ -395,9 +423,16 @@ present in the data-set
 
 __________________
  
-#### `theils_u(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+#### `theils_u`
 
-Calculates Theil's U statistic (Uncertainty coefficient) for categorical-categorical association.
+`theils_u(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
+
+Calculates Theil's U statistic (Uncertainty coefficient) for categorical-categorical association, defined as:
+
+$$ U(X|Y) = \frac{S(X) - S(X|Y)}{S(X)} $$
+
+where $S(X)$ is the entropy of $X$ and $S(X|Y)$ is the [conditional entropy](#conditional_entropy) of $X$ given $Y$.
+
 This is the uncertainty of x given y: value is on the range of [0,1] - where 0 means y provides no information about
 x, and 1 means y provides full information about x.
 This is an asymmetric coefficient: $U(x,y) \neq U(y,x)$. Read more on 

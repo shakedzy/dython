@@ -4,7 +4,9 @@ title: sampling
 
 # sampling
 
-#### `boltzmann_sampling(numbers, k=1, with_replacement=False)`
+#### `boltzmann_sampling`
+
+`boltzmann_sampling(numbers, k=1, with_replacement=False)`
 
 Return k numbers from a boltzmann-sampling over the supplied numbers
 
@@ -26,7 +28,9 @@ Return k numbers from a boltzmann-sampling over the supplied numbers
 
 __________________
  
-#### `weighted_sampling(numbers, k=1, with_replacement=False)`
+#### `weighted_sampling`
+
+`weighted_sampling(numbers, k=1, with_replacement=False)`
 
 Return k numbers from a weighted-sampling over the supplied numbers
 
