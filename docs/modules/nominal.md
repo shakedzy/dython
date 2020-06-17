@@ -150,7 +150,7 @@ __________________
 
 #### `compute_associations`
 
-`compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE)`
+`compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -184,12 +184,6 @@ continuous features using:
     _Default: False_
 
     In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
-
-- **`plot`** : `Boolean` 
-
-    _Default: True_
-
-    Plot a heat-map of the correlation matrix
 
 - **`clustering`** : `Boolean` 
 

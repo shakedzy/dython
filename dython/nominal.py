@@ -404,8 +404,6 @@ def compute_associations(dataset,
     theil_u : Boolean, default = False
         In the case of categorical-categorical feaures, use Theil's U instead
         of Cramer's V
-    plot : Boolean, default = True
-        Plot a heat-map of the correlation matrix
     clustering : Boolean, default = False
         If True, hierarchical clustering is applied in order to sort
         features into meaningful groups
