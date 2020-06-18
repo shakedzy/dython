@@ -39,7 +39,13 @@ continuous features using:
 
     _Default: True_
 
-    Plot a heat-map of the correlation matrix
+    Plot a heat-map of the correlation matrix. If False, heat-map will still be
+    drawn, but not shown. The heat-map's `ax` is part of this function's output. 
+    
+    !!! tip "Tip"
+    
+        If you have no use of the plot at all, and only require the correlations
+        DataFrame, consider using [`compute_associations`](#compute_associations) instead.
 
 - **`clustering`** : `Boolean` 
 
@@ -49,10 +55,10 @@ continuous features using:
 
 - **`bias_correction`** : `Boolean`
 
-      _Default = True_
+     _Default = True_
     
-      Use bias correction for Cramer's V from Bergsma and Wicher, Journal of the Korean 
-      Statistical Society 42 (2013): 323-328.
+     Use bias correction for Cramer's V from Bergsma and Wicher, Journal of the Korean 
+     Statistical Society 42 (2013): 323-328.
 
 - **`nan_strategy`** : `string` 
 
@@ -68,39 +74,39 @@ continuous features using:
 
 - **`ax`** : matplotlib `Axe`
 
-      _Default = None_
+     _Default = None_
     
-      Matplotlib Axis on which the heat-map will be plotted
+     Matplotlib Axis on which the heat-map will be plotted
 
 - **`figsize`** : `(int,int)` or `None`
 
-      _Default = None_
+     _Default = None_
     
-      A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's default. Only used if `ax=None`.
+     A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's default. Only used if `ax=None`.
 
 - **`annot`** : `Boolean` 
 
-      _Default = True_
+     _Default = True_
     
-      Plot number annotations on the heat-map
+     Plot number annotations on the heat-map
 
 - **`fmt`** : `string`
  
-      _Default = '.2f'_
+     _Default = '.2f'_
     
-      String formatting of annotations
+     String formatting of annotations
 
 - **`cmap`** : Matplotlib colormap or `None` 
 
-      _Default = None_
+     _Default = None_
     
-      A colormap to be used for the heat-map. If None, falls back to Seaborn's heat-map default
+     A colormap to be used for the heat-map. If None, falls back to Seaborn's heat-map default
 
 - **`sv_color`** : `string`
     
-      _Default = 'silver'_
+     _Default = 'silver'_
     
-      A Matplotlib color. The color to be used when displaying single-value features over the heat-map
+     A Matplotlib color. The color to be used when displaying single-value features over the heat-map
 
 - **`cbar`** : `Boolean` 
 
