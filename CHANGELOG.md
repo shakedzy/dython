@@ -1,5 +1,8 @@
 # Change Log
 
+## _dev (source only)_
+* Fix docstring of `nominal.compute_associations` (issue [#55](https://github.com/shakedzy/dython/issues/55))
+
 ## 0.5.1
 * Resolve issues [#48](https://github.com/shakedzy/dython/issues/48) and [#49](https://github.com/shakedzy/dython/issues/49)
 
