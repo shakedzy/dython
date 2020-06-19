@@ -14,6 +14,7 @@ from ._private import (
 __all__ = [
     'associations',
     'cluster_correlations',
+    'compute_associations',
     'conditional_entropy',
     'correlation_ratio',
     'cramers_v',
