@@ -13,3 +13,4 @@ build/*
 dist/*
 build_deploy.sh
 site/*
+debug.py
