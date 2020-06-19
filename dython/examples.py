@@ -5,8 +5,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from sklearn.multiclass import OneVsRestClassifier
 
-from dython.model_utils import roc_graph
-from dython.nominal import associations
+from .model_utils import roc_graph
+from .nominal import associations
 
 
 def roc_graph_example():
