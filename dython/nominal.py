@@ -32,9 +32,19 @@ _DEFAULT_REPLACE_VALUE = 0.0
 
 
 def _inf_nan_str(x):
-    if np.isnan(x): return 'NaN'
-    elif abs(x) == np.inf: return 'inf'
-    else: return ''
+    if np.isnan(x):
+        return 'NaN'
+    elif abs(x) == np.inf:
+        return 'inf'
+    else:
+        return ''
+
+
+def identify_columns_with_na(data):
+    # return the columns having NAs, sorted descendingly by their number of NAs
+    na_count = [sum(data[cc].isnull()) for cc in data.columns]
+    return pd.DataFrame({'column': data.columns, 'na_count': na_count}). \
+        query('na_count > 0').sort_values('na_count', ascending=False)
 
 
 def conditional_entropy(x,
@@ -126,8 +136,8 @@ def cramers_v(x,
     r, k = confusion_matrix.shape
     if bias_correction:
         phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (n - 1))
-        rcorr = r - ((r - 1)**2) / (n - 1)
-        kcorr = k - ((k - 1)**2) / (n - 1)
+        rcorr = r - ((r - 1) ** 2) / (n - 1)
+        kcorr = k - ((k - 1) ** 2) / (n - 1)
         if min((kcorr - 1), (rcorr - 1)) == 0:
             warnings.warn(
                 "Unable to calculate Cramer's V using bias correction. Consider using bias_correction=False",
@@ -686,7 +696,7 @@ def cluster_correlations(corr_mat, indices=None):
         X = corr_mat.values
         d = sch.distance.pdist(X)
         L = sch.linkage(d, method='complete')
-        indices = sch.fcluster(L, 0.5*d.max(), 'distance')
+        indices = sch.fcluster(L, 0.5 * d.max(), 'distance')
     columns = [corr_mat.columns.tolist()[i]
                for i in list((np.argsort(indices)))]
     corr_mat = corr_mat.reindex(columns=columns).reindex(index=columns)
