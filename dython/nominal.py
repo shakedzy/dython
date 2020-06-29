@@ -19,6 +19,8 @@ __all__ = [
     'correlation_ratio',
     'cramers_v',
     'identify_nominal_columns',
+    'identify_numeric_columns',
+    'identify_columns_with_na',
     'numerical_encoding',
     'theils_u'
 ]
@@ -281,6 +283,30 @@ def identify_nominal_columns(dataset, include=['object', 'category']):
     dataset = convert(dataset, 'dataframe')
     nominal_columns = list(dataset.select_dtypes(include=include).columns)
     return nominal_columns
+
+
+def identify_numeric_columns(dataset, include=['int64', 'float64']):
+    """Given a dataset, identify numeric columns.
+
+        Parameters:
+        -----------
+        dataset : a pandas dataframe
+        include : which column types to filter by; default: ['int64', 'float64'])
+
+        Returns:
+        --------
+        categorical_columns : a list of categorical columns
+
+        Example:
+        --------
+        >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1.,2.,3.]})
+        >> identify_numeric_columns(df)
+        ['col2', 'col3']
+
+        """
+    dataset = convert(dataset, 'dataframe')
+    numeric_columns = list(dataset.select_dtypes(include=include).columns)
+    return numeric_columns
 
 
 def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
