@@ -341,20 +341,64 @@ Original function taken from [this answer](https://stackoverflow.com/a/46498792/
 
 __________________
  
+#### `identify_columns_by_type`
+
+`identify_columns_by_type(dataset, include)`
+
+Given a dataset, identify columns of the types requested.
+
+- **`dataset`** : `np.ndarray` / `pd.DataFrame`
+
+- **`include`** : `list`
+
+    which column types to filter by.
+
+**Returns:** list of categorical columns
+
+**Example:**
+```python
+>> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
+>> identify_columns_by_type(df, include=['int64', 'float64'])
+['col2', 'col3']
+```
+
+__________________
+ 
+#### `identify_columns_with_na`
+
+`identify_columns_with_na(dataset)`
+
+Given a dataset, return columns names having NA values, 
+sorted in descending order by their number of NAs. 
+
+- **`dataset`** : `np.ndarray` / `pd.DataFrame`
+
+**Returns:** A `pd.DataFrame` of two columns (`['column', 'na_count']`), consisting of only 
+the names of columns with NA values, sorted by their number of NA values.
+
+**Example:**
+```python
+>> df = pd.DataFrame({'col1': ['a', np.nan, 'a', 'a'], 'col2': [3, np.nan, 2, np.nan], 'col3': [1., 2., 3., 4.]})
+>> identify_columns_with_na(df)
+  column  na_count
+1   col2         2
+0   col1         1
+```
+
+__________________
+ 
 #### `identify_nominal_columns`
 
-`identify_nominal_columns(dataset, include=['object', 'category'])`
+`identify_nominal_columns(dataset)`
 
 Given a dataset, identify categorical columns. This is used internally in `associations` and `numerical_encoding`,
 but can also be used directly.
 
-- **`dataset`** : `pd.DataFrame`
+!!! info "Note:"
+    
+    This is a shortcut for `identify_columns_by_type(dataset, include=['object', 'category'])` 
 
-- **`include`** : `list`
-
-    _Default: `['object', 'category']`_
-
-    which column types to filter by.
+- **`dataset`** : `np.ndarray` / `pd.DataFrame`
 
 **Returns:** list of categorical columns
 
@@ -366,7 +410,30 @@ but can also be used directly.
 ```
 
 __________________
- 
+
+#### `identify_numeric_columns`
+
+`identify_numeric_columns(dataset)`
+
+Given a dataset, identify numeric columns. 
+
+!!! info "Note:"
+    
+    This is a shortcut for `identify_columns_by_type(dataset, include=['int64', 'float64'])` 
+
+- **`dataset`** : `np.ndarray` / `pd.DataFrame`
+
+**Returns:** list of numerical columns
+
+**Example:**
+```python
+>> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
+>> identify_numeric_columns(df)
+['col2', 'col3']
+```
+
+__________________
+  
 #### `numerical_encoding`
 
 `numerical_encoding(dataset, nominal_columns='auto', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
