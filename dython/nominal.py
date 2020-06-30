@@ -19,9 +19,9 @@ __all__ = [
     'correlation_ratio',
     'cramers_v',
     'identify_columns_by_type',
+    'identify_columns_with_na',
     'identify_nominal_columns',
     'identify_numeric_columns',
-    'identify_columns_with_na',
     'numerical_encoding',
     'theils_u'
 ]
