@@ -17,7 +17,7 @@ LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
       'numpy',
-      'pandas',
+      'pandas>=0.23.4',
       'seaborn',
       'scipy',
       'matplotlib',
