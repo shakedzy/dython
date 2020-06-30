@@ -1,6 +1,10 @@
 # Change Log
 
-## _dev (source only)_
+## 0.5.2
+* Added `nominal.identify_columns_with_na` (by **[@musketeer191](https://github.com/musketeer191)**)
+* Added `nominal.identify_numeric_columns` (issue [#58](https://github.com/shakedzy/dython/issues/58), by **[@musketeer191](https://github.com/musketeer191)**)
+* Added `nominal.identify_columns_by_type`
+* `nominal.identify_nominal_columns` no longer accepts the `include` parameter (use `nominal.identify_columns_by_type` instead)
 * Fix docstring of `nominal.compute_associations` (issue [#55](https://github.com/shakedzy/dython/issues/55))
 * Requires Pandas 0.23.4 or greater (was required before, but not specified in setup file)
 
