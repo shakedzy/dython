@@ -18,6 +18,7 @@ __all__ = [
     'conditional_entropy',
     'correlation_ratio',
     'cramers_v',
+    'identify_columns_by_type',
     'identify_nominal_columns',
     'identify_numeric_columns',
     'identify_columns_with_na',
@@ -42,10 +43,30 @@ def _inf_nan_str(x):
         return ''
 
 
-def identify_columns_with_na(data):
-    # return the columns having NAs, sorted descendingly by their number of NAs
-    na_count = [sum(data[cc].isnull()) for cc in data.columns]
-    return pd.DataFrame({'column': data.columns, 'na_count': na_count}). \
+def identify_columns_with_na(dataset):
+    """
+    Return columns names having NA values, sorted in descending order by their number of NAs
+
+    Parameters:
+    -----------
+    dataset : NumPy ndarray / Pandas DataFrame
+
+    Returns:
+    --------
+    A DataFrame of two columns (['column', 'na_count']), consisting of only the names
+    of columns with NA values, sorted by their number of NA values.
+
+    Example:
+    --------
+    >> df = pd.DataFrame({'col1': ['a', np.nan, 'a', 'a'], 'col2': [3, np.nan, 2, np.nan], 'col3': [1., 2., 3., 4.]})
+    >> identify_columns_with_na(df)
+      column  na_count
+    1   col2         2
+    0   col1         1
+    """
+    dataset = convert(dataset, 'dataframe')
+    na_count = [sum(dataset[cc].isnull()) for cc in dataset.columns]
+    return pd.DataFrame({'column': dataset.columns, 'na_count': na_count}). \
         query('na_count > 0').sort_values('na_count', ascending=False)
 
 
@@ -261,17 +282,43 @@ def correlation_ratio(categories,
     return eta
 
 
-def identify_nominal_columns(dataset, include=['object', 'category']):
-    """Given a dataset, identify categorical columns.
+def identify_columns_by_type(dataset, include):
+    """
+    Given a dataset, identify columns of the types requested.
 
     Parameters:
     -----------
-    dataset : a pandas dataframe
-    include : which column types to filter by; default: ['object', 'category'])
+    dataset : NumPy ndarray / Pandas DataFrame
+    include : list of strings
+        Desired column types
 
     Returns:
     --------
-    categorical_columns : a list of categorical columns
+    A list of columns names
+
+    Example:
+    --------
+    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1.,2.,3.]})
+    >> identify_columns_by_type(df, include=['int64', 'float64'])
+    ['col2', 'col3']
+
+    """
+    dataset = convert(dataset, 'dataframe')
+    columns = list(dataset.select_dtypes(include=include).columns)
+    return columns
+
+
+def identify_nominal_columns(dataset):
+    """
+    Given a dataset, identify categorical columns.
+
+    Parameters:
+    -----------
+    dataset : NumPy ndarray / Pandas DataFrame
+
+    Returns:
+    --------
+    A list of categorical columns names
 
     Example:
     --------
@@ -280,33 +327,29 @@ def identify_nominal_columns(dataset, include=['object', 'category']):
     ['col1']
 
     """
-    dataset = convert(dataset, 'dataframe')
-    nominal_columns = list(dataset.select_dtypes(include=include).columns)
-    return nominal_columns
+    return identify_columns_by_type(dataset, include=['object', 'category'])
 
 
-def identify_numeric_columns(dataset, include=['int64', 'float64']):
-    """Given a dataset, identify numeric columns.
+def identify_numeric_columns(dataset):
+    """
+    Given a dataset, identify numeric columns.
 
-        Parameters:
-        -----------
-        dataset : a pandas dataframe
-        include : which column types to filter by; default: ['int64', 'float64'])
+    Parameters:
+    -----------
+    dataset : NumPy ndarray / Pandas DataFrame
 
-        Returns:
-        --------
-        categorical_columns : a list of categorical columns
+    Returns:
+    --------
+    A list of numerical columns names
 
-        Example:
-        --------
-        >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1.,2.,3.]})
-        >> identify_numeric_columns(df)
-        ['col2', 'col3']
+    Example:
+    --------
+    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
+    >> identify_numeric_columns(df)
+    ['col2', 'col3']
 
-        """
-    dataset = convert(dataset, 'dataframe')
-    numeric_columns = list(dataset.select_dtypes(include=include).columns)
-    return numeric_columns
+    """
+    return identify_columns_by_type(dataset, include=['int64', 'float64'])
 
 
 def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
