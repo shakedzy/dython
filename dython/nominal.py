@@ -298,7 +298,7 @@ def identify_columns_by_type(dataset, include):
 
     Example:
     --------
-    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1.,2.,3.]})
+    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
     >> identify_columns_by_type(df, include=['int64', 'float64'])
     ['col2', 'col3']
 
