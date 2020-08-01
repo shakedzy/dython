@@ -108,3 +108,32 @@ roc_graph(y_test, y_score, class_names=iris.target_names)
 
 	Due to the nature of `np.random.RandomState` which is used in this 
 	example, the output graph may vary from one machine to another.
+
+__________________	
+
+#### `split_hist_example()`
+
+Plot an example of split histogram of data from the breast-cancer dataset.
+
+While this example presents a numerical column split by a categorical one, categorical columns can also be used
+as the values, as well as numerical columns as the split criteria.
+
+**Example code:**
+```python
+import pandas as pd
+from sklearn import datasets
+from dython.data_utils import split_hist
+
+# Load data and convert to DataFrame
+data = datasets.load_breast_cancer()
+df = pd.DataFrame(data=data.data, columns=data.feature_names)
+df['malignant'] = [not bool(x) for x in data.target]
+
+# Plot histogram
+split_hist(df, 'mean radius', 'malignant', bins=20, figsize=(15,7))
+```
+
+**Output:**
+
+![split_hist_example](../images/split_hist_example.png)
+ 
