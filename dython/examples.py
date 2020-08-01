@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from sklearn.multiclass import OneVsRestClassifier
 
+from .data_utils import split_hist
 from .model_utils import roc_graph
 from .nominal import associations
 
@@ -76,3 +77,19 @@ def associations_mushrooms_example():
 
     # Plot features associations
     return associations(df, theil_u=True, figsize=(15, 15))
+
+
+def split_hist_example():
+    """
+    Plot an example of split histogram.
+    While this example presents a numerical column split by a categorical one, categorical columns can also be used
+    as the values, as well as numerical columns as the split criteria.
+    """
+
+    # Load data and convert to DataFrame
+    data = datasets.load_breast_cancer()
+    df = pd.DataFrame(data=data.data, columns=data.feature_names)
+    df['malignant'] = [not bool(x) for x in data.target]
+
+    # Plot histogram
+    return split_hist(df, 'mean radius', 'malignant', bins=20, figsize=(15,7))
