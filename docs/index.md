@@ -7,8 +7,6 @@ is_homepage:
 [![PyPI Version](https://img.shields.io/pypi/v/dython?style=for-the-badge)](https://pypi.org/project/dython/)
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg?style=for-the-badge)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython?style=for-the-badge)](https://pypistats.org/packages/dython)
-[![Stars](https://img.shields.io/github/stars/shakedzy/dython?style=for-the-badge&logo=github)](https://github.com/shakedzy/dython)
-[![Forks](https://img.shields.io/github/forks/shakedzy/dython?style=for-the-badge&logo=github)](https://github.com/shakedzy/dython)
 [![License](https://img.shields.io/pypi/l/dython?style=for-the-badge)](https://github.com/shakedzy/dython/blob/master/LICENSE)
 
 ![banner](images/index_banner.png)
