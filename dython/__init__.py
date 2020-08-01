@@ -1,5 +1,5 @@
 from . import (
-    nominal, model_utils, sampling
+    nominal, model_utils, sampling, data_utils
 )
 
 
