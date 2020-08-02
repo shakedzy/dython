@@ -58,6 +58,8 @@ All examples can also be imported and executed from `dython.examples`.
 ## Modules Documentation
 Full documentation of all modues and public methods is available:
 
+* [data_utils](modules/data_utils.md)
+
 * [nominal](modules/nominal.md)
 
 * [model_utils](modules/model_utils.md)
