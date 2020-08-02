@@ -24,7 +24,7 @@ pip install git+https://github.com/shakedzy/dython.git`
 
 ## Dependencies 
 
-Dython requires Python 3.5 or higher, and all of th following packages:
+Dython requires Python 3.5 or higher, and all of the following packages:
 
 * `numpy`
 * `pandas`
