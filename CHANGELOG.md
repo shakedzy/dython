@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.6.0
+* New module: `data_utils`
+* `split_hist` method added, with new example
+* `identify_columns_by_type` and `identify_columns_with_na` moved to `data_utils` from `nominal` 
+
 ## 0.5.2
 * Added `nominal.identify_columns_with_na` (by **[@musketeer191](https://github.com/musketeer191)**)
 * Added `nominal.identify_numeric_columns` (issue [#58](https://github.com/shakedzy/dython/issues/58), by **[@musketeer191](https://github.com/musketeer191)**)
