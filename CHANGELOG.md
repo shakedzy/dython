@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.6.1
+* Bug fix in `model_utils.roc_graph`
+* `model_utils.roc_graph` now accepts also `legend` and `plot` arguments
+
 ## 0.6.0
 * New module: `data_utils`
 * `split_hist` method added, with new example
