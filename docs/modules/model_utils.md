@@ -10,21 +10,20 @@ title: model_utils
 
 Plot a ROC graph of predictor's results (inclusding AUC scores), where each
 row of y_true and y_pred represent a single example.
-If there are 1 or two columns only, the data is treated as a binary
-classification (see input example below). 
-If there are more then 2 columns, each column is considered a 
-unique class, and a ROC graph and AUC score will be computed for each. 
-A Macro-ROC and Micro-ROC are computed and plotted too by default.
 
 Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html) (as was seen on April 2018):
     
 - **`y_true`** : `list / NumPy ndarray`
 
-    The true classes of the predicted data
+    The true classes of the predicted data.
+    If only one or two columns exist, the data is treated as a binary
+    classification (see input example below). 
+    If there are more than 2 columns, each column is considered a 
+    unique class, and a ROC graph and AUC score will be computed for each. 
 
 - **`y_pred`** : `list / NumPy ndarray`
 
-    The predicted classes
+    The predicted classes. Must have the same shape as `y_true`.
 
 - **`micro`** : `Boolean` 
 
@@ -38,7 +37,7 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 
     Whether to calculate a Macro ROC graph (not applicable for binary cases)
 
-- **`eoptimal_threshold`** : `Boolean`
+- **`eopt`** : `Boolean`
 
     _Default = True_
     
@@ -108,6 +107,14 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
     _Default = '.2f'_
     
     String formatting of displayed AUC and threshold numbers.
+    
+- **`legend`**: `string` or `None`, default = 'best'
+
+    A Matplotlib legend location string. See Matplotlib documentation for possible options
+    
+- **`plot`**: `Boolean`, default = True
+
+    Plot the histogram
 
 **Returns:** A dictionary, one key for each class. Each value is another dictionary,
 holding AUC and eOpT values.

@@ -10,14 +10,15 @@ __all__ = [
 ]
 
 
-def _display_roc_plot(xlim, ylim):
+def _display_roc_plot(xlim, ylim, legend):
     plt.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--')
     plt.xlim(xlim)
     plt.ylim(ylim)
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
-    plt.legend(loc="lower right")
+    if legend:
+        plt.legend(loc=legend)
     plt.show()
 
 
@@ -67,7 +68,7 @@ def _binary_roc_graph(y_true, y_pred, eoptimal, class_label, color, lw, ls, ms, 
         y_p = [x[1] for x in y_pred]
     fpr, tpr, th = roc_curve(y_t, y_p)
     auc_score = auc(fpr, tpr)
-    if 'class_label' is not None:
+    if class_label is not None:
         class_label = ': ' + class_label
     else:
         class_label = ''
@@ -92,7 +93,7 @@ def roc_graph(y_true,
               y_pred,
               micro=True,
               macro=True,
-              eoptimal_threshold=True,
+              eopt=True,
               class_names=None,
               colors=None,
               ax=None,
@@ -102,7 +103,9 @@ def roc_graph(y_true,
               lw=2,
               ls='-',
               ms=10,
-              fmt='.2f'
+              fmt='.2f',
+              legend='best',
+              plot=True
               ):
     """
     Plot a ROC graph of predictor's results (including AUC scores), where each
@@ -128,7 +131,7 @@ def roc_graph(y_true,
     macro : Boolean, default = True
         Whether to calculate a Macro ROC graph (not applicable for binary
         cases)
-    eoptimal_threshold : Boolean, default = True
+    eopt : Boolean, default = True
         Whether to calculate and display the estimated-optimal threshold
         for each ROC graph. The estimated-optimal threshold is the closest
         computed threshold with (fpr,tpr) values closest to (0,1)
@@ -157,6 +160,10 @@ def roc_graph(y_true,
         Marker-size.
     fmt : string, default = '.2f'
         String formatting of displayed AUC and threshold numbers.
+    legend : string or None, default = 'best'
+        Position graph legend.
+    plot : Boolean, default = True
+        Display graph
 
     Returns:
     --------
@@ -198,7 +205,7 @@ def roc_graph(y_true,
     output_dict = dict()
     if len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
         class_label = class_names[-1] if class_names is not None else None
-        d = _binary_roc_graph(y_true, y_pred, eoptimal=eoptimal_threshold,
+        d = _binary_roc_graph(y_true, y_pred, eoptimal=eopt,
                               class_label=class_label, color=colors[-1],
                               lw=lw, ls=ls, ms=ms, fmt=fmt, ax=ax)
         class_label = class_label or '0'
@@ -215,7 +222,7 @@ def roc_graph(y_true,
             class_label = class_names[i] if class_names is not None else str(i)
             d = _binary_roc_graph(y_true[:, i],
                                   y_pred[:, i],
-                                  eoptimal=eoptimal_threshold,
+                                  eoptimal=eopt,
                                   color=colors[i % len(colors)],
                                   class_label=class_label,
                                   lw=lw, ls=ls, ms=ms, fmt=fmt, ax=ax)
@@ -233,7 +240,8 @@ def roc_graph(y_true,
                               lw=lw, ms=ms, fmt=fmt, ax=ax)
         if macro:
             _plot_macro_roc(all_fpr, all_tpr, n, lw, fmt, ax)
-    _display_roc_plot(xlim=xlim, ylim=ylim)
+    if plot:
+        _display_roc_plot(xlim=xlim, ylim=ylim, legend=legend)
     output_dict['ax'] = ax
     return output_dict
 
