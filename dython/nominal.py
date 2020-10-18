@@ -542,8 +542,10 @@ def associations(dataset,
     corr, columns, nominal_columns, inf_nan, single_value_columns = _comp_assoc(dataset, nominal_columns, mark_columns,
                                                                                 theil_u, clustering, bias_correction,
                                                                                 nan_strategy, nan_replace_value)
+    has_ax=True
     if ax is None:
         plt.figure(figsize=figsize)
+        has_ax=False
     if inf_nan.any(axis=None):
         inf_nan_mask = np.vectorize(lambda x: not bool(x))(inf_nan.values)
         ax = sns.heatmap(inf_nan_mask,
@@ -589,7 +591,7 @@ def associations(dataset,
                      mask=mask,
                      ax=ax,
                      cbar=cbar)
-    if plot:
+    if plot and not has_ax:
         plt.show()
     return {'corr': corr,
             'ax': ax}
