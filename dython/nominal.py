@@ -469,7 +469,9 @@ def associations(dataset,
                  fmt='.2f',
                  cmap=None,
                  sv_color='silver',
-                 cbar=True
+                 cbar=True,
+                 vmax=1.0,
+                 vmin=None
                  ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -527,6 +529,12 @@ def associations(dataset,
         features over the heat-map
     cbar: Boolean, default = True
         Display heat-map's color-bar
+    vmax: float, default = 1.0
+        Set heat-map vmax option
+    vmin: float or None, default = None
+        Set heat-map vmin option. If set to None, vmin will be chosen automatically
+        between 0 and -1, depending on the types of associations used (-1 if Pearson's R
+        is used, 0 otherwise)
 
     Returns:
     --------
@@ -578,13 +586,14 @@ def associations(dataset,
     else:
         sv_mask = np.ones_like(corr)
     mask = np.vectorize(lambda x: not bool(x))(inf_nan_mask) + np.vectorize(lambda x: not bool(x))(sv_mask)
+    vmin = vmin or (-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0)
     ax = sns.heatmap(corr,
                      cmap=cmap,
                      annot=annot,
                      fmt=fmt,
                      center=0,
-                     vmax=1.0,
-                     vmin=-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0,
+                     vmax=vmax,
+                     vmin=vmin,
                      square=True,
                      mask=mask,
                      ax=ax,
