@@ -113,6 +113,20 @@ continuous features using:
     _Default = True_
     
     Display heat-map's color-bar
+    
+- **`vmax`** : `float`
+
+    _Default = 1.0_
+    
+    Set heat-map `vmax` option
+        
+- **`vmin`** : `float` or `None`
+
+    _Default = None_
+    
+    Set heat-map `vmin` option. If set to `None`, `vmin` will be chosen automatically 
+    between 0 and -1.0, depending on the types of associations used (-1.0 if Pearson's R 
+    is used, 0 otherwise)   
 
 **Returns:** A dictionary with the following keys:
 

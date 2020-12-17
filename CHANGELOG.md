@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.6.2
+* Added configurable `vmax` and `vmin` to `nominal.associations` (issue [#68](https://github.com/shakedzy/dython/issues/68)) 
+
 ## 0.6.1
 * Bug fix in `model_utils.roc_graph`
 * `model_utils.roc_graph` now accepts also `legend` and `plot` arguments
