@@ -89,6 +89,7 @@ def conditional_entropy(x,
 
 def cramers_v(x,
               y,
+              weight,
               bias_correction=True,
               nan_strategy=_REPLACE,
               nan_replace_value=_DEFAULT_REPLACE_VALUE):
@@ -124,7 +125,10 @@ def cramers_v(x,
         x, y = replace_nan_with_value(x, y, nan_replace_value)
     elif nan_strategy == _DROP:
         x, y = remove_incomplete_samples(x, y)
-    confusion_matrix = pd.crosstab(x, y)
+    if weight!= null :
+        confusion_matrix = pd.crosstab(x, y, values = weight, aggfunc = 'sum').fillna(0))
+    else :
+        confusion_matrix = pd.crosstab(x, y)
     chi2 = ss.chi2_contingency(confusion_matrix)[0]
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
