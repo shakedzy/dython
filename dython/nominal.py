@@ -471,7 +471,9 @@ def associations(dataset,
                  sv_color='silver',
                  cbar=True,
                  vmax=1.0,
-                 vmin=None
+                 vmin=None,
+                 title=None,
+                 filename=None
                  ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -535,6 +537,10 @@ def associations(dataset,
         Set heat-map vmin option. If set to None, vmin will be chosen automatically
         between 0 and -1, depending on the types of associations used (-1 if Pearson's R
         is used, 0 otherwise)
+    title : string or None, default = None
+        Plotted graph title
+    filename : string or None, default = None
+        If not None, plot will be saved to the given file name
 
     Returns:
     --------
@@ -598,6 +604,9 @@ def associations(dataset,
                      mask=mask,
                      ax=ax,
                      cbar=cbar)
+    plt.title(title)
+    if filename:
+        plt.savefig(filename)
     if plot:
         plt.show()
     return {'corr': corr,
