@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from ._private import convert
@@ -6,8 +7,41 @@ from ._private import convert
 __all__ = [
     'identify_columns_by_type',
     'identify_columns_with_na',
+    'one_hot_encode',
     'split_hist'
 ]
+
+
+def one_hot_encode(arr, classes=None):
+    """
+    One-hot encode a 1D array.
+    Based on this StackOverflow answer: https://stackoverflow.com/a/29831596/5863503
+
+    Parameters:
+    -----------
+    arr : array-like
+        An array to be one-hot encoded. Must contain only non-negative integers
+    classes : int or None
+        number of classes. if None, max value of the array will be used
+
+    Returns:
+    --------
+    2D one-hot encoded array
+
+    Example:
+    --------
+    >> one_hot_encode([1,0,5])
+    [[0. 1. 0. 0. 0. 0.]
+     [1. 0. 0. 0. 0. 0.]
+     [0. 0. 0. 0. 0. 1.]]
+    """
+    arr = convert(arr, 'array')
+    if not len(arr.shape) == 1:
+        raise ValueError(f'array must have only one dimension, but has shape: {arr.shape}')
+    classes = classes if classes is not None else arr.max()+1
+    h = np.zeros((arr.size, classes))
+    h[np.arange(arr.size), arr] = 1
+    return h
 
 
 def split_hist(dataset, values, split_by, title='', xlabel='', ylabel=None, figsize=None, legend='best', plot=True,
