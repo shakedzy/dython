@@ -6,7 +6,7 @@ title: nominal
 
 #### `associations`
 
-`associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver')`
+`associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, title=None, filename=None)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -126,7 +126,19 @@ continuous features using:
     
     Set heat-map `vmin` option. If set to `None`, `vmin` will be chosen automatically 
     between 0 and -1.0, depending on the types of associations used (-1.0 if Pearson's R 
-    is used, 0 otherwise)   
+    is used, 0 otherwise)  
+  
+- **`title`**: `string` or `None`
+        
+    _Default = None_
+
+    Plotted graph title.
+
+- **`filename`**: `string` or `None`
+        
+    _Default = None_
+
+    If not None, plot will be saved to the given file name.
 
 **Returns:** A dictionary with the following keys:
 
