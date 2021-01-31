@@ -6,7 +6,7 @@ title: model_utils
 
 #### `roc_graph`
 
-`roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, class_names=None, colors=None, ax=None, figsize=None, xlim=(0.,1.), ylim=(0.,1.02), lw=2, ls='-',ms=10,fmt='.2f')`
+`roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, class_names=None, colors=None, ax=None, figsize=None, xlim=(0.,1.), ylim=(0.,1.02), lw=2, ls='-', ms=10, fmt='.2f', title=None, filename=None)`
 
 Plot a ROC graph of predictor's results (inclusding AUC scores), where each
 row of y_true and y_pred represent a single example.
@@ -115,6 +115,18 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 - **`plot`**: `Boolean`, default = True
 
     Plot the histogram
+
+- **`title`**: `string` or `None`
+        
+    _Default = None_
+
+    Plotted graph title. If None, default title is used.
+  
+- **`filename`**: `string` or `None`
+        
+    _Default = None_
+
+    If not None, plot will be saved to the given file name.
 
 **Returns:** A dictionary, one key for each class. Each value is another dictionary,
 holding AUC and eOpT values.

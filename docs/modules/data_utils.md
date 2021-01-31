@@ -50,6 +50,31 @@ Given a dataset, identify columns of the types requested.
 
 __________________
 
+#### `one_hot_encode`
+
+`one_hot_encode(arr, classes=None)`
+
+One-hot encode a 1D array. Based on this [StackOverflow answer](https://stackoverflow.com/a/29831596/5863503).
+
+- **`arr`** : array-like
+  
+    An array to be one-hot encoded. Must contain only non-negative integers
+
+- **`classes`** : `int` or `None`
+  
+    number of classes. if None, max value of the array will be used
+
+**Returns:** 2D one-hot encoded array
+
+**Example:**
+```python
+>> one_hot_encode([1,0,5])
+[[0. 1. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 1.]]
+```
+__________________
+
 #### `split_hist`
 
 `split_hist(dataset, values, split_by, title='', xlabel='', ylabel=None, figsize=None, legend='best', plot=True, **hist_kwargs)`

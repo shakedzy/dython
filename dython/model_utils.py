@@ -9,16 +9,20 @@ __all__ = [
     'roc_graph'
 ]
 
+_ROC_PLOT_COLORS = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'darkorange']
 
-def _display_roc_plot(xlim, ylim, legend):
+
+def _display_roc_plot(xlim, ylim, legend, title, filename):
     plt.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--')
     plt.xlim(xlim)
     plt.ylim(ylim)
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic')
+    plt.title(title or 'Receiver Operating Characteristic')
     if legend:
         plt.legend(loc=legend)
+    if filename:
+        plt.savefig(filename)
     plt.show()
 
 
@@ -105,7 +109,9 @@ def roc_graph(y_true,
               ms=10,
               fmt='.2f',
               legend='best',
-              plot=True
+              plot=True,
+              title=None,
+              filename=None
               ):
     """
     Plot a ROC graph of predictor's results (including AUC scores), where each
@@ -164,6 +170,10 @@ def roc_graph(y_true,
         Position graph legend.
     plot : Boolean, default = True
         Display graph
+    title : string or None, default = None
+        Plotted graph title. If None, default title is used
+    filename : string or None, default = None
+        If not None, plot will be saved to the given file name
 
     Returns:
     --------
@@ -201,7 +211,9 @@ def roc_graph(y_true,
     if ax is None:
         plt.figure(figsize=figsize)
         ax = plt.gca()
-    colors = colors or ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'darkorange']
+    if isinstance(colors, str):
+        colors = [colors]
+    colors = colors or _ROC_PLOT_COLORS
     output_dict = dict()
     if len(y_pred.shape) == 1 or y_pred.shape[1] <= 2:
         class_label = class_names[-1] if class_names is not None else None
@@ -241,7 +253,7 @@ def roc_graph(y_true,
         if macro:
             _plot_macro_roc(all_fpr, all_tpr, n, lw, fmt, ax)
     if plot:
-        _display_roc_plot(xlim=xlim, ylim=ylim, legend=legend)
+        _display_roc_plot(xlim=xlim, ylim=ylim, legend=legend, title=title, filename=filename)
     output_dict['ax'] = ax
     return output_dict
 
