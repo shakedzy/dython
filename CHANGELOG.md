@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.6.3
+* Added `data_utils.one_hot_encode`
+* Added `title` and `filename` options to `associations` and `roc_graph`
+
 ## 0.6.2
 * Added configurable `vmax` and `vmin` to `nominal.associations` (issue [#68](https://github.com/shakedzy/dython/issues/68)) 
 
