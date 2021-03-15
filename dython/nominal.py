@@ -493,11 +493,12 @@ def associations(dataset,
         none are categorical
     mark_columns : Boolean, default = False
         if True, output's columns' names will have a suffix of '(nom)' or
-        '(con)' based on there type (eda_tools or continuous), as provided
+        '(con)' based on their type (nominal or continuous), as provided
         by nominal_columns
     theil_u : Boolean, default = False
         In the case of categorical-categorical feaures, use Theil's U instead
-        of Cramer's V
+        of Cramer's V. If selected, heat-map rows are the provided information
+        (U = U(row|col))
     plot : Boolean, default = True
         Plot a heat-map of the correlation matrix
     clustering : Boolean, default = False
