@@ -21,19 +21,22 @@ continuous features using:
 - **`nominal_columns`** : `string / list / NumPy ndarray`
 
     Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
-    columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are categorical
+    columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are 
+    categorical
 
 - **`mark_columns`** : `Boolean` 
 
     _Default: False_
 
-    if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or continuous), as provided by nominal_columns
+    if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on their type (nominal or 
+    continuous), as provided by nominal_columns
 
 - **`theil_u`** : `Boolean` 
 
     _Default: False_
 
-    In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
+    In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V. If selected, 
+    heat-map rows are the provided information: $U = U(row|col)$. 
 
 - **`plot`** : `Boolean` 
 
