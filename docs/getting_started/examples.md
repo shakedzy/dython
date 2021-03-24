@@ -172,7 +172,7 @@ df = pd.DataFrame(data=data.data, columns=data.feature_names)
 df['malignant'] = [not bool(x) for x in data.target]
 
 # Plot histogram
-split_hist(df, 'mean radius', 'malignant', bins=20, figsize=(15,7))
+split_hist(df, 'mean radius', split_by='malignant', bins=20, figsize=(15,7))
 ```
 
 **Output:**
