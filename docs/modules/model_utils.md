@@ -4,11 +4,11 @@ title: model_utils
 
 # model_utils
 
-#### `roc_graph`
+#### `metric_graph`
 
-`roc_graph(y_true, y_pred, micro=True, macro=True, eoptimal_threshold=True, class_names=None, colors=None, ax=None, figsize=None, xlim=(0.,1.), ylim=(0.,1.02), lw=2, ls='-', ms=10, fmt='.2f', title=None, filename=None)`
+`metric_graph(y_true, y_pred, metric, micro=True, macro=True, eoptimal_threshold=True, class_names=None, colors=None, ax=None, figsize=None, xlim=(0.,1.), ylim=(0.,1.02), lw=2, ls='-', ms=10, fmt='.2f', title=None, filename=None, force_multiclass=False)`
 
-Plot a ROC graph of predictor's results (inclusding AUC scores), where each
+Plot a metric graph of predictor's results (including AUC scores), where each
 row of y_true and y_pred represent a single example.
 
 Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html) (as was seen on April 2018):
@@ -25,24 +25,32 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 
     The predicted classes. Must have the same shape as `y_true`.
 
-- **`micro`** : `Boolean` 
-
+- **`metric`** : `string`
+  
+    The metric graph to plot. Currently supported: 'roc' for Receiver Operating Characteristic curve and
+    'pr' for Precision-Recall curve
+  
+- **`micro`** : `Boolean`
+  
     _Default = True_
-
-    Whether to calculate a Micro ROC graph (not applicable for binary cases)
-
-- **`macro`** : `Boolean` 
-
+  
+    Whether to calculate a Micro graph (not applicable for binary cases)
+  
+- **`macro`** : `Boolean`
+  
     _Default = True_
-
-    Whether to calculate a Macro ROC graph (not applicable for binary cases)
-
-- **`eopt`** : `Boolean`
-
+  
+    Whether to calculate a Macro graph (ROC metric only, not applicable for binary cases)
+  
+- **`eopt`** : `Boolean` 
+  
     _Default = True_
-    
-    Whether to calculate and display the estimated-optimal threshold for each ROC graph. The estimated-optimal threshold is the closest computed threshold with (fpr,tpr) values closest to (0,1) 
-
+  
+    Whether to calculate and display the estimated-optimal threshold
+    for each metric graph. For ROC curves, the estimated-optimal threshold is the closest
+    computed threshold with (fpr,tpr) values closest to (0,1). For PR curves, it is
+    the closest one to (1,1) (perfect recall and precision)
+  
 - **`class_names`**: `list` or `string` 
 
     _Default = None_
@@ -108,7 +116,9 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
     
     String formatting of displayed AUC and threshold numbers.
     
-- **`legend`**: `string` or `None`, default = 'best'
+- **`legend`**: `string` or `None`
+  
+    _Default = 'best'_
 
     A Matplotlib legend location string. See Matplotlib documentation for possible options
     
@@ -128,6 +138,14 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 
     If not None, plot will be saved to the given file name.
 
+- **`force_multiclass`**: `Boolean`
+  
+    _Default = False_
+  
+    Only applicable if `y_true` and `y_pred` have two columns. If so,
+    consider the data as a multiclass data rather than binary (useful when plotting
+    curves of different models one against the other)
+
 **Returns:** A dictionary, one key for each class. Each value is another dictionary,
 holding AUC and eOpT values.
 
@@ -139,13 +157,28 @@ is class 0, which was predicted with a probability of 0.6, and the second line's
 true class is 1, with predicted probability of 0.8. 
 ```python
 # First option: 
->> roc_graph(y_true=[0,1], y_pred=[0.6,0.8]) 
+>> metric_graph(y_true=[0,1], y_pred=[0.6,0.8], metric='roc') 
 # Second option:
->> roc_graph(y_true=[[1,0],[0,1]], y_pred=[[0.6,0.4],[0.2,0.8]])
+>> metric_graph(y_true=[[1,0],[0,1]], y_pred=[[0.6,0.4],[0.2,0.8]], metric='roc')
 # Both yield the same result
 ```
 
 __________________
+
+#### `roc_graph`
+
+`roc_graph(y_true, y_pred, *args, **kwargs)`
+
+Plot a ROC graph of predictor's results (including AUC scores), where each
+row of y_true and y_pred represent a single example.
+
+!!! warning "Note:" 
+
+	The 'roc_graph' method is deprecated and will be removed in future versions. 
+    Please use 'metric_graph(y_true, y_pred, metric='roc',...)' instead.
+
+__________________
+
 
 #### `random_forest_feature_importance`
 

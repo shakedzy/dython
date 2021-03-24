@@ -6,7 +6,7 @@ from sklearn.preprocessing import label_binarize
 from sklearn.multiclass import OneVsRestClassifier
 
 from .data_utils import split_hist
-from .model_utils import roc_graph
+from .model_utils import metric_graph, roc_graph
 from .nominal import associations
 
 
@@ -37,7 +37,35 @@ def roc_graph_example():
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
     # Plot ROC graphs
+    print('XXX')
     return roc_graph(y_test, y_score, class_names=iris.target_names)
+
+
+def pr_graph_example():
+    """
+    Plot an example PR graph of an SVM model predictions over the Iris
+    dataset.
+    """
+
+    # Load data
+    iris = datasets.load_iris()
+    X = iris.data
+    y = label_binarize(iris.target, classes=[0, 1, 2])
+
+    # Add noisy features
+    random_state = np.random.RandomState(4)
+    n_samples, n_features = X.shape
+    X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
+
+    # Train a model
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5, random_state=0)
+    classifier = OneVsRestClassifier(svm.SVC(kernel='linear', probability=True, random_state=0))
+
+    # Predict
+    y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
+
+    # Plot PR graphs
+    return metric_graph(y_test, y_score, 'pr', class_names=iris.target_names)
 
 
 def associations_iris_example():

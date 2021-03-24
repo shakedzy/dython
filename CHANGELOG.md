@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.6.4 
+* Adding `model_utils.metric_graph` instead of `roc_graph`, which now supports ROC curves and Precision-Recall curves
+* `roc_graph` is marked as deprecated
+
 ## 0.6.3
 * Added `data_utils.one_hot_encode`
 * Added `title` and `filename` options to `associations` and `roc_graph`
