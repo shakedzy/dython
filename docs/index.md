@@ -36,8 +36,9 @@ Here's another thing - given a machine-learning multi-class model's predictions,
 each class' ROC curve, AUC score and find the estimated-optimal thresholds - again, with a single line of code:
 
 ```python
-from dython.model_utils import roc_graph
-roc_graph(y_true, y_pred)
+from dython.model_utils import metric_graph
+
+metric_graph(y_true, y_pred, metric='roc')
 ```
 The result:
 
