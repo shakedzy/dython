@@ -174,8 +174,8 @@ row of y_true and y_pred represent a single example.
 
 !!! warning "Note:" 
 
-	The 'roc_graph' method is deprecated and will be removed in future versions. 
-    Please use 'metric_graph(y_true, y_pred, metric='roc',...)' instead.
+	The `roc_graph` method is deprecated and will be removed in future versions. 
+    Please use `metric_graph(y_true, y_pred, metric='roc',...)` instead.
 
 __________________
 
