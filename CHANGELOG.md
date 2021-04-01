@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.6.4 
+## 0.6.4 (_post1_) 
 * Adding `model_utils.metric_graph` instead of `roc_graph`, which now supports ROC curves and Precision-Recall curves
 * `roc_graph` is marked as deprecated
 

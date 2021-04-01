@@ -48,7 +48,7 @@ def _draw_estimated_optimal_threshold_mark(metric, x_axis, y_axis, thresholds, c
                 xy=(x_axis[amin], y_axis[amin]), color=color,
                 xytext=(x_axis[amin] + annotation_offset[0],
                         y_axis[amin] + annotation_offset[1]))
-    return thresholds[amin]
+    return thresholds[amin], x_axis[amin], y_axis[amin]
 
 
 def _plot_macro_metric(x_axis, y_axis, n, lw, fmt, ax):
@@ -80,6 +80,7 @@ def _binary_metric_graph(metric, y_true, y_pred, eoptimal, class_label, color, l
     else:
         y_t = [np.argmax(x) for x in y_true]
         y_p = [x[1] for x in y_pred]
+    y_t_ratio = np.sum(y_t)/y_t.size
     if metric == 'roc':
         x_axis, y_axis, th = roc_curve(y_t, y_p)  # x = fpr, y = tpr
     else:  # metric == 'pr'
@@ -91,11 +92,15 @@ def _binary_metric_graph(metric, y_true, y_pred, eoptimal, class_label, color, l
         class_label = ''
     label = '{metric} curve{class_label} (AUC = {auc:{fmt}}'.format(metric=metric.upper(), class_label=class_label,
                                                                     auc=auc_score, fmt=fmt)
+    if metric == 'pr':
+        label += ', naive = {ytr:{fmt}}'.format(ytr=y_t_ratio, fmt=fmt)
     if eoptimal:
-        eopt = _draw_estimated_optimal_threshold_mark(metric, x_axis, y_axis, th, color, ms, fmt, ax)
+        eopt, eopt_x, eopt_y = _draw_estimated_optimal_threshold_mark(metric, x_axis, y_axis, th, color, ms, fmt, ax)
         label += ', eOpT = {th:{fmt}})'.format(th=eopt, fmt=fmt)
     else:
         eopt = None
+        eopt_x = None
+        eopt_y = None
         label += ')'
     ax.plot(x_axis,
             y_axis,
@@ -105,7 +110,18 @@ def _binary_metric_graph(metric, y_true, y_pred, eoptimal, class_label, color, l
             label=label)
     return {'x': x_axis, 'y': y_axis, 'thresholds': th,
             'auc': auc_score, 'eopt': eopt,
-            'y_t_ratio': np.sum(y_t)/y_t.size}
+            'eopt_x': eopt_x, 'eopt_y': eopt_y,
+            'y_t_ratio': y_t_ratio}
+
+
+def _build_metric_graph_output_dict(metric, d):
+    naive = d['y_t_ratio'] if metric == 'pr' else 0.5
+    return {'auc': {'val': d['auc'],
+                    'naive': naive},
+            'eopt': {'val': d['eopt'],
+                     'x': d['eopt_x'],
+                     'y': d['eopt_y']}
+            }
 
 
 def metric_graph(y_true,
@@ -250,8 +266,7 @@ def metric_graph(y_true,
                                  class_label=class_label, color=color,
                                  lw=lw, ls=ls, ms=ms, fmt=fmt, ax=ax)
         class_label = class_label or '0'
-        output_dict[class_label] = {'auc': d['auc'],
-                                    'eopt': d['eopt']}
+        output_dict[class_label] = _build_metric_graph_output_dict(metric, d)
         pr_naives.append([0, 1, d['y_t_ratio'], d['y_t_ratio'], color])
     else:
         n = y_pred.shape[1]
@@ -272,8 +287,7 @@ def metric_graph(y_true,
                                      lw=lw, ls=ls, ms=ms, fmt=fmt, ax=ax)
             all_x_axis.append(d['x'])
             all_y_axis.append(d['y'])
-            output_dict[class_label] = {'auc': d['auc'],
-                                        'eopt': d['eopt']}
+            output_dict[class_label] = _build_metric_graph_output_dict(metric, d)
             pr_naives.append([0, 1, d['y_t_ratio'], d['y_t_ratio'], color])
         if micro:
             _binary_metric_graph(metric,

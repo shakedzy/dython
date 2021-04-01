@@ -37,7 +37,6 @@ def roc_graph_example():
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
     # Plot ROC graphs
-    print('XXX')
     return roc_graph(y_test, y_score, class_names=iris.target_names)
 
 

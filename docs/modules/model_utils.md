@@ -11,6 +11,16 @@ title: model_utils
 Plot a metric graph of predictor's results (including AUC scores), where each
 row of y_true and y_pred represent a single example.
 
+**ROC:** 
+Plots true-positive rate as a function of the false-positive rate of the positive label in a binary classification,
+where $TPR = TP / (TP + FN)$ and $FPR = FP / (FP + TN)$. A naive algorithm will display a linear line going from 
+(0,0) to (1,1), therefore having an area under-curve (AUC) of 0.5.
+
+**Precision-Recall:** 
+Plots precision as a function of recall of the positive label in a binary classification, where 
+$Precision = TP / (TP + FP)$ and $Recall = TP / (TP + FN)$. A naive algorithm will display a horizontal linear 
+line with precision of the ratio of positive examples in the dataset.
+
 Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html) (as was seen on April 2018):
     
 - **`y_true`** : `list / NumPy ndarray`
