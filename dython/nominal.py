@@ -304,6 +304,7 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
     This is a helper function for compute_associations and associations
     """
     dataset = convert(dataset, 'dataframe')
+    timestamp_cols = identify_columns_by_type(dataset, ['datetime64[ns]', 'datetime64[ns, <tz>]'])
     if nan_strategy == _REPLACE:
         dataset.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
