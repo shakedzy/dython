@@ -17,7 +17,7 @@ the optimal threshold, being the one enabling the best class separation.
 The area between curves allows a better insight into separation. The higher the area is (1 being the maximum), the
 more the positive and negative distributions' center-of-mass are closer to 1 and 0, respectively.
     
-Based on scikit-plot's `plot_ks_statistic` method.
+Based on [scikit-plot](https://github.com/reiinakano/scikit-plot) `plot_ks_statistic` method.
 
 - **`y_true`** : array-like
     
