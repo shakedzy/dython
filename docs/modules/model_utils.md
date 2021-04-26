@@ -7,6 +7,7 @@ title: model_utils
 #### `ks_abc`
 
 `ks_abc(y_true, y_pred, ax=None, figsize=None, colors=('darkorange', 'b'), title=None, xlim=(0.,1.), ylim=(0.,1.), fmt='.2f', lw=2, legend='best', plot=True, filename=None)`
+
 Perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute
 the area between curves.
 
