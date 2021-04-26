@@ -26,7 +26,7 @@ INSTALL_REQUIRES = [
 ]
 
 CLASSIFIERS = [
-      'Programming Language :: Python :: 3.x'
+      'Programming Language :: Python :: 3'
 ]
 PYTHON_REQUIRES = '>=3.5'
 
