@@ -21,14 +21,12 @@ INSTALL_REQUIRES = [
       'seaborn',
       'scipy',
       'matplotlib',
-      'scikit-learn'
+      'scikit-learn',
+      'scikit-plot>=0.3.7'
 ]
 
 CLASSIFIERS = [
-      'Programming Language :: Python :: 3.5',
-      'Programming Language :: Python :: 3.6',
-      'Programming Language :: Python :: 3.7',
-      'Programming Language :: Python :: 3.8',
+      'Programming Language :: Python :: 3.x'
 ]
 PYTHON_REQUIRES = '>=3.5'
 
