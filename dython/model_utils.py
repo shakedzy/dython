@@ -2,35 +2,39 @@ import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, precision_recall_curve, auc
+from scikitplot.helpers import binary_ks_curve
 from ._private import convert
 
 __all__ = [
     'random_forest_feature_importance',
     'metric_graph',
-    'roc_graph'
+    'roc_graph',
+    'ks_abc'
 ]
 
 _ROC_PLOT_COLORS = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'darkorange']
 
 
-def _display_metric_plot(metric, naives, xlim, ylim, legend, title, filename):
+def _display_metric_plot(ax, metric, naives, xlim, ylim, legend, title, filename, plot):
     for n in naives:
-        plt.plot([n[0], n[1]], [n[2], n[3]], color=n[4], lw=1, linestyle='--')
-    plt.xlim(xlim)
-    plt.ylim(ylim)
+        ax.plot([n[0], n[1]], [n[2], n[3]], color=n[4], lw=1, linestyle='--')
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
     if metric == 'roc':
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(title or 'Receiver Operating Characteristic')
+        ax.set_xlabel('False Positive Rate')
+        ax.set_ylabel('True Positive Rate')
+        ax.set_title(title or 'Receiver Operating Characteristic')
     else:  # metric == 'pr'
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title(title or 'Precision-Recall Curve')
+        ax.set_xlabel('Recall')
+        ax.set_ylabel('Precision')
+        ax.set_title(title or 'Precision-Recall Curve')
     if legend:
-        plt.legend(loc=legend)
+        ax.legend(loc=legend)
     if filename:
         plt.savefig(filename)
-    plt.show()
+    if plot:
+        plt.show()
+    return ax
 
 
 def _draw_estimated_optimal_threshold_mark(metric, x_axis, y_axis, thresholds, color, ms, fmt, ax):
@@ -43,7 +47,7 @@ def _draw_estimated_optimal_threshold_mark(metric, x_axis, y_axis, thresholds, c
     else:  # metric == 'pr'
         dist = lambda row: (1 - row[0]) ** 2 + (1 - row[1]) ** 2  # optimal: (1,1)
     amin = np.apply_along_axis(dist, 1, a).argmin()
-    plt.plot(x_axis[amin], y_axis[amin], color=color, marker='o', ms=ms)
+    ax.plot(x_axis[amin], y_axis[amin], color=color, marker='o', ms=ms)
     ax.annotate("{th:{fmt}}".format(th=thresholds[amin], fmt=fmt),
                 xy=(x_axis[amin], y_axis[amin]), color=color,
                 xytext=(x_axis[amin] + annotation_offset[0],
@@ -300,14 +304,14 @@ def metric_graph(y_true,
                                  lw=lw, ms=ms, fmt=fmt, ax=ax)
         if macro and metric == 'roc':
             _plot_macro_metric(all_x_axis, all_y_axis, n, lw, fmt, ax)
-    if plot:
-        if metric == 'roc':
-            naives = [[0, 1, 0, 1, 'grey']]
-        elif metric == 'pr':
-            naives = pr_naives
-        else:
-            raise ValueError(f'Invalid metric {metric}')
-        _display_metric_plot(metric, naives, xlim=xlim, ylim=ylim, legend=legend, title=title, filename=filename)
+    if metric == 'roc':
+        naives = [[0, 1, 0, 1, 'grey']]
+    elif metric == 'pr':
+        naives = pr_naives
+    else:
+        raise ValueError(f'Invalid metric {metric}')
+    ax = _display_metric_plot(ax, metric, naives, xlim=xlim, ylim=ylim, legend=legend,
+                              title=title, filename=filename, plot=plot)
     output_dict['ax'] = ax
     return output_dict
 
@@ -343,3 +347,100 @@ def roc_graph(y_true, y_pred, *args, **kwargs):
                   "Please use 'metric_graph(y_true, y_pred, metric='roc',...)' instead.",
                   DeprecationWarning)
     return metric_graph(y_true, y_pred, 'roc', *args, **kwargs)
+
+
+def ks_abc(y_true, y_pred, ax=None, figsize=None, colors=('darkorange', 'b'), title=None, xlim=(0.,1.), ylim=(0.,1.),
+           fmt='.2f', lw=2, legend='best', plot=True, filename=None):
+    """
+    Perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute
+    the area between curves.
+    The KS test plots the fraction of positives and negatives predicted correctly below each threshold. It then finds
+    the optimal threshold, being the one enabling the best class separation.
+    The area between curves allows a better insight into separation. The higher the area is (1 being the maximum), the
+    more the positive and negative distributions' center-of-mass are closer to 1 and 0, respectively.
+
+    Based on scikit-plot's `plot_ks_statistic` method.
+
+    Parameters:
+    -----------
+    y_true : array-like
+        The true labels of the dataset
+    y_pred : array-like
+        The probabilities predicted by a binary classifier
+    ax : matplotlib ax, default = None
+        Matplotlib Axis on which the curves will be plotted
+    figsize : (int,int) or None, default = None
+        a Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
+        default. Only used if `ax=None`.
+    colors : list of Matplotlib color strings, default = ('darkorange', 'b')
+        List of colors to be used for the plotted curves.
+    title : string or None, default = None
+        Plotted graph title. If None, default title is used
+    xlim : (float, float), default = (0.,1.)
+        X-axis limits.
+    ylim : (float,float), default = (0.,1.)
+        Y-axis limits.
+    fmt : string, default = '.2f'
+        String formatting of displayed numbers.
+    lw : int, default = 2
+        Line-width.
+    legend : string or None, default = 'best'
+        Position graph legend.
+    plot : Boolean, default = True
+        Display graph
+    filename : string or None, default = None
+        If not None, plot will be saved to the given file name
+
+    Returns:
+    --------
+    A dictionary of the following keys:
+    'abc': area between curves,
+    'ks_stat': computed statistic of the KS test,
+    'eopt': estimated optimal threshold,
+    'ax': the ax used to plot the curves
+    """
+    y_true = convert(y_true, 'array')
+    y_pred = convert(y_pred, 'array')
+    if y_pred.shape != y_true.shape:
+        raise ValueError('y_true and y_pred must have the same shape')
+    elif len(y_pred.shape) == 1 or y_pred.shape[1] == 1:
+        y_t = y_true
+        y_p = y_pred
+    elif y_pred.shape[1] == 2:
+        y_t = [np.argmax(x) for x in y_true]
+        y_p = [x[1] for x in y_pred]
+    else:
+        raise ValueError('y_true and y_pred must originate from a binary classifier, but have {} columns'.format(y_pred.shape[1]))
+
+    thresholds, nr, pr, ks_statistic, max_distance_at, _ = binary_ks_curve(y_t, y_p)
+    if ax is None:
+        plt.figure(figsize=figsize)
+        ax = plt.gca()
+
+    ax.plot(thresholds, pr, lw=lw, color=colors[0], label='Positive Class')
+    ax.plot(thresholds, nr, lw=lw, color=colors[1], label='Negative Class')
+    idx = np.where(thresholds == max_distance_at)[0][0]
+    ax.axvline(max_distance_at, *sorted([nr[idx], pr[idx]]),
+               label='KS Statistic: {ks:{fmt}} at {d:{fmt}}'.format(ks=ks_statistic, d=max_distance_at, fmt=fmt),
+               linestyle=':', lw=lw, color='grey')
+
+    thresholds = np.append(thresholds, 1.001)
+    abc = 0.
+    for i in range(len(pr)):
+        abc += (nr[i] - pr[i]) * (thresholds[i + 1] - thresholds[i])
+
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    ax.set_xlabel('Threshold')
+    ax.set_ylabel('Percentage below threshold')
+    ax.set_title('{t} [ABC = {a:{fmt}}]'.format(t=title or 'KS Statistic Plot', a=abc, fmt=fmt))
+    if legend:
+        ax.legend(loc='best')
+    if filename:
+        plt.savefig(filename)
+    if plot:
+        plt.show()
+    return {'abc': abc,
+            'ks_stat': ks_statistic,
+            'eopt': max_distance_at,
+            'ax': ax}
