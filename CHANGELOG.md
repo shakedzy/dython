@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.6.5
+## 0.6.5 (_post1_)
 * Added `model_utils.ks_abc`
 * Fixed a bug in `model_utils.metric_graph` when using `plot=False`
 * Added new dependency: `scikit-plot`
