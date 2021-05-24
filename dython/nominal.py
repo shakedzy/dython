@@ -304,12 +304,24 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
     This is a helper function for compute_associations and associations
     """
     dataset = convert(dataset, 'dataframe')
+
+    # handling NaN values in data
     if nan_strategy == _REPLACE:
         dataset.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
         dataset.dropna(axis=0, inplace=True)
     elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
+
+    # convert timestamp columns to numerical columns, so correlation can be performed
+    datetime_dtypes = [str(x) for x in dataset.dtypes if str(x).startswith('datetime64')]  # finding all timezones
+    if datetime_dtypes:
+        datetime_cols = identify_columns_by_type(dataset, datetime_dtypes)
+        datetime_cols = [c for c in datetime_cols if c not in nominal_columns]
+        if datetime_cols:
+            dataset[datetime_cols] = dataset[datetime_cols].astype(np.int64)
+
+    # identifying categorical columns
     columns = dataset.columns
     if nominal_columns is None:
         nominal_columns = list()
@@ -318,14 +330,22 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
     elif nominal_columns == 'auto':
         nominal_columns = identify_nominal_columns(dataset)
 
-    corr = pd.DataFrame(index=columns, columns=columns)
-    single_value_columns = []
+    corr = pd.DataFrame(index=columns, columns=columns)  # will be used to store associations values
+
+    # this dataframe is used to keep track of invalid association values, which will be placed on top
+    # of the corr dataframe. It is done for visualization purposes, so the heatmap values will remain
+    # between -1 and 1
     inf_nan = pd.DataFrame(data=np.zeros_like(corr),
                            columns=columns,
                            index=columns)
+
+    # finding single-value columns
+    single_value_columns = []
     for c in columns:
         if dataset[c].unique().size == 1:
             single_value_columns.append(c)
+
+    # computing associations
     for i in range(0, len(columns)):
         if columns[i] in single_value_columns:
             corr.loc[:, columns[i]] = 0.0
@@ -378,6 +398,7 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
                 inf_nan.loc[columns[i], columns[j]] = _inf_nan_str(ij)
                 inf_nan.loc[columns[j], columns[i]] = _inf_nan_str(ji)
     corr.fillna(value=np.nan, inplace=True)
+
     if mark_columns:
         marked_columns = [
             '{} (nom)'.format(col)
@@ -388,9 +409,12 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
         corr.index = marked_columns
         inf_nan.columns = marked_columns
         inf_nan.index = marked_columns
+
     if clustering:
         corr, _ = cluster_correlations(corr)
         columns = corr.columns
+        inf_nan = inf_nan.reindex(columns=columns).reindex(index=columns)
+
     return corr, columns, nominal_columns, inf_nan, single_value_columns
 
 

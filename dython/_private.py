@@ -2,11 +2,11 @@ import numpy as np
 import pandas as pd
 
 
-def convert(data, to):
+def convert(data, to, copy=True):
     converted = None
     if to == 'array':
         if isinstance(data, np.ndarray):
-            converted = data
+            converted = data.copy() if copy else data
         elif isinstance(data, pd.Series):
             converted = data.values
         elif isinstance(data, list):
@@ -15,14 +15,14 @@ def convert(data, to):
             converted = data.as_matrix()
     elif to == 'list':
         if isinstance(data, list):
-            converted = data
+            converted = data.copy() if copy else data
         elif isinstance(data, pd.Series):
             converted = data.values.tolist()
         elif isinstance(data, np.ndarray):
             converted = data.tolist()
     elif to == 'dataframe':
         if isinstance(data, pd.DataFrame):
-            converted = data
+            converted = data.copy(deep=True) if copy else data
         elif isinstance(data, np.ndarray):
             converted = pd.DataFrame(data)
     else:
