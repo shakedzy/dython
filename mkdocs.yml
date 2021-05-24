@@ -24,9 +24,7 @@ nav:
     - nominal: 'modules/nominal.md'
     - model_utils: 'modules/model_utils.md'
     - sampling: 'modules/sampling.md'
-  - Related Blogosts:
-    - The Search for Categorical Correlation: "https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9"
-    - Hard ROC - Really Understanding & Properly Using ROC and AUC: https://medium.com/@shakedzy/hard-roc-really-understanding-and-properly-using-roc-and-auc-13413cf0dc24"
+  - Related Blogosts: 'related_blogposts.md'
 google_analytics:
   - UA-141245946-2
   - auto

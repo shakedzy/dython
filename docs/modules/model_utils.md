@@ -4,6 +4,108 @@ title: model_utils
 
 # model_utils
 
+#### `ks_abc`
+
+`ks_abc(y_true, y_pred, ax=None, figsize=None, colors=('darkorange', 'b'), title=None, xlim=(0.,1.), ylim=(0.,1.), fmt='.2f', lw=2, legend='best', plot=True, filename=None)`
+
+Perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute
+the area between curves.
+
+The KS test plots the fraction of positives and negatives predicted correctly below each threshold. It then finds
+the optimal threshold, being the one enabling the best class separation.
+
+The area between curves allows a better insight into separation. The higher the area is (1 being the maximum), the
+more the positive and negative distributions' center-of-mass are closer to 1 and 0, respectively.
+    
+Based on [scikit-plot](https://github.com/reiinakano/scikit-plot) `plot_ks_statistic` method.
+
+- **`y_true`** : array-like
+    
+    The true labels of the dataset
+  
+- **`y_pred`** : array-like
+  
+    The probabilities predicted by a binary classifier
+  
+- **`ax`** : matplotlib ax
+        
+    _Default = None_
+  
+    Matplotlib Axis on which the curves will be plotted
+  
+- **`figsize`** : `(int,int)` or `None`
+  
+    _Default = None_
+  
+    a Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
+    default. Only used if `ax=None`
+  
+- **`colors`** : list of Matplotlib color strings 
+  
+    _Default = `('darkorange', 'b')`_
+  
+    List of colors to be used for the plotted curves
+  
+- **`title`** : string or `None` 
+  
+    _Default = None_
+    
+    Plotted graph title. If `None`, default title is used
+  
+- **`xlim`** : `(float, float)`
+
+    _Default = (0.,1.)_
+    
+    X-axis limits.
+
+- **`ylim`** : `(float,float)`
+
+    _Default = (0.,1.)_
+    
+    Y-axis limits.
+
+-  **`fmt`** : `string`
+
+    _Default = '.2f'_
+    
+    String formatting of displayed numbers.
+
+- **`lw`** : `int`
+
+    _Default = 2_
+    
+    Line-width.
+
+- **`legend`**: `string` or `None`
+  
+    _Default = 'best'_
+
+    A Matplotlib legend location string. See Matplotlib documentation for possible options
+    
+- **`plot`**: `Boolean`, default = True
+
+    Plot the KS curves
+  
+- **`filename`**: `string` or `None`
+        
+    _Default = None_
+
+    If not None, plot will be saved to the given file name.
+  
+**Returns:** A dictionary of the following keys:
+
+- `abc`: area between curves 
+  
+- `ks_stat`: computed statistic of the KS test
+  
+- `eopt`: estimated optimal threshold
+  
+- `ax`: the ax used to plot the curves
+
+**Example:** See [examples](../getting_started/examples.md).
+
+__________________
+
 #### `metric_graph`
 
 `metric_graph(y_true, y_pred, metric, micro=True, macro=True, eoptimal_threshold=True, class_names=None, colors=None, ax=None, figsize=None, xlim=(0.,1.), ylim=(0.,1.02), lw=2, ls='-', ms=10, fmt='.2f', title=None, filename=None, force_multiclass=False)`

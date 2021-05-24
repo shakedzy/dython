@@ -4,9 +4,10 @@ from sklearn import svm, datasets
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.linear_model import LogisticRegression
 
 from .data_utils import split_hist
-from .model_utils import metric_graph, roc_graph
+from .model_utils import metric_graph, roc_graph, ks_abc
 from .nominal import associations
 
 
@@ -120,3 +121,22 @@ def split_hist_example():
 
     # Plot histogram
     return split_hist(df, 'mean radius', 'malignant', bins=20, figsize=(15,7))
+
+
+def ks_abc_example():
+    """
+    An example of KS Area Between Curve of a simple binary classifier
+    trained over the Breast Cancer dataset.
+    """
+
+    # Load and split data
+    data = datasets.load_breast_cancer()
+    X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=.5, random_state=0)
+
+    # Train model and predict
+    model = LogisticRegression(solver='liblinear')
+    model.fit(X_train, y_train)
+    y_pred = model.predict_proba(X_test)
+
+    # Perform KS test and compute area between curves
+    return ks_abc(y_test, y_pred[:,1], figsize=(7,7))

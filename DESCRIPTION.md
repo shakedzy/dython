@@ -16,5 +16,5 @@ values of this library. Production-grade performance, on the other hand, were no
 * Project source is available at [https://github.com/shakedzy/dython](https://github.com/shakedzy/dython)
 
 ## Related blogposts:
-* Read more about the categorical tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
-* Read more about using ROC graphs on [Hard ROC: Really Understanding & Properly Using ROC and AUC](https://medium.com/@shakedzy/hard-roc-really-understanding-and-properly-using-roc-and-auc-13413cf0dc24)
+Learn more about some of the main methods of this library and their usage on 
+[these blogposts](http://shakedzy.xyz/dython/related_blogposts). 

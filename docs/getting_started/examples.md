@@ -63,6 +63,35 @@ associations(df, theil_u=True, figsize=(15, 15))
 
 __________________
 
+#### `ks_abc_example()`
+
+An example of KS Area Between Curve of a simple binary classifier trained over the Breast Cancer dataset.
+
+**Example code:**
+```python
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from dython.model_utils import ks_abc
+
+# Load and split data
+data = datasets.load_breast_cancer()
+X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=.5, random_state=0)
+
+# Train model and predict
+model = LogisticRegression(solver='liblinear')
+model.fit(X_train, y_train)
+y_pred = model.predict_proba(X_test)
+
+# Perform KS test and compute area between curves
+ks_abc(y_test, y_pred[:,1])
+```
+
+**Output:**
+
+![ks_example](../images/ks_example.png)
+__________________
+
 #### `pr_graph_example()`
 
 Plot an example Precision-Recall graph of an SVM model predictions over the Iris dataset.

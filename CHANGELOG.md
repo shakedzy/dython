@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.6.5 (_post1_)
+* Added `model_utils.ks_abc`
+* Fixed a bug in `model_utils.metric_graph` when using `plot=False`
+* Added new dependency: `scikit-plot`
+
 ## 0.6.4 (_post1_) 
 * Adding `model_utils.metric_graph` instead of `roc_graph`, which now supports ROC curves and Precision-Recall curves
 * `roc_graph` is marked as deprecated
