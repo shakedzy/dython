@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.6.6
+* Fixed issue where `nan_strategy` affected input data (issue [#82](https://github.com/shakedzy/dython/issues/82))
+* Added `datetime` support to `nominal.associations` (issue [#76](https://github.com/shakedzy/dython/issues/76))
+
 ## 0.6.5 (_post1_)
 * Added `model_utils.ks_abc`
 * Fixed a bug in `model_utils.metric_graph` when using `plot=False`
