@@ -315,10 +315,11 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
 
     # convert timestamp columns to numerical columns, so correlation can be performed
     datetime_dtypes = [str(x) for x in dataset.dtypes if str(x).startswith('datetime64')]  # finding all timezones
-    datetime_cols = identify_columns_by_type(dataset, datetime_dtypes)
-    datetime_cols = [c for c in datetime_cols if c not in nominal_columns]
-    if datetime_cols:
-        dataset[datetime_cols] = dataset[datetime_cols].astype(np.int64)
+    if datetime_dtypes:
+        datetime_cols = identify_columns_by_type(dataset, datetime_dtypes)
+        datetime_cols = [c for c in datetime_cols if c not in nominal_columns]
+        if datetime_cols:
+            dataset[datetime_cols] = dataset[datetime_cols].astype(np.int64)
 
     # identifying categorical columns
     columns = dataset.columns
