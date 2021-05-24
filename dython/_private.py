@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def convert(data, to, copy=False):
+def convert(data, to, copy=True):
     converted = None
     if to == 'array':
         if isinstance(data, np.ndarray):
