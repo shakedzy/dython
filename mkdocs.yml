@@ -38,3 +38,13 @@ extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
 plugins:
   - search
+extra:
+  social:
+    - icon: fontawesome/regular/user-circle
+      link: https://shakedzy.xyz/
+    - icon: fontawesome/brands/github
+      link: https://github.com/shakedzy
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/shakedzy/
+    - icon: fontawesome/brands/medium
+      link: https://shakedzy.medium.com/
