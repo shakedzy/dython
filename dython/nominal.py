@@ -298,12 +298,18 @@ def identify_numeric_columns(dataset):
     return identify_columns_by_type(dataset, include=['int64', 'float64'])
 
 
-def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
-                bias_correction, nan_strategy, nan_replace_value):
+def _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_nom_assoc, num_num_assoc,
+                bias_correction, nan_strategy, nan_replace_value, clustering):
     """
     This is a helper function for compute_associations and associations
     """
     dataset = convert(dataset, 'dataframe')
+
+    if numerical_columns is not None:
+        if numerical_columns == 'auto':
+            nominal_columns = 'auto'
+        else:
+            nominal_columns = [c for c in dataset.columns if c not in numerical_columns]
 
     # handling NaN values in data
     if nan_strategy == _REPLACE:
@@ -313,6 +319,17 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
     elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
 
+    # identifying categorical columns
+    columns = dataset.columns
+    auto_nominal = False
+    if nominal_columns is None:
+        nominal_columns = list()
+    elif nominal_columns == 'all':
+        nominal_columns = columns
+    elif nominal_columns == 'auto':
+        auto_nominal = True
+        nominal_columns = identify_nominal_columns(dataset)
+
     # convert timestamp columns to numerical columns, so correlation can be performed
     datetime_dtypes = [str(x) for x in dataset.dtypes if str(x).startswith('datetime64')]  # finding all timezones
     if datetime_dtypes:
@@ -320,15 +337,8 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
         datetime_cols = [c for c in datetime_cols if c not in nominal_columns]
         if datetime_cols:
             dataset[datetime_cols] = dataset[datetime_cols].astype(np.int64)
-
-    # identifying categorical columns
-    columns = dataset.columns
-    if nominal_columns is None:
-        nominal_columns = list()
-    elif nominal_columns == 'all':
-        nominal_columns = columns
-    elif nominal_columns == 'auto':
-        nominal_columns = identify_nominal_columns(dataset)
+            if auto_nominal:
+                nominal_columns = identify_nominal_columns(dataset)
 
     corr = pd.DataFrame(index=columns, columns=columns)  # will be used to store associations values
 
@@ -359,7 +369,7 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
             else:
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
-                        if theil_u:
+                        if nom_nom_assoc == 'theil':
                             ji = theils_u(
                                 dataset[columns[i]],
                                 dataset[columns[j]],
@@ -368,13 +378,15 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
                                 dataset[columns[j]],
                                 dataset[columns[i]],
                                 nan_strategy=_SKIP)
-                        else:
+                        elif nom_nom_assoc == 'cramer':
                             cell = cramers_v(dataset[columns[i]],
                                              dataset[columns[j]],
                                              bias_correction=bias_correction,
                                              nan_strategy=_SKIP)
                             ij = cell
                             ji = cell
+                        else:
+                            raise ValueError(f'{nom_nom_assoc} is not a supported nominal-nominal association')
                     else:
                         cell = correlation_ratio(dataset[columns[i]],
                                                  dataset[columns[j]],
@@ -389,8 +401,17 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
                         ij = cell
                         ji = cell
                     else:
-                        cell, _ = ss.pearsonr(dataset[columns[i]],
-                                              dataset[columns[j]])
+                        if num_num_assoc == 'pearson':
+                            cell, _ = ss.pearsonr(dataset[columns[i]],
+                                                  dataset[columns[j]])
+                        elif num_num_assoc == 'spearman':
+                            cell, _ = ss.spearmanr(dataset[columns[i]],
+                                                   dataset[columns[j]])
+                        elif num_num_assoc == 'kendall':
+                            cell, _ = ss.kendalltau(dataset[columns[i]],
+                                                    dataset[columns[j]])
+                        else:
+                            raise ValueError(f'{num_num_assoc} is not a supported numerical-numerical association')
                         ij = cell
                         ji = cell
                 corr.loc[columns[i], columns[j]] = ij if not np.isnan(ij) and abs(ij) < np.inf else 0.0
@@ -420,12 +441,14 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
 
 def compute_associations(dataset,
                          nominal_columns='auto',
+                         numerical_columns=None,
                          mark_columns=False,
-                         theil_u=False,
-                         clustering=False,
+                         nom_nom_assoc='cramer',
+                         num_num_assoc='pearson',
                          bias_correction=True,
                          nan_strategy=_REPLACE,
                          nan_replace_value=_DEFAULT_REPLACE_VALUE,
+                         clustering=False
                          ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -473,17 +496,17 @@ def compute_associations(dataset,
     --------
     A DataFrame of the correlation/strength-of-association between all features
     """
-    corr, _, _, _, _ = _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
-                                   bias_correction, nan_strategy, nan_replace_value)
+    corr, _, _, _, _ = _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_nom_assoc,
+                                   num_num_assoc, bias_correction, nan_strategy, nan_replace_value, clustering)
     return corr
 
 
 def associations(dataset,
                  nominal_columns='auto',
+                 numerical_columns=None,
                  mark_columns=False,
-                 theil_u=False,
-                 plot=True,
-                 clustering=False,
+                 nom_nom_assoc='cramer',
+                 num_num_assoc='pearson',
                  bias_correction=True,
                  nan_strategy=_REPLACE,
                  nan_replace_value=_DEFAULT_REPLACE_VALUE,
@@ -496,6 +519,8 @@ def associations(dataset,
                  cbar=True,
                  vmax=1.0,
                  vmin=None,
+                 plot=True,
+                 clustering=False,
                  title=None,
                  filename=None
                  ):
@@ -578,9 +603,11 @@ def associations(dataset,
     --------
     See examples under `dython.examples`
     """
-    corr, columns, nominal_columns, inf_nan, single_value_columns = _comp_assoc(dataset, nominal_columns, mark_columns,
-                                                                                theil_u, clustering, bias_correction,
-                                                                                nan_strategy, nan_replace_value)
+    corr, columns, nominal_columns, inf_nan, single_value_columns = _comp_assoc(dataset, nominal_columns,
+                                                                                numerical_columns, mark_columns,
+                                                                                nom_nom_assoc, num_num_assoc,
+                                                                                bias_correction, nan_strategy,
+                                                                                nan_replace_value, clustering)
     if ax is None:
         plt.figure(figsize=figsize)
     if inf_nan.any(axis=None):

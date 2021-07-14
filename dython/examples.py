@@ -87,7 +87,7 @@ def associations_iris_example():
     df = pd.concat([X, y], axis=1)
 
     # Plot features associations
-    return associations(df)
+    return associations(df, num_num_assoc='spearman')
 
 
 def associations_mushrooms_example():
@@ -104,7 +104,7 @@ def associations_mushrooms_example():
                   'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
     # Plot features associations
-    return associations(df, theil_u=True, figsize=(15, 15))
+    return associations(df, nom_nom_assoc='theil', figsize=(15, 15))
 
 
 def split_hist_example():
