@@ -6,7 +6,7 @@ title: nominal
 
 #### `associations`
 
-`associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, plot=True, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, title=None, filename=None)`
+`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False, nom_nom_assoc='cramer', num_num_assoc='pearson', bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, clustering=False, title=None, filename=None)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -20,9 +20,21 @@ continuous features using:
 
 - **`nominal_columns`** : `string / list / NumPy ndarray`
 
+    _Default = 'auto'_
+
     Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
     columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are 
-    categorical
+    categorical. Only used if `numerical_columns` is `None`.
+  
+- **`numerical_columns`** : `string / list / NumPy ndarray`
+
+    _Default = None_
+
+    To be used instead of `nominal_columns`. Names of columns of the data-set 
+    which hold numerical values. Can also be the string 'all' to state that 
+    all columns are numerical (equivalent to `nominal_columns=None`) or
+    'auto' to try to identify numerical columns (equivalent to 
+    `nominal_columns=auto`). If `None`, `nominal_columns` is used.
 
 - **`mark_columns`** : `Boolean` 
 
@@ -31,31 +43,31 @@ continuous features using:
     if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on their type (nominal or 
     continuous), as provided by nominal_columns
 
-- **`theil_u`** : `Boolean` 
+- **`nom_nom_assoc`** : `string`
+  
+    _Default = 'cramer'_
 
-    _Default: False_
-
-    In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V. If selected, 
-    heat-map rows are the provided information: $U = U(row|col)$. 
-
-- **`plot`** : `Boolean` 
-
-    _Default: True_
-
-    Plot a heat-map of the correlation matrix. If False, heat-map will still be
-    drawn, but not shown. The heat-map's `ax` is part of this function's output. 
+    !!! info "Method signature change"
+        This replaces the `theil_u` flag which was used till version 0.6.6.
+  
+    Name of nominal-nominal (categorical-categorical) association to use:
+  
+    * `cramer`: Cramer's V
+      
+    * `theil`: Theil's U. When selected, heat-map rows are the provided information (meaning: $U = U(row|col)$)
+  
+- **`num_num_assoc`** : `string`
     
-    !!! tip "Tip"
-    
-        If you have no use of the plot at all, and only require the correlations
-        DataFrame, consider using [`compute_associations`](#compute_associations) instead.
-
-- **`clustering`** : `Boolean` 
-
-    _Default: False_
-
-    If True, the computed associations will be sorted into groups by similar correlations
-
+    _Default = 'pearson'_
+  
+    Name of numerical-numerical association to use: 
+  
+    * `pearson`: Pearson's R
+      
+    * `spearman`: Spearman's R
+      
+    * `kendall`: Kendall's Tau
+  
 - **`bias_correction`** : `Boolean`
 
      _Default = True_
@@ -129,7 +141,25 @@ continuous features using:
     
     Set heat-map `vmin` option. If set to `None`, `vmin` will be chosen automatically 
     between 0 and -1.0, depending on the types of associations used (-1.0 if Pearson's R 
-    is used, 0 otherwise)  
+    is used, 0 otherwise)
+  
+- **`plot`** : `Boolean` 
+
+    _Default: True_
+
+    Plot a heat-map of the correlation matrix. If False, heat-map will still be
+    drawn, but not shown. The heat-map's `ax` is part of this function's output. 
+    
+    !!! tip "Tip"
+    
+        If you have no use of the plot at all, and only require the correlations
+        DataFrame, consider using [`compute_associations`](#compute_associations) instead.
+
+- **`clustering`** : `Boolean` 
+
+    _Default: False_
+
+    If True, the computed associations will be sorted into groups by similar correlations
   
 - **`title`**: `string` or `None`
         
@@ -185,7 +215,7 @@ __________________
 
 #### `compute_associations`
 
-`compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, clustering=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE)`
+`compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, clustering=False)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -205,27 +235,53 @@ continuous features using:
 
 - **`nominal_columns`** : `string / list / NumPy ndarray`
 
-    Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
-    columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are categorical
+    _Default = 'auto'_
 
+    Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
+    columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are 
+    categorical. Only used if `numerical_columns` is `None`.
+  
+- **`numerical_columns`** : `string / list / NumPy ndarray`
+
+    _Default = None_
+
+    To be used instead of `nominal_columns`. Names of columns of the data-set 
+    which hold numerical values. Can also be the string 'all' to state that 
+    all columns are numerical (equivalent to `nominal_columns=None`) or
+    'auto' to try to identify numerical columns (equivalent to 
+    `nominal_columns=auto`). If `None`, `nominal_columns` is used.
+  
 - **`mark_columns`** : `Boolean` 
 
     _Default: False_
 
     if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on there type (eda_tools or continuous), as provided by nominal_columns
 
-- **`theil_u`** : `Boolean` 
+- **`nom_nom_assoc`** : `string`
+  
+    _Default = 'cramer'_
 
-    _Default: False_
-
-    In the case of categorical-categorical feaures, use Theil's U instead of Cramer's V
-
-- **`clustering`** : `Boolean` 
-
-    _Default: False_
-
-    If True, the computed associations will be sorted into groups by similar correlations
-
+    !!! info "Method signature change"
+        This replaces the `theil_u` flag which was used till version 0.6.6.
+  
+    Name of nominal-nominal (categorical-categorical) association to use:
+  
+    * `cramer`: Cramer's V
+      
+    * `theil`: Theil's U. When selected, heat-map rows are the provided information (meaning: $U = U(row|col)$)
+  
+- **`num_num_assoc`** : `string`
+    
+    _Default = 'pearson'_
+  
+    Name of numerical-numerical association to use: 
+  
+    * `pearson`: Pearson's R
+      
+    * `spearman`: Spearman's R
+      
+    * `kendall`: Kendall's Tau
+  
 - **`bias_correction`** : `Boolean`
 
       _Default = True_
@@ -244,6 +300,13 @@ continuous features using:
     _Default: 0.0_
 
     The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'
+
+- **`clustering`** : `Boolean` 
+
+    _Default: False_
+
+    If True, the computed associations will be sorted into groups by similar correlations
+
 
 **Returns:** A DataFrame of the correlation/strength-of-association between all features
 
