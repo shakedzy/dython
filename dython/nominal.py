@@ -308,6 +308,8 @@ def _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_n
     if numerical_columns is not None:
         if numerical_columns == 'auto':
             nominal_columns = 'auto'
+        elif numerical_columns == 'all':
+            nominal_columns = None
         else:
             nominal_columns = [c for c in dataset.columns if c not in numerical_columns]
 
@@ -465,21 +467,28 @@ def compute_associations(dataset,
     -----------
     dataset : NumPy ndarray / Pandas DataFrame
         The data-set for which the features' correlation is computed
-    nominal_columns : string / list / NumPy ndarray
+    nominal_columns : string / list / NumPy ndarray, default = 'auto'
         Names of columns of the data-set which hold categorical values. Can
         also be the string 'all' to state that all columns are categorical,
         'auto' (default) to try to identify nominal columns, or None to state
-        none are categorical
+        none are categorical. Only used if `numerical_columns` is `None`.
+    numerical_columns : string / list / NumPy ndarray, default = None
+        To be used instead of `nominal_columns`. Names of columns of the data-set
+        which hold numerical values. Can also be the string 'all' to state that
+        all columns are numerical (equivalent to `nominal_columns=None`) or
+        'auto' to try to identify numerical columns (equivalent to
+        `nominal_columns=auto`). If `None`, `nominal_columns` is used.
     mark_columns : Boolean, default = False
         if True, output's columns' names will have a suffix of '(nom)' or
         '(con)' based on there type (eda_tools or continuous), as provided
         by nominal_columns
-    theil_u : Boolean, default = False
-        In the case of categorical-categorical feaures, use Theil's U instead
-        of Cramer's V
-    clustering : Boolean, default = False
-        If True, hierarchical clustering is applied in order to sort
-        features into meaningful groups
+    nom_nom_assoc : string, default = 'cramer'
+        Name of nominal-nominal (categorical-categorical) association to use.
+        Options are 'cramer' for Cramer's V or 'theil' for Theil's U. If 'theil',
+        heat-map rows are the provided information (U = U(row|col)).
+    num_num_assoc : string, default = 'pearson'
+        Name of numerical-numerical association to use. Options are 'pearson'
+        for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
     bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.
@@ -491,6 +500,9 @@ def compute_associations(dataset,
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'
+    clustering : Boolean, default = False
+        If True, hierarchical clustering is applied in order to sort
+        features into meaningful groups
 
     Returns:
     --------
@@ -535,24 +547,28 @@ def associations(dataset,
     -----------
     dataset : NumPy ndarray / Pandas DataFrame
         The data-set for which the features' correlation is computed
-    nominal_columns : string / list / NumPy ndarray
+    nominal_columns : string / list / NumPy ndarray, default = 'auto'
         Names of columns of the data-set which hold categorical values. Can
         also be the string 'all' to state that all columns are categorical,
         'auto' (default) to try to identify nominal columns, or None to state
-        none are categorical
+        none are categorical. Only used if `numerical_columns` is `None`.
+    numerical_columns : string / list / NumPy ndarray, default = None
+        To be used instead of `nominal_columns`. Names of columns of the data-set
+        which hold numerical values. Can also be the string 'all' to state that
+        all columns are numerical (equivalent to `nominal_columns=None`) or
+        'auto' to try to identify numerical columns (equivalent to
+        `nominal_columns=auto`). If `None`, `nominal_columns` is used.
     mark_columns : Boolean, default = False
         if True, output's columns' names will have a suffix of '(nom)' or
         '(con)' based on their type (nominal or continuous), as provided
         by nominal_columns
-    theil_u : Boolean, default = False
-        In the case of categorical-categorical feaures, use Theil's U instead
-        of Cramer's V. If selected, heat-map rows are the provided information
-        (U = U(row|col))
-    plot : Boolean, default = True
-        Plot a heat-map of the correlation matrix
-    clustering : Boolean, default = False
-        If True, hierarchical clustering is applied in order to sort
-        features into meaningful groups
+    nom_nom_assoc : string, default = 'cramer'
+        Name of nominal-nominal (categorical-categorical) association to use.
+        Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
+        heat-map rows are the provided information (U = U(row|col)).
+    num_num_assoc : string, default = 'pearson'
+        Name of numerical-numerical association to use. Options are 'pearson'
+        for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
     bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.
@@ -587,6 +603,11 @@ def associations(dataset,
         Set heat-map vmin option. If set to None, vmin will be chosen automatically
         between 0 and -1, depending on the types of associations used (-1 if Pearson's R
         is used, 0 otherwise)
+    plot : Boolean, default = True
+        Plot a heat-map of the correlation matrix
+    clustering : Boolean, default = False
+        If True, hierarchical clustering is applied in order to sort
+        features into meaningful groups
     title : string or None, default = None
         Plotted graph title
     filename : string or None, default = None
