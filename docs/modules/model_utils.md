@@ -277,20 +277,6 @@ true class is 1, with predicted probability of 0.8.
 
 __________________
 
-#### `roc_graph`
-
-`roc_graph(y_true, y_pred, *args, **kwargs)`
-
-Plot a ROC graph of predictor's results (including AUC scores), where each
-row of y_true and y_pred represent a single example.
-
-!!! warning "Note:" 
-
-	The `roc_graph` method is deprecated and will be removed in future versions. 
-    Please use `metric_graph(y_true, y_pred, metric='roc',...)` instead.
-
-__________________
-
 
 #### `random_forest_feature_importance`
 
