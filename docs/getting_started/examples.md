@@ -55,7 +55,7 @@ df.columns = ['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor
               'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
 # Plot features associations
-associations(df, theil_u=True, figsize=(15, 15))
+associations(df, nom_nom_assoc='theil', figsize=(15, 15))
 ```
 **Output:**
 
