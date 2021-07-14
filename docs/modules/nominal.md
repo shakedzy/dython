@@ -46,6 +46,9 @@ continuous features using:
 - **`nom_nom_assoc`** : `string`
   
     _Default = 'cramer'_
+
+    !!! info "Method signature change"
+        This replaces the `theil_u` flag which was used till version 0.6.6.
   
     Name of nominal-nominal (categorical-categorical) association to use:
   
@@ -257,6 +260,9 @@ continuous features using:
 - **`nom_nom_assoc`** : `string`
   
     _Default = 'cramer'_
+
+    !!! info "Method signature change"
+        This replaces the `theil_u` flag which was used till version 0.6.6.
   
     Name of nominal-nominal (categorical-categorical) association to use:
   
