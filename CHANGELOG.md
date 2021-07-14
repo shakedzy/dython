@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.7
+* `associations` and `compute_associations` now supports several numerical-numerical association measures 
+  (issue [#84](https://github.com/shakedzy/dython/issues/84))
+* Added a `numerical_columns` option to `associations` and `compute_associations`
+* `roc_graph` is officially removed (replaced with `metric_graph`)
+
 ## 0.6.6
 * Fixed issue where `nan_strategy` affected input data (issue [#82](https://github.com/shakedzy/dython/issues/82))
 * Added `datetime` support to `nominal.associations` (issue [#76](https://github.com/shakedzy/dython/issues/76))
