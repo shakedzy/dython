@@ -1,4 +1,3 @@
-import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, precision_recall_curve, auc
@@ -8,7 +7,6 @@ from ._private import convert
 __all__ = [
     'random_forest_feature_importance',
     'metric_graph',
-    'roc_graph',
     'ks_abc'
 ]
 
@@ -337,16 +335,6 @@ def random_forest_feature_importance(forest, features, precision=4):
         map(lambda x: round(x, precision),
             forest.feature_importances_), features),
                   reverse=True)
-
-
-def roc_graph(y_true, y_pred, *args, **kwargs):
-    """
-    This method is deprecated. Please use `metric_graph(metric='roc',...)`
-    """
-    warnings.warn("The 'roc_graph' method is deprecated and will be removed in future versions. " +
-                  "Please use 'metric_graph(y_true, y_pred, metric='roc',...)' instead.",
-                  DeprecationWarning)
-    return metric_graph(y_true, y_pred, 'roc', *args, **kwargs)
 
 
 def ks_abc(y_true, y_pred, ax=None, figsize=None, colors=('darkorange', 'b'), title=None, xlim=(0.,1.), ylim=(0.,1.),
