@@ -534,7 +534,8 @@ def associations(dataset,
                  plot=True,
                  clustering=False,
                  title=None,
-                 filename=None
+                 filename=None,
+                 upper_half=None
                  ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -612,6 +613,9 @@ def associations(dataset,
         Plotted graph title
     filename : string or None, default = None
         If not None, plot will be saved to the given file name
+    upper_half : bool or none, default = None
+        If False, lower half will be displayed, if True, upper half
+        will be displayed, if None, both halves are rendered
 
     Returns:
     --------
@@ -665,6 +669,11 @@ def associations(dataset,
     else:
         sv_mask = np.ones_like(corr)
     mask = np.vectorize(lambda x: not bool(x))(inf_nan_mask) + np.vectorize(lambda x: not bool(x))(sv_mask)
+    if upper_half is not None:
+        if upper_half:
+            mask = np.tril(np.ones_like(corr, dtype=bool))
+        if not upper_half:
+            mask = np.triu(np.ones_like(corr, dtype=bool))
     vmin = vmin or (-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0)
     ax = sns.heatmap(corr,
                      cmap=cmap,
