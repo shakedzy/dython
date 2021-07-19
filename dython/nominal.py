@@ -613,7 +613,7 @@ def associations(dataset,
         Plotted graph title
     filename : string or None, default = None
         If not None, plot will be saved to the given file name
-    upper_half : bool or none, default = None
+    upper_half : bool or None, default = None
         If False, lower half will be displayed, if True, upper half
         will be displayed, if None, both halves are rendered
 
