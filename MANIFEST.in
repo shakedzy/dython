@@ -1,1 +1,1 @@
-include *.md
+include *.md, VERSION
