@@ -5,6 +5,7 @@ is_homepage:
 # Dython
 
 [![PyPI Version](https://img.shields.io/pypi/v/dython?style=for-the-badge)](https://pypi.org/project/dython/)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/dython?style=for-the-badge)](https://anaconda.org/conda-forge/dython)
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg?style=for-the-badge)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython?style=for-the-badge)](https://pypistats.org/packages/dython)
 [![License](https://img.shields.io/pypi/l/dython?style=for-the-badge)](https://github.com/shakedzy/dython/blob/master/LICENSE)
@@ -66,10 +67,3 @@ Full documentation of all modues and public methods is available:
 * [model_utils](modules/model_utils.md)
 
 * [sampling](modules/sampling.md)
-
--------------
-
-## Related blogposts
-* Read more about the `dython.nominal` tools on [The Search for Categorical Correlation](https://medium.com/@shakedzy/the-search-for-categorical-correlation-a1cf7f1888c9)
-
-* Read more about using ROC graphs on [Hard ROC: Really Understanding & Properly Using ROC and AUC](https://medium.com/@shakedzy/hard-roc-really-understanding-and-properly-using-roc-and-auc-13413cf0dc24)
