@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.6.7
+* First version supported by `conda` (issue [#90](https://github.com/shakedzy/dython/issues/90), by **[@sarthakpati](https://github.com/sarthakpati)**)
 * `associations` and `compute_associations` now supports several numerical-numerical association measures 
   (issue [#84](https://github.com/shakedzy/dython/issues/84))
 * Added a `numerical_columns` option to `associations` and `compute_associations`
