@@ -10,8 +10,18 @@ theme:
   name: material
   custom_dir: docs/overrides
   palette:
-    primary: light blue
-    accent: blue
+    - scheme: default
+      primary: light blue
+      accent: blue
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode 
   logo: images/favicon.png
   favicon: images/favicon.png
 nav:
@@ -34,6 +44,8 @@ markdown_extensions:
   - admonition
   - codehilite
   - pymdownx.arithmatex
+  - pymdownx.highlight
+  - pymdownx.superfences
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
 plugins:
