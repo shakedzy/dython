@@ -9,6 +9,7 @@ is_homepage:
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg?style=for-the-badge)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython?style=for-the-badge)](https://pypistats.org/packages/dython)
 [![License](https://img.shields.io/pypi/l/dython?style=for-the-badge)](https://github.com/shakedzy/dython/blob/master/LICENSE)
+[![Coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=ff69b4&style=for-the-badge)](https://ko-fi.com/shakedzy)
 
 ![banner](images/index_banner.png)
 
