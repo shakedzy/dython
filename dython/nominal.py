@@ -485,7 +485,7 @@ def compute_associations(dataset,
     nom_nom_assoc : string, default = 'cramer'
         Name of nominal-nominal (categorical-categorical) association to use.
         Options are 'cramer' for Cramer's V or 'theil' for Theil's U. If 'theil',
-        heat-map rows are the provided information (U = U(row|col)).
+        heat-map rows are the provided information (U = U(col|row)).
     num_num_assoc : string, default = 'pearson'
         Name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
@@ -565,7 +565,7 @@ def associations(dataset,
     nom_nom_assoc : string, default = 'cramer'
         Name of nominal-nominal (categorical-categorical) association to use.
         Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
-        heat-map rows are the provided information (U = U(row|col)).
+        heat-map rows are the provided information (U = U(col|row)).
     num_num_assoc : string, default = 'pearson'
         Name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
