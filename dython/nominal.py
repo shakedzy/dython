@@ -427,8 +427,8 @@ def _comp_assoc(dataset, nominal_columns, mark_columns, theil_u, clustering,
 def compute_associations(dataset,
                          nominal_columns='auto',
                          mark_columns=False,
-                         theil_u=False,
-                         clustering=False,
+                         nom_nom_assoc='cramer',
+                         num_num_assoc='pearson',
                          bias_correction=True,
                          nan_strategy=_REPLACE,
                          nan_replace_value=_DEFAULT_REPLACE_VALUE,
@@ -457,12 +457,13 @@ def compute_associations(dataset,
         if True, output's columns' names will have a suffix of '(nom)' or
         '(con)' based on there type (eda_tools or continuous), as provided
         by nominal_columns
-    theil_u : Boolean, default = False
-        In the case of categorical-categorical feaures, use Theil's U instead
-        of Cramer's V
-    clustering : Boolean, default = False
-        If True, hierarchical clustering is applied in order to sort
-        features into meaningful groups
+    nom_nom_assoc : string, default = 'cramer'
+        Name of nominal-nominal (categorical-categorical) association to use.
+        Options are 'cramer' for Cramer's V or 'theil' for Theil's U. If 'theil',
+        heat-map rows are the provided information (U = U(col|row)).
+    num_num_assoc : string, default = 'pearson'
+        Name of numerical-numerical association to use. Options are 'pearson'
+        for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
     bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.
@@ -486,10 +487,10 @@ def compute_associations(dataset,
 
 def associations(dataset,
                  nominal_columns='auto',
+                 numerical_columns=None,
                  mark_columns=False,
-                 theil_u=False,
-                 plot=True,
-                 clustering=False,
+                 nom_nom_assoc='cramer',
+                 num_num_assoc='pearson',
                  bias_correction=True,
                  nan_strategy=_REPLACE,
                  nan_replace_value=_DEFAULT_REPLACE_VALUE,
@@ -502,6 +503,8 @@ def associations(dataset,
                  cbar=True,
                  vmax=1.0,
                  vmin=None,
+                 plot=True,
+                 clustering=False,
                  title=None,
                  filename=None
                  ):
@@ -525,15 +528,13 @@ def associations(dataset,
         if True, output's columns' names will have a suffix of '(nom)' or
         '(con)' based on their type (nominal or continuous), as provided
         by nominal_columns
-    theil_u : Boolean, default = False
-        In the case of categorical-categorical feaures, use Theil's U instead
-        of Cramer's V. If selected, heat-map rows are the provided information
-        (U = U(row|col))
-    plot : Boolean, default = True
-        Plot a heat-map of the correlation matrix
-    clustering : Boolean, default = False
-        If True, hierarchical clustering is applied in order to sort
-        features into meaningful groups
+    nom_nom_assoc : string, default = 'cramer'
+        Name of nominal-nominal (categorical-categorical) association to use.
+        Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
+        heat-map rows are the provided information (U = U(col|row)).
+    num_num_assoc : string, default = 'pearson'
+        Name of numerical-numerical association to use. Options are 'pearson'
+        for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
     bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.

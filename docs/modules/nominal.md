@@ -54,7 +54,7 @@ continuous features using:
   
     * `cramer`: Cramer's V
       
-    * `theil`: Theil's U. When selected, heat-map rows are the provided information (meaning: $U = U(row|col)$)
+    * `theil`: Theil's U. When selected, heat-map rows are the provided information (meaning: $U = U(col|row)$)
   
 - **`num_num_assoc`** : `string`
     
