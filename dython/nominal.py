@@ -316,7 +316,7 @@ def _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_n
     # handling NaN values in data
     if nan_strategy == _REPLACE:
         dataset.fillna(nan_replace_value, inplace=True)
-    elif nan_strategy == _DROP_SAMPLES:
+    elif False:#nan_strategy == _DROP_SAMPLES:
         dataset.dropna(axis=0, inplace=True)
     elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
@@ -364,25 +364,31 @@ def _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_n
             corr.loc[columns[i], :] = 0.0
             continue
         for j in range(i, len(columns)):
+            if nan_strategy == _DROP_SAMPLES:
+                temp = dataset[[columns[i],columns[j]]].dropna(axis=0)
+                column_i = temp[columns[i]]
+                column_j = temp[columns[j]]
             if columns[j] in single_value_columns:
                 continue
             elif i == j:
                 corr.loc[columns[i], columns[j]] = 1.0
             else:
-                if columns[i] in nominal_columns:
+                if len(column_i) <2  or len(column_j) < 2:
+                    ij = ji = 0
+                elif columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
                         if nom_nom_assoc == 'theil':
                             ji = theils_u(
-                                dataset[columns[i]],
-                                dataset[columns[j]],
+                                column_i,
+                                column_j,
                                 nan_strategy=_SKIP)
                             ij = theils_u(
-                                dataset[columns[j]],
-                                dataset[columns[i]],
+                                column_j,
+                                column_i,
                                 nan_strategy=_SKIP)
                         elif nom_nom_assoc == 'cramer':
-                            cell = cramers_v(dataset[columns[i]],
-                                             dataset[columns[j]],
+                            cell = cramers_v(column_i,
+                                             column_j,
                                              bias_correction=bias_correction,
                                              nan_strategy=_SKIP)
                             ij = cell
@@ -390,28 +396,28 @@ def _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_n
                         else:
                             raise ValueError(f'{nom_nom_assoc} is not a supported nominal-nominal association')
                     else:
-                        cell = correlation_ratio(dataset[columns[i]],
-                                                 dataset[columns[j]],
+                        cell = correlation_ratio(column_i,
+                                                 column_j,
                                                  nan_strategy=_SKIP)
                         ij = cell
                         ji = cell
                 else:
                     if columns[j] in nominal_columns:
-                        cell = correlation_ratio(dataset[columns[j]],
-                                                 dataset[columns[i]],
+                        cell = correlation_ratio(column_j,
+                                                 column_i,
                                                  nan_strategy=_SKIP)
                         ij = cell
                         ji = cell
                     else:
                         if num_num_assoc == 'pearson':
-                            cell, _ = ss.pearsonr(dataset[columns[i]],
-                                                  dataset[columns[j]])
+                            cell, _ = ss.pearsonr(column_i,
+                                                  column_j)
                         elif num_num_assoc == 'spearman':
-                            cell, _ = ss.spearmanr(dataset[columns[i]],
-                                                   dataset[columns[j]])
+                            cell, _ = ss.spearmanr(column_i,
+                                                   column_j)
                         elif num_num_assoc == 'kendall':
-                            cell, _ = ss.kendalltau(dataset[columns[i]],
-                                                    dataset[columns[j]])
+                            cell, _ = ss.kendalltau(column_i,
+                                                    column_j)
                         else:
                             raise ValueError(f'{num_num_assoc} is not a supported numerical-numerical association')
                         ij = cell
