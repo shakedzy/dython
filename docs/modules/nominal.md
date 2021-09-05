@@ -221,7 +221,7 @@ __________________
 
 !!! warning "Deprecation warning"
 
-    `compute_associations` is deprecated and will be removed in future versions. Use `associations(compute_only=True)['corr']`
+    `compute_associations` is deprecated and will be removed in future versions. Use `associations(compute_only=True)['corr']`.
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
