@@ -87,7 +87,7 @@ def associations_iris_example():
     df = pd.concat([X, y], axis=1)
 
     # Plot features associations
-    return associations(df, num_num_assoc='spearman')
+    return associations(df)
 
 
 def associations_mushrooms_example():
