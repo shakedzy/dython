@@ -4,12 +4,13 @@ is_homepage:
 
 # Dython
 
+[![Support](https://img.shields.io/badge/-support_dython!-pink?color=ff69b4&style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCiAgICAgICAgICB2aWV3Qm94PSIwIDAgNjAgNDIuNyIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNjAgNDIuNyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik00Mi41LDBDMzcuNiwwLDMzLjIsMiwzMCw1LjNDMjYuOCwyLDIyLjQsMCwxNy41LDBDNy44LDAsMCw3LjgsMCwxNy41YzAsNyw0LjEsMTMsMTAuMSwxNS44TDMwLDQyLjcKICAgICAgICAgICAgbDE5LjctOS4zQzU1LjgsMzAuNyw2MCwyNC42LDYwLDE3LjVDNjAsNy44LDUyLjIsMCw0Mi41LDB6Ii8+Cjwvc3ZnPg==)](https://ko-fi.com/shakedzy)
+
 [![PyPI Version](https://img.shields.io/pypi/v/dython?style=for-the-badge)](https://pypi.org/project/dython/)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/dython?style=for-the-badge)](https://anaconda.org/conda-forge/dython)
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg?style=for-the-badge)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython?style=for-the-badge)](https://pypistats.org/packages/dython)
 [![License](https://img.shields.io/pypi/l/dython?style=for-the-badge)](https://github.com/shakedzy/dython/blob/master/LICENSE)
-[![Coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=ff69b4&style=for-the-badge)](https://ko-fi.com/shakedzy)
 
 ![banner](images/index_banner.png)
 
