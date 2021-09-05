@@ -1,11 +1,12 @@
 # Change Log
 
-## 0.6.7
+## 0.6.7 (_post1_)
 * First version supported by `conda` (issue [#90](https://github.com/shakedzy/dython/issues/90), by **[@sarthakpati](https://github.com/sarthakpati)**)
-* `associations` and `compute_associations` now supports several numerical-numerical association measures 
+* `associations` (and `compute_associations`) now supports several numerical-numerical association measures 
   (issue [#84](https://github.com/shakedzy/dython/issues/84))
 * Added a `numerical_columns` option to `associations` and `compute_associations`
 * `roc_graph` is officially removed (replaced with `metric_graph`)
+* Deprecating `compute_associations`
 
 ## 0.6.6
 * Fixed issue where `nan_strategy` affected input data (issue [#82](https://github.com/shakedzy/dython/issues/82))
