@@ -6,7 +6,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython)](https://pypistats.org/packages/dython)
 [![License](https://img.shields.io/pypi/l/dython)](https://github.com/shakedzy/dython/blob/master/LICENSE)
 
-[![Coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&color=ff69b4)](https://ko-fi.com/shakedzy)
+[![Support](https://img.shields.io/badge/-support_dython!-pink?color=ff69b4&logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCiAgICAgICAgICB2aWV3Qm94PSIwIDAgNjAgNDIuNyIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNjAgNDIuNyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik00Mi41LDBDMzcuNiwwLDMzLjIsMiwzMCw1LjNDMjYuOCwyLDIyLjQsMCwxNy41LDBDNy44LDAsMCw3LjgsMCwxNy41YzAsNyw0LjEsMTMsMTAuMSwxNS44TDMwLDQyLjcKICAgICAgICAgICAgbDE5LjctOS4zQzU1LjgsMzAuNyw2MCwyNC42LDYwLDE3LjVDNjAsNy44LDUyLjIsMCw0Mi41LDB6Ii8+Cjwvc3ZnPg==)](https://ko-fi.com/shakedzy)
 
 A set of **D**ata analysis tools in p**YTHON** 3.x.
 
