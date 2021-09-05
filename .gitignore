@@ -5,6 +5,7 @@ env/*
 venv/*
 ENV/*
 .idea/*
+.vscode/*
 .DS_Store
 dython.egg*/*
 *__pycache__*
