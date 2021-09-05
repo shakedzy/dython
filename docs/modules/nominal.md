@@ -6,7 +6,7 @@ title: nominal
 
 #### `associations`
 
-`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False, nom_nom_assoc='cramer', num_num_assoc='pearson', bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, clustering=False, title=None, filename=None)`
+`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False, nom_nom_assoc='cramer', num_num_assoc='pearson', bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -150,10 +150,12 @@ continuous features using:
     Plot a heat-map of the correlation matrix. If False, heat-map will still be
     drawn, but not shown. The heat-map's `ax` is part of this function's output. 
     
-    !!! tip "Tip"
-    
-        If you have no use of the plot at all, and only require the correlations
-        DataFrame, consider using [`compute_associations`](#compute_associations) instead.
+- **`compute_only`** : `Boolean`
+
+    _Default: False_
+
+    Use this flag only if you have no need of the plotting at all. This skips the entire
+    plotting mechanism (similar to the old `compute_associations` method).
 
 - **`clustering`** : `Boolean` 
 
@@ -217,17 +219,15 @@ __________________
 
 `compute_associations(dataset, nominal_columns='auto', mark_columns=False, theil_u=False, bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, clustering=False)`
 
+!!! warning "Deprecation warning"
+
+    `compute_associations` is deprecated and will be removed in future versions. Use `associations(compute_only=True)['corr']`
+
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
  * Pearson's R for continuous-continuous cases
  * Correlation Ratio for categorical-continuous cases
  * Cramer's V or Theil's U for categorical-categorical cases
- 
-!!! info ""
-
-    This is equivalent to executing `associations(data, plot=False, ...)['corr']`, only
-    it skips entirely on the drawing phase of the heat-map (See 
-    [issue #49](https://github.com/shakedzy/dython/issues/49)).
 
 - **`dataset`** : `NumPy ndarray / Pandas DataFrame`
 
