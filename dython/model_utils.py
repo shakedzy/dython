@@ -80,8 +80,8 @@ def _binary_metric_graph(metric, y_true, y_pred, eoptimal, class_label, color, l
         y_t = y_true
         y_p = y_pred
     else:
-        y_t = [np.argmax(x) for x in y_true]
-        y_p = [x[1] for x in y_pred]
+        y_t = np.array([np.argmax(x) for x in y_true])
+        y_p = np.array([x[1] for x in y_pred])
     y_t_ratio = np.sum(y_t)/y_t.size
     if metric == 'roc':
         x_axis, y_axis, th = roc_curve(y_t, y_p)  # x = fpr, y = tpr
