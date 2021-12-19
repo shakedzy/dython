@@ -38,7 +38,7 @@ continuous features using:
 
 - **`mark_columns`** : `Boolean` 
 
-    _Default: False_
+    _Default = False_
 
     if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on their type (nominal or 
     continuous), as provided by nominal_columns
