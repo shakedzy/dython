@@ -30,6 +30,12 @@ CLASSIFIERS = [
 ]
 PYTHON_REQUIRES = '>=3.5'
 
+EXTRAS_REQUIRE = {
+      'dev': [
+            'pytest'
+      ]
+}
+
 setup(name=PACKAGE_NAME,
       version=VERSION,
       description=DESCRIPTION,
