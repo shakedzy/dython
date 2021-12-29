@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --doctest-continue-on-failure"
+# testpath =
+#    tests
