@@ -21,7 +21,7 @@ def test_negative_input():
 def test_more_than_one_dimension():
     lst = [[0, 1], [2, 3]]
 
-    with pytest.raises(ValueError, match="must only have one dimension"):
+    with pytest.raises(ValueError, match="must have only one dimension"):
         one_hot_encode(lst)
 
 
