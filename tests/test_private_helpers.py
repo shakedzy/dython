@@ -4,6 +4,12 @@ import pytest
 from sklearn import datasets
 from dython._private import convert, remove_incomplete_samples, replace_nan_with_value
 
+# Make pandas not emit SettingWithCopyWarning
+# SettingWithCopyWarning looks relatively safe to ignore,
+# compare with DeprecationWarning that eventually needs attention.
+# https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#evaluation-order-matters
+pd.set_option('mode.chained_assignment', None)
+
 
 @pytest.fixture
 def iris_df():
