@@ -1,19 +1,9 @@
-import functools
 import pytest
 import pandas as pd
 import matplotlib
 from sklearn import datasets
 
 from dython.nominal import associations
-
-
-@pytest.fixture(autouse=True)
-def disable_plot(monkeypatch):
-    # Patch plt.show to not halt testing flow, by making it not block
-    # function execution.
-    # patch = functools.partial(matplotlib.pyplot.show, block=False)
-    def patch(): pass
-    monkeypatch.setattr(matplotlib.pyplot, "show", patch)
 
 
 def test_return_type_check(iris_df):

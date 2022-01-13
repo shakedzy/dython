@@ -5,15 +5,6 @@ import matplotlib
 from dython.model_utils import metric_graph
 
 
-@pytest.fixture(autouse=True)
-def disable_plot(monkeypatch):
-    # Patch plt.show to not halt testing flow, by making it not block
-    # function execution.
-    # patch = functools.partial(matplotlib.pyplot.show, block=False)
-    def patch(): pass
-    monkeypatch.setattr(matplotlib.pyplot, "show", patch)
-
-
 @pytest.fixture
 def y_true():
     return np.array([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1])

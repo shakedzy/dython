@@ -15,8 +15,8 @@ def disable_plot(monkeypatch):
     monkeypatch.setattr(matplotlib.pyplot, "show", patch)
 
 
-@pytest.fixture
-def iris_df():
+@pytest.fixture(autouse=True)
+def add_iris(doctest_namespace):
     # Use iris dataset as example when needed.
     # Add one made-up categorical column to create a nom-nom relationship.
 
@@ -34,4 +34,4 @@ def iris_df():
 
     df = pd.concat([X, extra, y], axis=1)
 
-    return df
+    doctest_namespace['iris_df'] = df

@@ -228,9 +228,13 @@ def metric_graph(y_true,
     true class is 1, with predicted probability of 0.8.
     ```python
     # First option:
-    >> metric_graph(y_true=[0,1], y_pred=[0.6,0.8], metric='roc')
+    >>> metric_graph(y_true=[0,1], y_pred=[0.6,0.8], metric='roc')
+    {...}
+
     # Second option:
-    >> metric_graph(y_true=[[1,0],[0,1]], y_pred=[[0.6,0.4],[0.2,0.8]], metric='roc')
+    >>> metric_graph(y_true=[[1,0],[0,1]], y_pred=[[0.6,0.4],[0.2,0.8]], metric='roc')
+    {...}
+
     # Both yield the same result
     ```
 
