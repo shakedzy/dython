@@ -1,4 +1,6 @@
 import math
+import string
+from tkinter import N
 import warnings
 import numpy as np
 import pandas as pd
@@ -306,6 +308,8 @@ def associations(dataset,
                  num_num_assoc='pearson',
                  display_rows='all',
                  display_columns='all',
+                 hide_rows=None,
+                 hide_columns=None,
                  cramers_v_bias_correction=True,
                  nan_strategy=_REPLACE,
                  nan_replace_value=_DEFAULT_REPLACE_VALUE,
@@ -357,12 +361,22 @@ def associations(dataset,
     num_num_assoc : string, default = 'pearson'
         Name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
-    display_rows : list / 'all', default = 'all'
-        choose which which of the dataset's features will be displyed in the output's
-        correlations table rows.
-    display_columns : list / 'all', default = 'all'
-        choose which which of the dataset's features will be displyed in the output's
-        correlations table columns.
+    display_rows : list / string, default = 'all'
+        Choose which of the dataset's features will be displyed in the output's
+        correlations table rows. If string, can either be a single feature's name or 'all'.
+        Only used if `hide_rows` is `None`.
+    display_columns : list / string, default = 'all'
+        Choose which of the dataset's features will be displyed in the output's
+        correlations table columns. If string, can either be a single feature's name or 'all'.
+        Only used if `hide_columns` is `None`.
+    hide_rows : list / string, default = None
+        Choose which of the dataset's features will not be displyed in the output's
+        correlations table rows. If string, must be a single feature's name. If `None`,
+        `display_rows` is used.
+    hide_columns : list / string, default = None
+        Choose which of the dataset's features will not be displyed in the output's
+        correlations table columns. If string, must be a single feature's name. If `None`,
+        `display_columns` is used.
     cramers_v_bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.
@@ -451,10 +465,29 @@ def associations(dataset,
         auto_nominal = True
         nominal_columns = identify_nominal_columns(dataset)
 
+    # selecting rows and columns to be displayed
+    if hide_columns is not None:
+        if isinstance(hide_columns, str) or isinstance(hide_columns, int):
+            hide_columns = [hide_columns]
+        display_columns = [c for c in dataset.columns if c not in hide_columns]
+    else:
+        if display_columns == 'all': 
+            display_columns = columns
+        elif isinstance(display_columns, str) or isinstance(display_columns, int):
+            display_columns = [display_columns]
+    
+    if hide_rows is not None:
+        if isinstance(hide_rows, str) or isinstance(hide_rows, int):
+            hide_rows = [hide_rows]
+        display_rows = [c for c in dataset.columns if c not in hide_rows]
+    else:
+        if display_rows == 'all': 
+            display_rows = columns
+        elif isinstance(display_rows, str) or isinstance(display_rows, int):
+            display_columns = [display_rows]
+
     if display_rows is None or display_columns is None or len(display_rows) <  1 or len(display_columns) < 1:
         raise ValueError('display_rows and display_columns must have at least one element')
-    if display_columns == 'all': display_columns = columns
-    if display_rows == 'all': display_rows = columns
     displayed_features_set = set.union(set(display_rows), set(display_columns))
 
     # convert timestamp columns to numerical columns, so correlation can be performed
