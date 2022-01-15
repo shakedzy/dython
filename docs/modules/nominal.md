@@ -6,7 +6,7 @@ title: nominal
 
 #### `associations`
 
-`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False, nom_nom_assoc='cramer', num_num_assoc='pearson', bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None)`
+`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False,nom_nom_assoc='cramer', num_num_assoc='pearson', display_rows='all', display_columns='all', hide_rows=None, hide_columns=None,bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -67,6 +67,38 @@ continuous features using:
     * `spearman`: Spearman's R
       
     * `kendall`: Kendall's Tau
+
+- **`display_rows`** : `list / string`
+
+    _Default = 'all'_
+
+    Choose which of the dataset's features will be displyed in the output's
+    correlations table rows. If string, can either be a single feature's name or 'all'.
+    Only used if `hide_rows` is `None`.
+
+- **`display_columns`** : `list / string`
+
+    _Default = 'all'_
+
+    Choose which of the dataset's features will be displyed in the output's
+    correlations table columns. If string, can either be a single feature's name or 'all'.
+    Only used if `hide_columns` is `None`.
+
+- **`hide_rows`** : `list / string`
+
+    _Default = None_
+
+    choose which of the dataset's features will not be displyed in the output's
+    correlations table rows. If string, must be a single feature's name. If `None`,
+    `display_rows` is used.
+
+- **`hide_columns`** : `list / string`
+
+    _Default = None_
+    
+    choose which of the dataset's features will not be displyed in the output's
+    correlations table columns. If string, must be a single feature's name. If `None`,
+    `display_columns` is used.
   
 - **`bias_correction`** : `Boolean`
 
