@@ -32,7 +32,8 @@ PYTHON_REQUIRES = '>=3.5'
 
 EXTRAS_REQUIRE = {
       'dev': [
-            'pytest'
+            'pytest',
+            'hypothesis'
       ]
 }
 
