@@ -16,12 +16,12 @@ LONG_DESCRIPTION = (HERE / "DESCRIPTION.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
-      'numpy',
-      'pandas>=0.23.4',
-      'seaborn',
-      'scipy',
-      'matplotlib',
-      'scikit-learn',
+      'numpy>=1.19.5',
+      'pandas>=1.3.2',
+      'seaborn>=0.11.0',
+      'scipy>=1.7.1',
+      'matplotlib>=3.4.3',
+      'scikit-learn>=0.24.2',
       'scikit-plot>=0.3.7'
 ]
 
