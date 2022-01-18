@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -35,9 +36,11 @@ def one_hot_encode(arr, classes=None):
            [1., 0., 0., 0., 0., 0.],
            [0., 0., 0., 0., 0., 1.]])
     """
-    arr = convert(arr, 'array')
+    arr = convert(arr, 'array').astype(int)
     if not len(arr.shape) == 1:
         raise ValueError(f'array must have only one dimension, but has shape: {arr.shape}')
+    if arr.min() < 0:
+        raise ValueError('array cannot contain negative values')
     classes = classes if classes is not None else arr.max()+1
     h = np.zeros((arr.size, classes))
     h[np.arange(arr.size), arr] = 1
