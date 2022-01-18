@@ -23,10 +23,3 @@ def test_more_than_one_dimension():
 
     with pytest.raises(ValueError, match="must have only one dimension"):
         one_hot_encode(lst)
-
-
-def test_single_value():
-    lst = [0, 0, 0, 0]
-
-    with pytest.raises(ValueError):
-        one_hot_encode(lst)
