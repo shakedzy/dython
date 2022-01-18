@@ -16,6 +16,7 @@ LONG_DESCRIPTION = (HERE / "DESCRIPTION.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
+      # Don't forget to update requirements.txt too!
       'numpy>=1.19.5',
       'pandas>=1.3.2',
       'seaborn>=0.11.0',
