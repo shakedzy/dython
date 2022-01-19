@@ -1,7 +1,9 @@
 # Change Log
 
 ## 0.7.0
+* **License is now MIT**
 * Added tests (issue [#69](https://github.com/shakedzy/dython/issues/69), by **[@lahdjirayhan](https://github.com/lahdjirayhan)**)
+* Remove deprecated method `compute_associations`
 
 ## 0.6.8
 * Bug fix in `metric_graph` (issue [#102](https://github.com/shakedzy/dython/issues/102))

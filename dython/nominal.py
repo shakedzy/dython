@@ -1,4 +1,6 @@
 import math
+import string
+from tkinter import N
 import warnings
 import numpy as np
 import pandas as pd
@@ -298,229 +300,17 @@ def identify_numeric_columns(dataset):
     return identify_columns_by_type(dataset, include=['int64', 'float64'])
 
 
-def _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_nom_assoc, num_num_assoc,
-                bias_correction, nan_strategy, nan_replace_value, clustering):
-    """
-    This is a helper function for compute_associations and associations
-    """
-    dataset = convert(dataset, 'dataframe')
-
-    if numerical_columns is not None:
-        if numerical_columns == 'auto':
-            nominal_columns = 'auto'
-        elif numerical_columns == 'all':
-            nominal_columns = None
-        else:
-            nominal_columns = [c for c in dataset.columns if c not in numerical_columns]
-
-    # handling NaN values in data
-    if nan_strategy == _REPLACE:
-        dataset.fillna(nan_replace_value, inplace=True)
-    elif nan_strategy == _DROP_SAMPLES:
-        dataset.dropna(axis=0, inplace=True)
-    elif nan_strategy == _DROP_FEATURES:
-        dataset.dropna(axis=1, inplace=True)
-
-    # identifying categorical columns
-    columns = dataset.columns
-    auto_nominal = False
-    if nominal_columns is None:
-        nominal_columns = list()
-    elif nominal_columns == 'all':
-        nominal_columns = columns
-    elif nominal_columns == 'auto':
-        auto_nominal = True
-        nominal_columns = identify_nominal_columns(dataset)
-
-    # convert timestamp columns to numerical columns, so correlation can be performed
-    datetime_dtypes = [str(x) for x in dataset.dtypes if str(x).startswith('datetime64')]  # finding all timezones
-    if datetime_dtypes:
-        datetime_cols = identify_columns_by_type(dataset, datetime_dtypes)
-        datetime_cols = [c for c in datetime_cols if c not in nominal_columns]
-        if datetime_cols:
-            dataset[datetime_cols] = dataset[datetime_cols].astype(np.int64)
-            if auto_nominal:
-                nominal_columns = identify_nominal_columns(dataset)
-
-    corr = pd.DataFrame(index=columns, columns=columns)  # will be used to store associations values
-
-    # this dataframe is used to keep track of invalid association values, which will be placed on top
-    # of the corr dataframe. It is done for visualization purposes, so the heatmap values will remain
-    # between -1 and 1
-    inf_nan = pd.DataFrame(data=np.zeros_like(corr),
-                           columns=columns,
-                           index=columns)
-
-    # finding single-value columns
-    single_value_columns = []
-    for c in columns:
-        if dataset[c].unique().size == 1:
-            single_value_columns.append(c)
-
-    # computing associations
-    for i in range(0, len(columns)):
-        if columns[i] in single_value_columns:
-            corr.loc[:, columns[i]] = 0.0
-            corr.loc[columns[i], :] = 0.0
-            continue
-        for j in range(i, len(columns)):
-            if columns[j] in single_value_columns:
-                continue
-            elif i == j:
-                corr.loc[columns[i], columns[j]] = 1.0
-            else:
-                if columns[i] in nominal_columns:
-                    if columns[j] in nominal_columns:
-                        if nom_nom_assoc == 'theil':
-                            ji = theils_u(
-                                dataset[columns[i]],
-                                dataset[columns[j]],
-                                nan_strategy=_SKIP)
-                            ij = theils_u(
-                                dataset[columns[j]],
-                                dataset[columns[i]],
-                                nan_strategy=_SKIP)
-                        elif nom_nom_assoc == 'cramer':
-                            cell = cramers_v(dataset[columns[i]],
-                                             dataset[columns[j]],
-                                             bias_correction=bias_correction,
-                                             nan_strategy=_SKIP)
-                            ij = cell
-                            ji = cell
-                        else:
-                            raise ValueError(f'{nom_nom_assoc} is not a supported nominal-nominal association')
-                    else:
-                        cell = correlation_ratio(dataset[columns[i]],
-                                                 dataset[columns[j]],
-                                                 nan_strategy=_SKIP)
-                        ij = cell
-                        ji = cell
-                else:
-                    if columns[j] in nominal_columns:
-                        cell = correlation_ratio(dataset[columns[j]],
-                                                 dataset[columns[i]],
-                                                 nan_strategy=_SKIP)
-                        ij = cell
-                        ji = cell
-                    else:
-                        if num_num_assoc == 'pearson':
-                            cell, _ = ss.pearsonr(dataset[columns[i]],
-                                                  dataset[columns[j]])
-                        elif num_num_assoc == 'spearman':
-                            cell, _ = ss.spearmanr(dataset[columns[i]],
-                                                   dataset[columns[j]])
-                        elif num_num_assoc == 'kendall':
-                            cell, _ = ss.kendalltau(dataset[columns[i]],
-                                                    dataset[columns[j]])
-                        else:
-                            raise ValueError(f'{num_num_assoc} is not a supported numerical-numerical association')
-                        ij = cell
-                        ji = cell
-                corr.loc[columns[i], columns[j]] = ij if not np.isnan(ij) and abs(ij) < np.inf else 0.0
-                corr.loc[columns[j], columns[i]] = ji if not np.isnan(ji) and abs(ji) < np.inf else 0.0
-                inf_nan.loc[columns[i], columns[j]] = _inf_nan_str(ij)
-                inf_nan.loc[columns[j], columns[i]] = _inf_nan_str(ji)
-    corr.fillna(value=np.nan, inplace=True)
-
-    if mark_columns:
-        marked_columns = [
-            '{} (nom)'.format(col)
-            if col in nominal_columns else '{} (con)'.format(col)
-            for col in columns
-        ]
-        corr.columns = marked_columns
-        corr.index = marked_columns
-        inf_nan.columns = marked_columns
-        inf_nan.index = marked_columns
-
-    if clustering:
-        corr, _ = cluster_correlations(corr)
-        columns = corr.columns
-        inf_nan = inf_nan.reindex(columns=columns).reindex(index=columns)
-
-    return corr, columns, nominal_columns, inf_nan, single_value_columns
-
-
-def compute_associations(dataset,
-                         nominal_columns='auto',
-                         numerical_columns=None,
-                         mark_columns=False,
-                         nom_nom_assoc='cramer',
-                         num_num_assoc='pearson',
-                         bias_correction=True,
-                         nan_strategy=_REPLACE,
-                         nan_replace_value=_DEFAULT_REPLACE_VALUE,
-                         clustering=False
-                         ):
-    """
-    Calculate the correlation/strength-of-association of features in data-set
-    with both categorical and continuous features using:
-     * Pearson's R for continuous-continuous cases
-     * Correlation Ratio for categorical-continuous cases
-     * Cramer's V or Theil's U for categorical-categorical cases
-
-    It is equivalent to run `associations(data, plot=False, ...)['corr']`, only
-    it skips entirely on the drawing phase of the heat-map (See
-    https://github.com/shakedzy/dython/issues/49)
-
-    Parameters:
-    -----------
-    dataset : NumPy ndarray / Pandas DataFrame
-        The data-set for which the features' correlation is computed
-    nominal_columns : string / list / NumPy ndarray, default = 'auto'
-        Names of columns of the data-set which hold categorical values. Can
-        also be the string 'all' to state that all columns are categorical,
-        'auto' (default) to try to identify nominal columns, or None to state
-        none are categorical. Only used if `numerical_columns` is `None`.
-    numerical_columns : string / list / NumPy ndarray, default = None
-        To be used instead of `nominal_columns`. Names of columns of the data-set
-        which hold numerical values. Can also be the string 'all' to state that
-        all columns are numerical (equivalent to `nominal_columns=None`) or
-        'auto' to try to identify numerical columns (equivalent to
-        `nominal_columns=auto`). If `None`, `nominal_columns` is used.
-    mark_columns : Boolean, default = False
-        if True, output's columns' names will have a suffix of '(nom)' or
-        '(con)' based on there type (eda_tools or continuous), as provided
-        by nominal_columns
-    nom_nom_assoc : string, default = 'cramer'
-        Name of nominal-nominal (categorical-categorical) association to use.
-        Options are 'cramer' for Cramer's V or 'theil' for Theil's U. If 'theil',
-        heat-map rows are the provided information (U = U(col|row)).
-    num_num_assoc : string, default = 'pearson'
-        Name of numerical-numerical association to use. Options are 'pearson'
-        for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
-    bias_correction : Boolean, default = True
-        Use bias correction for Cramer's V from Bergsma and Wicher,
-        Journal of the Korean Statistical Society 42 (2013): 323-328.
-    nan_strategy : string, default = 'replace'
-        How to handle missing values: can be either 'drop_samples' to remove
-        samples with missing values, 'drop_features' to remove features
-        (columns) with missing values, or 'replace' to replace all missing
-        values with the nan_replace_value. Missing values are None and np.nan.
-    nan_replace_value : any, default = 0.0
-        The value used to replace missing values with. Only applicable when
-        nan_strategy is set to 'replace'
-    clustering : Boolean, default = False
-        If True, hierarchical clustering is applied in order to sort
-        features into meaningful groups
-
-    Returns:
-    --------
-    A DataFrame of the correlation/strength-of-association between all features
-    """
-    warnings.warn("compute_associations is deprecated and will be removes in future versions. Use associations(compute_only=True)['corr']", DeprecationWarning)
-    corr, _, _, _, _ = _comp_assoc(dataset, nominal_columns, numerical_columns, mark_columns, nom_nom_assoc,
-                                   num_num_assoc, bias_correction, nan_strategy, nan_replace_value, clustering)
-    return corr
-
-
 def associations(dataset,
                  nominal_columns='auto',
                  numerical_columns=None,
                  mark_columns=False,
                  nom_nom_assoc='cramer',
                  num_num_assoc='pearson',
-                 bias_correction=True,
+                 display_rows='all',
+                 display_columns='all',
+                 hide_rows=None,
+                 hide_columns=None,
+                 cramers_v_bias_correction=True,
                  nan_strategy=_REPLACE,
                  nan_replace_value=_DEFAULT_REPLACE_VALUE,
                  ax=None,
@@ -571,7 +361,23 @@ def associations(dataset,
     num_num_assoc : string, default = 'pearson'
         Name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
-    bias_correction : Boolean, default = True
+    display_rows : list / string, default = 'all'
+        Choose which of the dataset's features will be displyed in the output's
+        correlations table rows. If string, can either be a single feature's name or 'all'.
+        Only used if `hide_rows` is `None`.
+    display_columns : list / string, default = 'all'
+        Choose which of the dataset's features will be displyed in the output's
+        correlations table columns. If string, can either be a single feature's name or 'all'.
+        Only used if `hide_columns` is `None`.
+    hide_rows : list / string, default = None
+        Choose which of the dataset's features will not be displyed in the output's
+        correlations table rows. If string, must be a single feature's name. If `None`,
+        `display_rows` is used.
+    hide_columns : list / string, default = None
+        Choose which of the dataset's features will not be displyed in the output's
+        correlations table columns. If string, must be a single feature's name. If `None`,
+        `display_columns` is used.
+    cramers_v_bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.
     nan_strategy : string, default = 'replace'
@@ -659,6 +465,31 @@ def associations(dataset,
         auto_nominal = True
         nominal_columns = identify_nominal_columns(dataset)
 
+    # selecting rows and columns to be displayed
+    if hide_columns is not None:
+        if isinstance(hide_columns, str) or isinstance(hide_columns, int):
+            hide_columns = [hide_columns]
+        display_columns = [c for c in dataset.columns if c not in hide_columns]
+    else:
+        if display_columns == 'all': 
+            display_columns = columns
+        elif isinstance(display_columns, str) or isinstance(display_columns, int):
+            display_columns = [display_columns]
+    
+    if hide_rows is not None:
+        if isinstance(hide_rows, str) or isinstance(hide_rows, int):
+            hide_rows = [hide_rows]
+        display_rows = [c for c in dataset.columns if c not in hide_rows]
+    else:
+        if display_rows == 'all': 
+            display_rows = columns
+        elif isinstance(display_rows, str) or isinstance(display_rows, int):
+            display_columns = [display_rows]
+
+    if display_rows is None or display_columns is None or len(display_rows) <  1 or len(display_columns) < 1:
+        raise ValueError('display_rows and display_columns must have at least one element')
+    displayed_features_set = set.union(set(display_rows), set(display_columns))
+
     # convert timestamp columns to numerical columns, so correlation can be performed
     datetime_dtypes = [str(x) for x in dataset.dtypes if str(x).startswith('datetime64')]  # finding all timezones
     if datetime_dtypes:
@@ -679,19 +510,21 @@ def associations(dataset,
                            index=columns)
 
     # finding single-value columns
-    single_value_columns = []
-    for c in columns:
+    single_value_columns_set = set()
+    for c in displayed_features_set:
         if dataset[c].unique().size == 1:
-            single_value_columns.append(c)
+            single_value_columns_set.add(c)
 
     # computing associations
     for i in range(0, len(columns)):
-        if columns[i] in single_value_columns:
+        if columns[i] not in displayed_features_set:
+            continue
+        if columns[i] in single_value_columns_set:
             corr.loc[:, columns[i]] = 0.0
             corr.loc[columns[i], :] = 0.0
             continue
         for j in range(i, len(columns)):
-            if columns[j] in single_value_columns:
+            if columns[j] in single_value_columns_set or columns[j] not in displayed_features_set:
                 continue
             elif i == j:
                 corr.loc[columns[i], columns[j]] = 1.0
@@ -710,7 +543,7 @@ def associations(dataset,
                         elif nom_nom_assoc == 'cramer':
                             cell = cramers_v(dataset[columns[i]],
                                              dataset[columns[j]],
-                                             bias_correction=bias_correction,
+                                             bias_correction=cramers_v_bias_correction,
                                              nan_strategy=_SKIP)
                             ij = cell
                             ji = cell
@@ -749,21 +582,29 @@ def associations(dataset,
                 inf_nan.loc[columns[j], columns[i]] = _inf_nan_str(ji)
     corr.fillna(value=np.nan, inplace=True)
 
-    if mark_columns:
-        marked_columns = [
-            '{} (nom)'.format(col)
-            if col in nominal_columns else '{} (con)'.format(col)
-            for col in columns
-        ]
-        corr.columns = marked_columns
-        corr.index = marked_columns
-        inf_nan.columns = marked_columns
-        inf_nan.index = marked_columns
-
     if clustering:
         corr, _ = cluster_correlations(corr)
-        columns = corr.columns
-        inf_nan = inf_nan.reindex(columns=columns).reindex(index=columns)
+        inf_nan = inf_nan.reindex(columns=corr.columns).reindex(index=corr.index)
+
+        # rearrange dispalyed rows and columns according to the clustered order
+        display_columns = [c for c in corr.columns if c in display_columns]
+        display_rows = [c for c in corr.index if c in display_rows]
+
+    # keep only displayed columns and rows
+    corr = corr.loc[display_rows, display_columns]
+    inf_nan = inf_nan.loc[display_rows, display_columns]
+
+    if mark_columns:
+        def mark(col):
+            return '{} (nom)'.format(col) if col in nominal_columns else '{} (con)'.format(col)
+        
+        corr.columns = [mark(col) for col in corr.columns]
+        corr.index = [mark(col) for col in corr.index]
+        inf_nan.columns = corr.columns
+        inf_nan.index = corr.index
+        single_value_columns_set = {mark(col) for col in single_value_columns_set}
+        display_rows = [mark(col) for col in display_rows]
+        display_columns = [mark(col) for col in display_columns]
 
     if not compute_only:
         if ax is None:
@@ -771,49 +612,56 @@ def associations(dataset,
         if inf_nan.any(axis=None):
             inf_nan_mask = np.vectorize(lambda x: not bool(x))(inf_nan.values)
             ax = sns.heatmap(inf_nan_mask,
-                            cmap=['white'],
-                            annot=inf_nan if annot else None,
-                            fmt='',
-                            center=0,
-                            square=True,
-                            ax=ax,
-                            mask=inf_nan_mask,
-                            cbar=False)
+                             cmap=['white'],
+                             annot=inf_nan if annot else None,
+                             fmt='',
+                             center=0,
+                             square=True,
+                             ax=ax,
+                             mask=inf_nan_mask,
+                             cbar=False)
         else:
             inf_nan_mask = np.ones_like(corr)
-        if len(single_value_columns) > 0:
+        if len(single_value_columns_set) > 0:
             sv = pd.DataFrame(data=np.zeros_like(corr),
-                            columns=columns,
-                            index=columns)
-            for c in single_value_columns:
-                sv.loc[:, c] = ' '
-                sv.loc[c, :] = ' '
-                sv.loc[c, c] = 'SV'
+                              columns=corr.columns,
+                              index=corr.index)
+            for c in single_value_columns_set:
+                if c in display_rows and c in display_columns:
+                    sv.loc[:, c] = ' '
+                    sv.loc[c, :] = ' '
+                    sv.loc[c, c] = 'SV'
+                elif c in display_rows:
+                    sv.loc[c, :] = ' '
+                    sv.loc[c, sv.columns[0]] = 'SV' 
+                else:  # c in display_columns
+                    sv.loc[:, c] = ' '
+                    sv.loc[sv.index[-1], c] = 'SV'                    
             sv_mask = np.vectorize(lambda x: not bool(x))(sv.values)
             ax = sns.heatmap(sv_mask,
-                            cmap=[sv_color],
-                            annot=sv if annot else None,
-                            fmt='',
-                            center=0,
-                            square=True,
-                            ax=ax,
-                            mask=sv_mask,
-                            cbar=False)
+                             cmap=[sv_color],
+                             annot=sv if annot else None,
+                             fmt='',
+                             center=0,
+                             square=True,
+                             ax=ax,
+                             mask=sv_mask,
+                             cbar=False)
         else:
             sv_mask = np.ones_like(corr)
         mask = np.vectorize(lambda x: not bool(x))(inf_nan_mask) + np.vectorize(lambda x: not bool(x))(sv_mask)
-        vmin = vmin or (-1.0 if len(columns) - len(nominal_columns) >= 2 else 0.0)
+        vmin = vmin or (-1.0 if len(displayed_features_set) - len(nominal_columns) >= 2 else 0.0)
         ax = sns.heatmap(corr,
-                        cmap=cmap,
-                        annot=annot,
-                        fmt=fmt,
-                        center=0,
-                        vmax=vmax,
-                        vmin=vmin,
-                        square=True,
-                        mask=mask,
-                        ax=ax,
-                        cbar=cbar)
+                         cmap=cmap,
+                         annot=annot,
+                         fmt=fmt,
+                         center=0,
+                         vmax=vmax,
+                         vmin=vmin,
+                         square=True,
+                         mask=mask,
+                         ax=ax,
+                         cbar=cbar)
         plt.title(title)
         if filename:
             plt.savefig(filename)
