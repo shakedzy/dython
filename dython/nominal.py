@@ -188,9 +188,14 @@ def theils_u(x,
     p_x = list(map(lambda n: n / total_occurrences, x_counter.values()))
     s_x = ss.entropy(p_x)
     if s_x == 0:
-        return 1
+        return 1.
     else:
-        return (s_x - s_xy) / s_x
+        s_diff = s_x - s_xy
+        if -1e-13 <= s_diff < 0.:
+            warnings.warn(f'Rounded U = {s_diff} to zero. This is probably due to computation errors as a result of almost insignificant differences between x and y.', RuntimeWarning)
+            return 0.
+        else:
+            return (s_diff) / s_x
 
 
 def correlation_ratio(categories,
