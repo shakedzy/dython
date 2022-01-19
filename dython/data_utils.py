@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,14 +31,16 @@ def one_hot_encode(arr, classes=None):
 
     Example:
     --------
-    >> one_hot_encode([1,0,5])
-    [[0. 1. 0. 0. 0. 0.]
-     [1. 0. 0. 0. 0. 0.]
-     [0. 0. 0. 0. 0. 1.]]
+    >>> one_hot_encode([1,0,5])
+    array([[0., 1., 0., 0., 0., 0.],
+           [1., 0., 0., 0., 0., 0.],
+           [0., 0., 0., 0., 0., 1.]])
     """
-    arr = convert(arr, 'array')
+    arr = convert(arr, 'array').astype(int)
     if not len(arr.shape) == 1:
         raise ValueError(f'array must have only one dimension, but has shape: {arr.shape}')
+    if arr.min() < 0:
+        raise ValueError('array cannot contain negative values')
     classes = classes if classes is not None else arr.max()+1
     h = np.zeros((arr.size, classes))
     h[np.arange(arr.size), arr] = 1
@@ -120,8 +123,8 @@ def identify_columns_by_type(dataset, include):
 
     Example:
     --------
-    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
-    >> identify_columns_by_type(df, include=['int64', 'float64'])
+    >>> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
+    >>> identify_columns_by_type(df, include=['int64', 'float64'])
     ['col2', 'col3']
 
     """
@@ -145,8 +148,8 @@ def identify_columns_with_na(dataset):
 
     Example:
     --------
-    >> df = pd.DataFrame({'col1': ['a', np.nan, 'a', 'a'], 'col2': [3, np.nan, 2, np.nan], 'col3': [1., 2., 3., 4.]})
-    >> identify_columns_with_na(df)
+    >>> df = pd.DataFrame({'col1': ['a', np.nan, 'a', 'a'], 'col2': [3, np.nan, 2, np.nan], 'col3': [1., 2., 3., 4.]})
+    >>> identify_columns_with_na(df)
       column  na_count
     1   col2         2
     0   col1         1

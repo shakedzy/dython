@@ -270,8 +270,8 @@ def identify_nominal_columns(dataset):
 
     Example:
     --------
-    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
-    >> identify_nominal_columns(df)
+    >>> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1]})
+    >>> identify_nominal_columns(df)
     ['col1']
 
     """
@@ -292,8 +292,8 @@ def identify_numeric_columns(dataset):
 
     Example:
     --------
-    >> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
-    >> identify_numeric_columns(df)
+    >>> df = pd.DataFrame({'col1': ['a', 'b', 'c', 'a'], 'col2': [3, 4, 2, 1], 'col3': [1., 2., 3., 4.]})
+    >>> identify_numeric_columns(df)
     ['col2', 'col3']
 
     """
@@ -412,7 +412,7 @@ def associations(dataset,
         between 0 and -1, depending on the types of associations used (-1 if Pearson's R
         is used, 0 otherwise)
     plot : Boolean, default = True
-        Plot a heat-map of the correlation matrix. If false, the all axes and plotting still 
+        Plot a heat-map of the correlation matrix. If false, the all axes and plotting still
         happen, but the heat-map will not be displayed.
     compute_only : Boolean, default = False
         Use this flag only if you have no need of the plotting at all. This skips the entire
@@ -667,7 +667,7 @@ def associations(dataset,
             plt.savefig(filename)
         if plot:
             plt.show()
-    
+
     return {'corr': corr,
             'ax': ax}
 
@@ -777,12 +777,12 @@ def cluster_correlations(corr_mat, indices=None):
 
     Example:
     --------
-    >> assoc = associations(
-        customers,
-        plot=False
-    )
-    >> correlations = assoc['corr']
-    >> correlations, _ = cluster_correlations(correlations)
+    >>> assoc = associations(
+    ...     iris_df,
+    ...     plot=False
+    ... )
+    >>> correlations = assoc['corr']
+    >>> correlations, _ = cluster_correlations(correlations)
     """
     if indices is None:
         X = corr_mat.values
