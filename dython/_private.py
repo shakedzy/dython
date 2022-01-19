@@ -12,7 +12,7 @@ def convert(data, to, copy=True):
         elif isinstance(data, list):
             converted = np.array(data)
         elif isinstance(data, pd.DataFrame):
-            converted = data.as_matrix()
+            converted = data.values()
     elif to == 'list':
         if isinstance(data, list):
             converted = data.copy() if copy else data
