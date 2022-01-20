@@ -346,6 +346,31 @@ This is a symmetric coefficient: $V(x,y) = V(y,x)$. Read more on [Wikipedia](htt
 
 Original function taken from [this answer](https://stackoverflow.com/a/46498792/5863503) on StackOverflow.
 
+!!! note "Cramer's V limitations when applied on skewed or small datasets
+
+    As the Cramer's V measure of association depends directly on the counts of each samples-pair in the data, it tends to be suboptimal when applied on skewed or small datasets.
+
+    Consider each of the following cases, where we would expect Cramer's V to reach a high value, yet this only happens in the first scenario:
+
+    ```python
+    >>> x = ['a'] * 400 + ['b'] * 100
+    >>> y = ['X'] * 400 + ['Y'] * 100
+    >>> cramers_v(x,y)
+    0.9937374102534072
+
+    # skewed dataset
+    >>> x = ['a'] * 500 + ['b'] * 1
+    >>> y = ['X'] * 500 + ['Y'] * 1
+    >>> cramers_v(x,y)
+    0.4974896903293253
+
+    # very small dataset
+    >>> x = ['a'] * 4 + ['b'] * 1
+    >>> y = ['X'] * 4 + ['Y'] * 1
+    >>> cramers_v(x,y)
+    0.0
+    ```
+
 - **`x`** : `list / NumPy ndarray / Pandas Series`
 
     A sequence of categorical measurements
