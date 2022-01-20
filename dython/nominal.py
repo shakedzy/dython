@@ -501,7 +501,7 @@ def associations(dataset,
         datetime_cols = identify_columns_by_type(dataset, datetime_dtypes)
         datetime_cols = [c for c in datetime_cols if c not in nominal_columns]
         if datetime_cols:
-            dataset[datetime_cols] = dataset[datetime_cols].astype(np.int64)
+            dataset[datetime_cols] = dataset[datetime_cols].apply(lambda col: col.view(np.int64), axis=0)
             if auto_nominal:
                 nominal_columns = identify_nominal_columns(dataset)
 

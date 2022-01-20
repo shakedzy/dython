@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 import matplotlib
 from sklearn import datasets
+from datetime import datetime, timedelta
 
 from dython.nominal import associations
 
@@ -58,3 +59,19 @@ def test_mark_columns(iris_df):
     assert '(con)' in corr.index[0], "first column should contain (con) mark if iris_df is used"
 
 
+def test_datetime_data():
+    dt = datetime(2020, 12, 1)
+    end = datetime(2020, 12, 2)
+    step = timedelta(seconds=5)
+    result = []
+    while dt < end:
+        result.append(dt.strftime('%Y-%m-%d %H:%M:%S'))
+        dt += step
+
+    nums = list(range(len(result)))
+    df = pd.DataFrame({'dates':result, 'up': nums, 'down': sorted(nums, reverse=True)})
+    df['dates'] = pd.to_datetime(df['dates'], format="%Y-%m-%d %H:%M:%S")  # without this, this column is considered as object rather than dates
+
+    correct_corr = pd.DataFrame(columns = ['dates', 'up', 'down'], index=['dates', 'up', 'down'], data=[[1., 1., -1.], [1., 1., -1.], [-1., -1., 1.]])
+    corr = associations(df, plot=False)['corr']
+    assert corr.compare(correct_corr).empty, f'datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}'
