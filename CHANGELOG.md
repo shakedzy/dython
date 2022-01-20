@@ -1,8 +1,10 @@
 # Change Log
 
 ## 0.7.0
-* **License is now MIT**
+* _License is now MIT_
 * Added tests (issue [#69](https://github.com/shakedzy/dython/issues/69), by **[@lahdjirayhan](https://github.com/lahdjirayhan)**)
+* Added option to select which rows/columns to display/hide in `nominal.associations` (issue [#92](https://github.com/shakedzy/dython/issues/92))
+* Fixed deprecation warning when using `datetime` features with `nominal.associations` (issue [#96](https://github.com/shakedzy/dython/issues/96))
 * Remove deprecated method `compute_associations`
 
 ## 0.6.8
