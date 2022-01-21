@@ -6,7 +6,7 @@ title: nominal
 
 #### `associations`
 
-`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False,nom_nom_assoc='cramer', num_num_assoc='pearson', display_rows='all', display_columns='all', hide_rows=None, hide_columns=None,bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None)`
+`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False,nom_nom_assoc='cramer', num_num_assoc='pearson', nom_num_assoc='correlation_ratio', symmetric_nom_nom=True, symmetric_num_num=True, display_rows='all', display_columns='all', hide_rows=None, hide_columns=None,bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -43,30 +43,58 @@ continuous features using:
     if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on their type (nominal or
     continuous), as provided by nominal_columns
 
-- **`nom_nom_assoc`** : `string`
+- **`nom_nom_assoc`** : `callable / string`
 
     _Default = 'cramer'_
 
     !!! info "Method signature change"
         This replaces the `theil_u` flag which was used till version 0.6.6.
 
-    Name of nominal-nominal (categorical-categorical) association to use:
+    If callable, a function which recieves two `pd.Series` and returns a single number.
+
+    If string, name of nominal-nominal (categorical-categorical) association to use:
 
     * `cramer`: Cramer's V
 
-    * `theil`: Theil's U. When selected, heat-map rows are the provided information (meaning: $U = U(col|row)$)
+    * `theil`: Theil's U. When selected, heat-map columns are the provided information (meaning: $U = U(row|col)$)
 
-- **`num_num_assoc`** : `string`
+- **`num_num_assoc`** : `callable / string`
 
     _Default = 'pearson'_
 
-    Name of numerical-numerical association to use:
+    If callable, a function which recieves two `pd.Series` and returns a single number.
+
+    If string, name of numerical-numerical association to use:
 
     * `pearson`: Pearson's R
 
     * `spearman`: Spearman's R
 
     * `kendall`: Kendall's Tau
+
+- **`nom_num_assoc`** : `callable / string`
+
+    _Default = 'correlation_ratio'_
+
+    If callable, a function which recieves two `pd.Series` and returns a single number.
+
+    If string, name of nominal-numerical association to use:
+
+    * `correlation_ratio`: correlation ratio
+
+- **`symmetric_nom_nom`** : `Boolean`
+
+    _Default = True_
+
+    Relevant only if `nom_nom_assoc` is a callable. If so, declare whether the function is symmetric ($f(x,y) = f(y,x)$).
+    If False, heat-map values should be interpreted as $f(row,col)$.
+
+- **`symmetric_num_num`** : `Boolean`
+
+    _Default = True_
+
+    Relevant only if `num_num_assoc` is a callable. If so, declare whether the function is symmetric ($f(x,y) = f(y,x)$).
+    If False, heat-map values should be interpreted as $f(row,col)$. 
 
 - **`display_rows`** : `list / string`
 
@@ -346,7 +374,7 @@ This is a symmetric coefficient: $V(x,y) = V(y,x)$. Read more on [Wikipedia](htt
 
 Original function taken from [this answer](https://stackoverflow.com/a/46498792/5863503) on StackOverflow.
 
-!!! note "Cramer's V limitations when applied on skewed or small datasets
+!!! info "Cramer's V limitations when applied on skewed or small datasets"
 
     As the Cramer's V measure of association depends directly on the counts of each samples-pair in the data, it tends to be suboptimal when applied on skewed or small datasets.
 
