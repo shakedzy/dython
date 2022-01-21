@@ -20,7 +20,7 @@ continuous features using:
 
 - **`nominal_columns`** : `string / list / NumPy ndarray`
 
-    _Default = 'auto'_
+    _Default: 'auto'_
 
     Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
     columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are
@@ -28,7 +28,7 @@ continuous features using:
 
 - **`numerical_columns`** : `string / list / NumPy ndarray`
 
-    _Default = None_
+    _Default: None_
 
     To be used instead of `nominal_columns`. Names of columns of the data-set
     which hold numerical values. Can also be the string 'all' to state that
@@ -45,7 +45,7 @@ continuous features using:
 
 - **`nom_nom_assoc`** : `callable / string`
 
-    _Default = 'cramer'_
+    _Default: 'cramer'_
 
     !!! info "Method signature change"
         This replaces the `theil_u` flag which was used till version 0.6.6.
@@ -60,7 +60,7 @@ continuous features using:
 
 - **`num_num_assoc`** : `callable / string`
 
-    _Default = 'pearson'_
+    _Default: 'pearson'_
 
     If callable, a function which recieves two `pd.Series` and returns a single number.
 
@@ -74,7 +74,7 @@ continuous features using:
 
 - **`nom_num_assoc`** : `callable / string`
 
-    _Default = 'correlation_ratio'_
+    _Default: 'correlation_ratio'_
 
     If callable, a function which recieves two `pd.Series` and returns a single number.
 
@@ -84,21 +84,21 @@ continuous features using:
 
 - **`symmetric_nom_nom`** : `Boolean`
 
-    _Default = True_
+    _Default: True_
 
     Relevant only if `nom_nom_assoc` is a callable. If so, declare whether the function is symmetric ($f(x,y) = f(y,x)$).
     If False, heat-map values should be interpreted as $f(row,col)$.
 
 - **`symmetric_num_num`** : `Boolean`
 
-    _Default = True_
+    _Default: True_
 
     Relevant only if `num_num_assoc` is a callable. If so, declare whether the function is symmetric ($f(x,y) = f(y,x)$).
     If False, heat-map values should be interpreted as $f(row,col)$. 
 
 - **`display_rows`** : `list / string`
 
-    _Default = 'all'_
+    _Default: 'all'_
 
     Choose which of the dataset's features will be displyed in the output's
     correlations table rows. If string, can either be a single feature's name or 'all'.
@@ -106,7 +106,7 @@ continuous features using:
 
 - **`display_columns`** : `list / string`
 
-    _Default = 'all'_
+    _Default: 'all'_
 
     Choose which of the dataset's features will be displyed in the output's
     correlations table columns. If string, can either be a single feature's name or 'all'.
@@ -114,7 +114,7 @@ continuous features using:
 
 - **`hide_rows`** : `list / string`
 
-    _Default = None_
+    _Default: None_
 
     choose which of the dataset's features will not be displyed in the output's
     correlations table rows. If string, must be a single feature's name. If `None`,
@@ -122,7 +122,7 @@ continuous features using:
 
 - **`hide_columns`** : `list / string`
 
-    _Default = None_
+    _Default: None_
     
     choose which of the dataset's features will not be displyed in the output's
     correlations table columns. If string, must be a single feature's name. If `None`,
@@ -130,7 +130,7 @@ continuous features using:
   
 - **`bias_correction`** : `Boolean`
 
-     _Default = True_
+     _Default: True_
 
      Use bias correction for Cramer's V from Bergsma and Wicher, Journal of the Korean
      Statistical Society 42 (2013): 323-328.
@@ -149,55 +149,55 @@ continuous features using:
 
 - **`ax`** : matplotlib `Axe`
 
-     _Default = None_
+     _Default: None_
 
      Matplotlib Axis on which the heat-map will be plotted
 
 - **`figsize`** : `(int,int)` or `None`
 
-     _Default = None_
+     _Default: None_
 
      A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's default. Only used if `ax=None`.
 
 - **`annot`** : `Boolean`
 
-     _Default = True_
+     _Default: True_
 
      Plot number annotations on the heat-map
 
 - **`fmt`** : `string`
 
-     _Default = '.2f'_
+     _Default: '.2f'_
 
      String formatting of annotations
 
 - **`cmap`** : Matplotlib colormap or `None`
 
-     _Default = None_
+     _Default: None_
 
      A colormap to be used for the heat-map. If None, falls back to Seaborn's heat-map default
 
 - **`sv_color`** : `string`
 
-     _Default = 'silver'_
+     _Default: 'silver'_
 
      A Matplotlib color. The color to be used when displaying single-value features over the heat-map
 
 - **`cbar`** : `Boolean`
 
-    _Default = True_
+    _Default: True_
 
     Display heat-map's color-bar
 
 - **`vmax`** : `float`
 
-    _Default = 1.0_
+    _Default: 1.0_
 
     Set heat-map `vmax` option
 
 - **`vmin`** : `float` or `None`
 
-    _Default = None_
+    _Default: None_
 
     Set heat-map `vmin` option. If set to `None`, `vmin` will be chosen automatically
     between 0 and -1.0, depending on the types of associations used (-1.0 if Pearson's R
@@ -225,13 +225,13 @@ continuous features using:
 
 - **`title`**: `string` or `None`
 
-    _Default = None_
+    _Default: None_
 
     Plotted graph title.
 
 - **`filename`**: `string` or `None`
 
-    _Default = None_
+    _Default: None_
 
     If not None, plot will be saved to the given file name.
 
@@ -409,7 +409,7 @@ Original function taken from [this answer](https://stackoverflow.com/a/46498792/
 
 - **`bias_correction`** : `Boolean`
 
-      _Default = True_
+      _Default: True_
 
       Use bias correction from Bergsma and Wicher, Journal of the Korean Statistical Society 42 (2013): 323-328.
 
