@@ -619,10 +619,10 @@ def associations(dataset,
                         else:
                             if num_num_assoc == 'pearson':
                                 cell, _ = ss.pearsonr(dataset[columns[i]],
-                                                    dataset[columns[j]])
+                                                      dataset[columns[j]])
                             elif num_num_assoc == 'spearman':
                                 cell, _ = ss.spearmanr(dataset[columns[i]],
-                                                    dataset[columns[j]])
+                                                       dataset[columns[j]])
                             elif num_num_assoc == 'kendall':
                                 cell, _ = ss.kendalltau(dataset[columns[i]],
                                                         dataset[columns[j]])
