@@ -29,56 +29,56 @@ Based on [scikit-plot](https://github.com/reiinakano/scikit-plot) `plot_ks_stati
 
 - **`ax`** : matplotlib ax
 
-    _Default = None_
+    _Default: None_
 
     Matplotlib Axis on which the curves will be plotted
 
 - **`figsize`** : `(int,int)` or `None`
 
-    _Default = None_
+    _Default: None_
 
     a Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
     default. Only used if `ax=None`
 
 - **`colors`** : list of Matplotlib color strings
 
-    _Default = `('darkorange', 'b')`_
+    _Default: `('darkorange', 'b')`_
 
     List of colors to be used for the plotted curves
 
 - **`title`** : string or `None`
 
-    _Default = None_
+    _Default: None_
 
     Plotted graph title. If `None`, default title is used
 
 - **`xlim`** : `(float, float)`
 
-    _Default = (0.,1.)_
+    _Default: (0.,1.)_
 
     X-axis limits.
 
 - **`ylim`** : `(float,float)`
 
-    _Default = (0.,1.)_
+    _Default: (0.,1.)_
 
     Y-axis limits.
 
 -  **`fmt`** : `string`
 
-    _Default = '.2f'_
+    _Default: '.2f'_
 
     String formatting of displayed numbers.
 
 - **`lw`** : `int`
 
-    _Default = 2_
+    _Default: 2_
 
     Line-width.
 
 - **`legend`**: `string` or `None`
 
-    _Default = 'best'_
+    _Default: 'best'_
 
     A Matplotlib legend location string. See Matplotlib documentation for possible options
 
@@ -88,7 +88,7 @@ Based on [scikit-plot](https://github.com/reiinakano/scikit-plot) `plot_ks_stati
 
 - **`filename`**: `string` or `None`
 
-    _Default = None_
+    _Default: None_
 
     If not None, plot will be saved to the given file name.
 
@@ -144,19 +144,19 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 
 - **`micro`** : `Boolean`
 
-    _Default = True_
+    _Default: True_
 
     Whether to calculate a Micro graph (not applicable for binary cases)
 
 - **`macro`** : `Boolean`
 
-    _Default = True_
+    _Default: True_
 
     Whether to calculate a Macro graph (ROC metric only, not applicable for binary cases)
 
 - **`eopt`** : `Boolean`
 
-    _Default = True_
+    _Default: True_
 
     Whether to calculate and display the estimated-optimal threshold
     for each metric graph. For ROC curves, the estimated-optimal threshold is the closest
@@ -165,7 +165,7 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 
 - **`class_names`**: `list` or `string`
 
-    _Default = None_
+    _Default: None_
 
     Names of the different classes. In a multi-class classification, the
     order must match the order of the classes probabilities in the input
@@ -174,63 +174,63 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 
 - **`colors`** : list of Matplotlib color strings or `None`
 
-    _Default = None_
+    _Default: None_
 
     List of colors to be used for the plotted curves. If `None`, falls back
     to a predefined default.
 
 - **`ax`** : matplotlib `ax`
 
-    _Default = None_
+    _Default: None_
 
     Matplotlib Axis on which the curves will be plotted
 
 - **`figsize`** : `(int,int)` or `None`
 
-    _Default = None_
+    _Default: None_
 
     A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
     default. Only used if `ax=None`.
 
 - **`xlim`** : `(float, float)`
 
-    _Default = (0.,1.)_
+    _Default: (0.,1.)_
 
     X-axis limits.
 
 - **`ylim`** : `(float,float)`
 
-    _Default = (0.,1.02)_
+    _Default: (0.,1.02)_
 
     Y-axis limits.
 
 - **`lw`** : `int`
 
-    _Default = 2_
+    _Default: 2_
 
     Line-width.
 
 - **`ls`** : `string`
 
-    _Default = '-'_
+    _Default: '-'_
 
     Matplotlib line-style string
 
 - **`ms`** : `int`
 
-    _Default = 10_
+    _Default: 10_
 
     Marker-size.
 
 -  **`fmt`** : `string`
 
-    _Default = '.2f'_
+    _Default: '.2f'_
 
     String formatting of displayed AUC and threshold numbers.
 
 - **`legend`**: `string` or `None`
 
-    _Default = 'best'_
+    _Default: 'best'_
 
     A Matplotlib legend location string. See Matplotlib documentation for possible options
 
@@ -240,19 +240,19 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
 
 - **`title`**: `string` or `None`
 
-    _Default = None_
+    _Default: None_
 
     Plotted graph title. If None, default title is used.
 
 - **`filename`**: `string` or `None`
 
-    _Default = None_
+    _Default: None_
 
     If not None, plot will be saved to the given file name.
 
 - **`force_multiclass`**: `Boolean`
 
-    _Default = False_
+    _Default: False_
 
     Only applicable if `y_true` and `y_pred` have two columns. If so,
     consider the data as a multiclass data rather than binary (useful when plotting
@@ -295,6 +295,6 @@ importance according to the classifier, from the most important to the least.
 
 - **`precision`** : `int`
 
-    _Default = 4_
+    _Default: 4_
 
     Precision of feature importance.
