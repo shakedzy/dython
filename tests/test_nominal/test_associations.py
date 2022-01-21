@@ -1,10 +1,11 @@
 import pytest
-import pandas as pd
 import matplotlib
+import pandas as pd
+import scipy.stats as ss
 from sklearn import datasets
 from datetime import datetime, timedelta
 
-from dython.nominal import associations
+from dython.nominal import associations, correlation_ratio
 
 
 def test_return_type_check(iris_df):
@@ -57,6 +58,14 @@ def test_mark_columns(iris_df):
     corr = associations(iris_df, mark_columns = True)['corr']
 
     assert '(con)' in corr.index[0], "first column should contain (con) mark if iris_df is used"
+
+
+def test_udf(iris_df):
+    def pr(x,y):
+        return ss.pearsonr(x,y)[0]
+    corr1 = associations(iris_df, plot=False, num_num_assoc='pearson', nom_num_assoc='correlation_ratio')['corr']
+    corr2 = associations(iris_df, plot=False, num_num_assoc=pr, nom_num_assoc=correlation_ratio)['corr']
+    assert corr1.compare(corr2).empty, 'Computation of built-in measures of associations differs from UDFs'
 
 
 def test_datetime_data():
