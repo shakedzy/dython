@@ -311,6 +311,9 @@ def associations(dataset,
                  mark_columns=False,
                  nom_nom_assoc='cramer',
                  num_num_assoc='pearson',
+                 nom_num_assoc='correlation_ratio',
+                 symmetric_nom_nom=True,
+                 symmetric_num_num=True,
                  display_rows='all',
                  display_columns='all',
                  hide_rows=None,
@@ -359,13 +362,25 @@ def associations(dataset,
         if True, output's columns' names will have a suffix of '(nom)' or
         '(con)' based on their type (nominal or continuous), as provided
         by nominal_columns
-    nom_nom_assoc : string, default = 'cramer'
-        Name of nominal-nominal (categorical-categorical) association to use.
+    nom_nom_assoc : callable / string, default = 'cramer'
+        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If string, name of nominal-nominal (categorical-categorical) association to use.
         Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
-        heat-map rows are the provided information (U = U(col|row)).
-    num_num_assoc : string, default = 'pearson'
-        Name of numerical-numerical association to use. Options are 'pearson'
+        heat-map columns are the provided information (U = U(row|col)).
+    num_num_assoc : callable / string, default = 'pearson'
+        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If string, name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
+    nom_num_assoc : callable / string, default = 'correlation_ratio'
+        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If string, name of nominal-numerical association to use. Options are 'correlation_ratio'
+        for correlation ratio.
+    symmetric_nom_nom : Boolean, default = True
+        Relevant only if `nom_nom_assoc` is a callable. Declare whether the function is symmetric (f(x,y) = f(y,x)).
+        If False, heat-map values should be interpreted as f(row,col) 
+    symmetric_num_num : Boolean, default = True
+        Relevant only if `num_num_assoc` is a callable. Declare whether the function is symmetric (f(x,y) = f(y,x)).
+        If False, heat-map values should be interpreted as f(row,col) 
     display_rows : list / string, default = 'all'
         Choose which of the dataset's features will be displyed in the output's
         correlations table rows. If string, can either be a single feature's name or 'all'.
@@ -521,6 +536,22 @@ def associations(dataset,
             single_value_columns_set.add(c)
 
     # computing associations
+    def _nom_num(nom_column, num_column):
+        if callable(nom_num_assoc):
+            cell = nom_num_assoc(dataset[nom_column],
+                                 dataset[num_column])
+            ij = cell
+            ji = cell                                                              
+        elif nom_num_assoc == 'correlation_ratio':
+            cell = correlation_ratio(dataset[nom_column],
+                                    dataset[num_column],
+                                    nan_strategy=_SKIP)
+            ij = cell
+            ji = cell
+        else:
+            raise ValueError(f'{nom_nom_assoc} is not a supported nominal-numerical association')
+        return ij, ji
+    
     for i in range(0, len(columns)):
         if columns[i] not in displayed_features_set:
             continue
@@ -536,12 +567,26 @@ def associations(dataset,
             else:
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
-                        if nom_nom_assoc == 'theil':
-                            ji = theils_u(
+                        if callable(nom_nom_assoc):
+                            if symmetric_nom_nom:
+                                cell = nom_nom_assoc(
+                                      dataset[columns[i]], 
+                                      dataset[columns[j]])
+                                ij = cell
+                                ji = cell
+                            else:
+                                ij = nom_nom_assoc(
+                                    dataset[columns[i]],
+                                    dataset[columns[j]])
+                                ji = nom_nom_assoc(
+                                    dataset[columns[j]],
+                                    dataset[columns[i]])                                                                
+                        elif nom_nom_assoc == 'theil':
+                            ij = theils_u(
                                 dataset[columns[i]],
                                 dataset[columns[j]],
                                 nan_strategy=_SKIP)
-                            ij = theils_u(
+                            ji = theils_u(
                                 dataset[columns[j]],
                                 dataset[columns[i]],
                                 nan_strategy=_SKIP)
@@ -555,32 +600,36 @@ def associations(dataset,
                         else:
                             raise ValueError(f'{nom_nom_assoc} is not a supported nominal-nominal association')
                     else:
-                        cell = correlation_ratio(dataset[columns[i]],
-                                                 dataset[columns[j]],
-                                                 nan_strategy=_SKIP)
-                        ij = cell
-                        ji = cell
+                        ij, ji = _nom_num(nom_column=columns[i], num_column=columns[j])
                 else:
                     if columns[j] in nominal_columns:
-                        cell = correlation_ratio(dataset[columns[j]],
-                                                 dataset[columns[i]],
-                                                 nan_strategy=_SKIP)
-                        ij = cell
-                        ji = cell
+                        ij, ji = _nom_num(nom_column=columns[j], num_column=columns[i])
                     else:
-                        if num_num_assoc == 'pearson':
-                            cell, _ = ss.pearsonr(dataset[columns[i]],
-                                                  dataset[columns[j]])
-                        elif num_num_assoc == 'spearman':
-                            cell, _ = ss.spearmanr(dataset[columns[i]],
-                                                   dataset[columns[j]])
-                        elif num_num_assoc == 'kendall':
-                            cell, _ = ss.kendalltau(dataset[columns[i]],
-                                                    dataset[columns[j]])
+                        if callable(num_num_assoc):
+                            if symmetric_num_num:
+                                cell = num_num_assoc(dataset[columns[i]],
+                                                     dataset[columns[j]])
+                                ij = cell
+                                ji = cell 
+                            else:
+                                ij = num_num_assoc(dataset[columns[i]],
+                                                   dataset[columns[j]]) 
+                                ji = num_num_assoc(dataset[columns[j]],
+                                                   dataset[columns[i]])                                 
                         else:
-                            raise ValueError(f'{num_num_assoc} is not a supported numerical-numerical association')
-                        ij = cell
-                        ji = cell
+                            if num_num_assoc == 'pearson':
+                                cell, _ = ss.pearsonr(dataset[columns[i]],
+                                                    dataset[columns[j]])
+                            elif num_num_assoc == 'spearman':
+                                cell, _ = ss.spearmanr(dataset[columns[i]],
+                                                    dataset[columns[j]])
+                            elif num_num_assoc == 'kendall':
+                                cell, _ = ss.kendalltau(dataset[columns[i]],
+                                                        dataset[columns[j]])
+                            else:
+                                raise ValueError(f'{num_num_assoc} is not a supported numerical-numerical association')
+                            ij = cell
+                            ji = cell
                 corr.loc[columns[i], columns[j]] = ij if not np.isnan(ij) and abs(ij) < np.inf else 0.0
                 corr.loc[columns[j], columns[i]] = ji if not np.isnan(ji) and abs(ji) < np.inf else 0.0
                 inf_nan.loc[columns[i], columns[j]] = _inf_nan_str(ij)
