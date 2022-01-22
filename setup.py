@@ -1,42 +1,32 @@
 import pathlib
 from setuptools import setup, find_packages
 
-HERE = pathlib.Path(__file__).parent
+HERE = pathlib.Path(__file__).parent.resolve()
 
 PACKAGE_NAME = 'dython'
 AUTHOR = 'Shaked Zychlinski'
 AUTHOR_EMAIL = 'shakedzy@gmail.com'
 URL = 'http://shakedzy.xyz/dython'
-DOWNLOAD_URL = 'https://github.com/shakedzy/dython'
+DOWNLOAD_URL = 'https://pypi.org/project/dython/'
 
 LICENSE = 'MIT'
-VERSION = (HERE / "VERSION").read_text()
+VERSION = (HERE / "VERSION").read_text(encoding="utf8").strip()
 DESCRIPTION = 'A set of data tools in Python'
-LONG_DESCRIPTION = (HERE / "DESCRIPTION.md").read_text()
+LONG_DESCRIPTION = (HERE / "README.md").read_text(encoding="utf8")
 LONG_DESC_TYPE = "text/markdown"
 
-INSTALL_REQUIRES = [
-      # Don't forget to update requirements.txt too!
-      'numpy>=1.19.5',
-      'pandas>=1.3.2',
-      'seaborn>=0.11.0',
-      'scipy>=1.7.1',
-      'matplotlib>=3.4.3',
-      'scikit-learn>=0.24.2',
-      'scikit-plot>=0.3.7'
-]
+requirements = (HERE / "requirements.txt").read_text(encoding="utf8")
+INSTALL_REQUIRES = [s.strip() for s in requirements.split('\n')]
+
+dev_requirements = (HERE / "dev_requirements.txt").read_text(encoding="utf8")
+EXTRAS_REQUIRE = {
+      'dev': [s.strip() for s in dev_requirements.split('\n')]
+}
 
 CLASSIFIERS = [
       'Programming Language :: Python :: 3'
 ]
 PYTHON_REQUIRES = '>=3.5'
-
-EXTRAS_REQUIRE = {
-      'dev': [
-            'pytest',
-            'hypothesis'
-      ]
-}
 
 setup(name=PACKAGE_NAME,
       version=VERSION,
@@ -50,6 +40,7 @@ setup(name=PACKAGE_NAME,
       download_url=DOWNLOAD_URL,
       python_requires=PYTHON_REQUIRES,
       install_requires=INSTALL_REQUIRES,
+      extras_require=EXTRAS_REQUIRE,
       packages=find_packages(),
       classifiers=CLASSIFIERS
       )
