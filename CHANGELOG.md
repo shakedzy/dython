@@ -6,7 +6,7 @@
 * Added option to select which rows/columns to display/hide in `nominal.associations` (issue [#92](https://github.com/shakedzy/dython/issues/92))
 * Fixed deprecation warning when using `datetime` features with `nominal.associations` (issue [#96](https://github.com/shakedzy/dython/issues/96))
 * `nominal.associations` now support custom methds as measures of associations (issue [#104](https://github.com/shakedzy/dython/issues/104))
-* Theil's U in `nominal.associations` is now rad as U(row|col) instead of U(col|row)
+* Theil's U in `nominal.associations` is now read as U(row|col) instead of U(col|row)
 * Remove deprecated method `compute_associations`
 
 ## 0.6.8
