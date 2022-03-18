@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.1.dev
+* Fix legend argument in `ks_abc` (by **[@lahdjirayhan](https://github.com/lahdjirayhan)**)
+
 ## 0.7.0
 * _License is now MIT_
 * Added tests (issue [#69](https://github.com/shakedzy/dython/issues/69), by **[@lahdjirayhan](https://github.com/lahdjirayhan)**)
