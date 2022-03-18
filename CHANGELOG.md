@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.7.1.dev
+* Fix floating point precision in `theils_u`, `cramer_v` and `correlation_ratio` (issue [#116](https://github.com/shakedzy/dython/issues/116))
 * Fix legend argument in `ks_abc` (by **[@lahdjirayhan](https://github.com/lahdjirayhan)**)
 
 ## 0.7.0
