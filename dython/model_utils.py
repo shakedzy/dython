@@ -427,7 +427,7 @@ def ks_abc(y_true, y_pred, ax=None, figsize=None, colors=('darkorange', 'b'), ti
     ax.set_ylabel('Fraction below threshold')
     ax.set_title('{t} [ABC = {a:{fmt}}]'.format(t=title or 'KS Statistic Plot', a=abc, fmt=fmt))
     if legend:
-        ax.legend(loc='best')
+        ax.legend(loc=legend)
     if filename:
         plt.savefig(filename)
     if plot:
