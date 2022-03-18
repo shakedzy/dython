@@ -15,7 +15,6 @@ from ._private import (
 __all__ = [
     'associations',
     'cluster_correlations',
-    'compute_associations',
     'conditional_entropy',
     'correlation_ratio',
     'cramers_v',
@@ -31,6 +30,7 @@ _DROP_SAMPLES = 'drop_samples'
 _DROP_FEATURES = 'drop_features'
 _SKIP = 'skip'
 _DEFAULT_REPLACE_VALUE = 0.0
+_PRECISION = 1e-13
 
 
 def _inf_nan_str(x):
@@ -139,9 +139,16 @@ def cramers_v(x,
                 RuntimeWarning)
             return np.nan
         else:
-            return np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
+            v = np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
     else:
-        return np.sqrt(phi2 / min(k - 1, r - 1))
+        v = np.sqrt(phi2 / min(k - 1, r - 1))
+    if -_PRECISION <= v < 0. or 1. < v <= 1. + _PRECISION:
+        rounded_v = 0. if v < 0 else 1.
+        warnings.warn(f'Rounded V = {v} to {rounded_v}. This is probably due to floating point precision issues.',
+                      RuntimeWarning)
+        return rounded_v
+    else:
+        return v
 
 
 def theils_u(x,
@@ -188,12 +195,14 @@ def theils_u(x,
     if s_x == 0:
         return 1.
     else:
-        s_diff = s_x - s_xy
-        if -1e-13 <= s_diff < 0.:
-            warnings.warn(f'Rounded U = {s_diff} to zero. This is probably due to computation errors as a result of almost insignificant differences between x and y.', RuntimeWarning)
-            return 0.
+        u = (s_x - s_xy) / s_x
+        if -_PRECISION <= u < 0. or 1. < u <= 1.+_PRECISION:
+            rounded_u = 0. if u < 0 else 1.
+            warnings.warn(f'Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.',
+                          RuntimeWarning)
+            return rounded_u
         else:
-            return (s_diff) / s_x
+            return u
 
 
 def correlation_ratio(categories,
@@ -253,10 +262,15 @@ def correlation_ratio(categories,
                                       2)))
     denominator = np.sum(np.power(np.subtract(measurements, y_total_avg), 2))
     if numerator == 0:
-        eta = 0.0
+        return 0.
     else:
         eta = np.sqrt(numerator / denominator)
-    return eta
+        if 1. < eta <= 1.+_PRECISION:
+            warnings.warn(f'Rounded eta = {eta} to 1. This is probably due to floating point precision issues.',
+                          RuntimeWarning)
+            return 1.
+        else:
+            return eta
 
 
 def identify_nominal_columns(dataset):
