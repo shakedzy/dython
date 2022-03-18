@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.7.1.dev
+## 0.7.1
 * Fix floating point precision in `theils_u`, `cramer_v` and `correlation_ratio` (issue [#116](https://github.com/shakedzy/dython/issues/116))
 * Fix legend argument in `ks_abc` (by **[@lahdjirayhan](https://github.com/lahdjirayhan)**)
 
@@ -10,7 +10,7 @@
 * Added option to select which rows/columns to display/hide in `nominal.associations` (issue [#92](https://github.com/shakedzy/dython/issues/92))
 * Fixed deprecation warning when using `datetime` features with `nominal.associations` (issue [#96](https://github.com/shakedzy/dython/issues/96))
 * `nominal.associations` now support custom methods as measures of associations (issue [#104](https://github.com/shakedzy/dython/issues/104))
-* _Importnant change:_ Theil's U in `nominal.associations` is now read as U(row|col) instead of U(col|row)
+* _Important change:_ Theil's U in `nominal.associations` is now read as U(row|col) instead of U(col|row)
 * Remove deprecated method `compute_associations`
 
 ## 0.6.8
