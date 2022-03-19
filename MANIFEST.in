@@ -1,1 +1,1 @@
-include *.md, VERSION
+include *.md, VERSION, requirements.txt
