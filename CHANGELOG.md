@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.7.1 (_post1_)
+## 0.7.1 (_post2_)
 * Fix floating point precision in `theils_u`, `cramer_v` and `correlation_ratio` (issue [#116](https://github.com/shakedzy/dython/issues/116))
 * Fix failing conda builds (by **[@sarthakpati](https://github.com/sarthakpati)**)
 * Fix legend argument in `ks_abc` (by **[@lahdjirayhan](https://github.com/lahdjirayhan)**)
