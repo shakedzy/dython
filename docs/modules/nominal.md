@@ -132,6 +132,9 @@ continuous features using:
 
      _Default: True_
 
+    !!! info "Method signature change"
+        This replaces the `bias_correction` flag which was used till version 0.6.6.
+
      Use bias correction for Cramer's V from Bergsma and Wicher, Journal of the Korean
      Statistical Society 42 (2013): 323-328.
 
