@@ -6,7 +6,7 @@ title: nominal
 
 #### `associations`
 
-`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False,nom_nom_assoc='cramer', num_num_assoc='pearson', nom_num_assoc='correlation_ratio', symmetric_nom_nom=True, symmetric_num_num=True, display_rows='all', display_columns='all', hide_rows=None, hide_columns=None,bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None)`
+`associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False,nom_nom_assoc='cramer', num_num_assoc='pearson', nom_num_assoc='correlation_ratio', symmetric_nom_nom=True, symmetric_num_num=True, display_rows='all', display_columns='all', hide_rows=None, hide_columns=None, cramers_v_bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None)`
 
 Calculate the correlation/strength-of-association of features in data-set with both categorical and
 continuous features using:
@@ -128,7 +128,7 @@ continuous features using:
     correlations table columns. If string, must be a single feature's name. If `None`,
     `display_columns` is used.
   
-- **`bias_correction`** : `Boolean`
+- **`cramers_v_bias_correction`** : `Boolean`
 
      _Default: True_
 
