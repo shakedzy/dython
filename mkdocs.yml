@@ -43,7 +43,8 @@ markdown_extensions:
       permalink: true
   - admonition
   - codehilite
-  - pymdownx.arithmatex
+  - pymdownx.arithmatex:
+      generic: true
   - pymdownx.highlight
   - pymdownx.superfences
 extra_javascript:
@@ -52,7 +53,7 @@ plugins:
   - search
 extra:
   social:
-    - icon: fontawesome/regular/user-circle
+    - icon: material/web
       link: https://shakedzy.xyz/
     - icon: fontawesome/brands/github
       link: https://github.com/shakedzy
