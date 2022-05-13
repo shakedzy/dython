@@ -11,6 +11,7 @@
 * Added option to select which rows/columns to display/hide in `nominal.associations` (issue [#92](https://github.com/shakedzy/dython/issues/92))
 * Fixed deprecation warning when using `datetime` features with `nominal.associations` (issue [#96](https://github.com/shakedzy/dython/issues/96))
 * `nominal.associations` now support custom methods as measures of associations (issue [#104](https://github.com/shakedzy/dython/issues/104))
+* `nominal.associations` keyword `bias_correction` is now `cramers_v_bias_correction`
 * _Important change:_ Theil's U in `nominal.associations` is now read as U(row|col) instead of U(col|row)
 * Remove deprecated method `compute_associations`
 
