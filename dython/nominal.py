@@ -28,6 +28,7 @@ _REPLACE = 'replace'
 _DROP = 'drop'
 _DROP_SAMPLES = 'drop_samples'
 _DROP_FEATURES = 'drop_features'
+_DROP_MISSING_PAIRS = 'drop_missing_sample_pairs'
 _SKIP = 'skip'
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
@@ -415,8 +416,10 @@ def associations(dataset,
     nan_strategy : string, default = 'replace'
         How to handle missing values: can be either 'drop_samples' to remove
         samples with missing values, 'drop_features' to remove features
-        (columns) with missing values, or 'replace' to replace all missing
-        values with the nan_replace_value. Missing values are None and np.nan.
+        (columns) with missing values, 'replace' to replace all missing
+        values with the nan_replace_value or 'drop_missing_sample_pairs' to drop each pair of missing observables
+        separately before calculating the corresponding coefficient
+        Missing values are None and np.nan.
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'
@@ -485,6 +488,10 @@ def associations(dataset,
         dataset.dropna(axis=0, inplace=True)
     elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
+    elif nan_strategy == _DROP_MISSING_PAIRS:
+        pass
+    else:
+        raise ValueError("Argument nan_stragety [{:s}] is not a valid choice.".format(nan_strategy))
 
     # identifying categorical columns
     columns = dataset.columns
@@ -548,15 +555,15 @@ def associations(dataset,
             single_value_columns_set.add(c)
 
     # computing associations
-    def _nom_num(nom_column, num_column):
+    def _nom_num(data_nom_column, data_num_column):
         if callable(nom_num_assoc):
-            cell = nom_num_assoc(dataset[nom_column],
-                                 dataset[num_column])
+            cell = nom_num_assoc(data_nom_column,
+                                 data_num_column)
             ij = cell
             ji = cell                                                              
         elif nom_num_assoc == 'correlation_ratio':
-            cell = correlation_ratio(dataset[nom_column],
-                                    dataset[num_column],
+            cell = correlation_ratio(data_nom_column,
+                                    data_num_column,
                                     nan_strategy=_SKIP)
             ij = cell
             ji = cell
@@ -577,34 +584,29 @@ def associations(dataset,
             elif i == j:
                 corr.loc[columns[i], columns[j]] = 1.0
             else:
+                if nan_strategy in [ _DROP_MISSING_PAIRS, ]:
+                    dataset_c_ij = dataset[ [columns[i], columns[j] ] ].dropna(axis=0)
+                    c_i, c_j = dataset_c_ij[columns[i]], dataset_c_ij[columns[j]]
+
+                else:
+                    c_i, c_j = dataset[columns[i]], dataset[columns[j]]
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
                         if callable(nom_nom_assoc):
                             if symmetric_nom_nom:
-                                cell = nom_nom_assoc(
-                                      dataset[columns[i]], 
-                                      dataset[columns[j]])
+                                cell = nom_nom_assoc( c_i, c_j, )
                                 ij = cell
                                 ji = cell
                             else:
-                                ij = nom_nom_assoc(
-                                    dataset[columns[i]],
-                                    dataset[columns[j]])
-                                ji = nom_nom_assoc(
-                                    dataset[columns[j]],
-                                    dataset[columns[i]])                                                                
+                                ij = nom_nom_assoc( c_i, c_j )
+                                ji = nom_nom_assoc( c_j, c_i )
                         elif nom_nom_assoc == 'theil':
-                            ij = theils_u(
-                                dataset[columns[i]],
-                                dataset[columns[j]],
+                            ij = theils_u( c_i, c_j,
                                 nan_strategy=_SKIP)
-                            ji = theils_u(
-                                dataset[columns[j]],
-                                dataset[columns[i]],
+                            ji = theils_u( c_j, c_i,
                                 nan_strategy=_SKIP)
                         elif nom_nom_assoc == 'cramer':
-                            cell = cramers_v(dataset[columns[i]],
-                                             dataset[columns[j]],
+                            cell = cramers_v( c_i, c_j,
                                              bias_correction=cramers_v_bias_correction,
                                              nan_strategy=_SKIP)
                             ij = cell
@@ -612,32 +614,26 @@ def associations(dataset,
                         else:
                             raise ValueError(f'{nom_nom_assoc} is not a supported nominal-nominal association')
                     else:
-                        ij, ji = _nom_num(nom_column=columns[i], num_column=columns[j])
+                        ij, ji = _nom_num(data_nom_column=c_i, data_num_column=c_j)
                 else:
                     if columns[j] in nominal_columns:
-                        ij, ji = _nom_num(nom_column=columns[j], num_column=columns[i])
+                        ij, ji = _nom_num(data_nom_column=c_j, data_num_column=c_i)
                     else:
                         if callable(num_num_assoc):
                             if symmetric_num_num:
-                                cell = num_num_assoc(dataset[columns[i]],
-                                                     dataset[columns[j]])
+                                cell = num_num_assoc(c_i,c_j)
                                 ij = cell
                                 ji = cell 
                             else:
-                                ij = num_num_assoc(dataset[columns[i]],
-                                                   dataset[columns[j]]) 
-                                ji = num_num_assoc(dataset[columns[j]],
-                                                   dataset[columns[i]])                                 
+                                ij = num_num_assoc(c_i,c_j)
+                                ji = num_num_assoc(c_j,c_i)
                         else:
                             if num_num_assoc == 'pearson':
-                                cell, _ = ss.pearsonr(dataset[columns[i]],
-                                                      dataset[columns[j]])
+                                cell, _ = ss.pearsonr(c_i,c_j)
                             elif num_num_assoc == 'spearman':
-                                cell, _ = ss.spearmanr(dataset[columns[i]],
-                                                       dataset[columns[j]])
+                                cell, _ = ss.spearmanr(c_i,c_j)
                             elif num_num_assoc == 'kendall':
-                                cell, _ = ss.kendalltau(dataset[columns[i]],
-                                                        dataset[columns[j]])
+                                cell, _ = ss.kendalltau(c_i,c_j)
                             else:
                                 raise ValueError(f'{num_num_assoc} is not a supported numerical-numerical association')
                             ij = cell
