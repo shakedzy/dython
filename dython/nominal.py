@@ -1214,7 +1214,7 @@ def associations_parallel(dataset,
                                repeat(num_num_assoc),
                                repeat(nom_num_assoc),
                                repeat(symmetric_num_num),
-                               chunksize=len(list_of_indices_pairs_lists) // max_cpu_cores_to_use)
+                               chunksize=max(1, len(list_of_indices_pairs_lists) // max_cpu_cores_to_use))
 
         for result in results:
             try:
