@@ -31,14 +31,18 @@ def roc_graph_example():
     X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
 
     # Train a model
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5, random_state=0)
-    classifier = OneVsRestClassifier(svm.SVC(kernel='linear', probability=True, random_state=0))
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.5, random_state=0
+    )
+    classifier = OneVsRestClassifier(
+        svm.SVC(kernel="linear", probability=True, random_state=0)
+    )
 
     # Predict
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
     # Plot ROC graphs
-    return metric_graph(y_test, y_score, 'roc', class_names=iris.target_names)
+    return metric_graph(y_test, y_score, "roc", class_names=iris.target_names)
 
 
 def pr_graph_example():
@@ -58,14 +62,18 @@ def pr_graph_example():
     X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
 
     # Train a model
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5, random_state=0)
-    classifier = OneVsRestClassifier(svm.SVC(kernel='linear', probability=True, random_state=0))
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.5, random_state=0
+    )
+    classifier = OneVsRestClassifier(
+        svm.SVC(kernel="linear", probability=True, random_state=0)
+    )
 
     # Predict
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
     # Plot PR graphs
-    return metric_graph(y_test, y_score, 'pr', class_names=iris.target_names)
+    return metric_graph(y_test, y_score, "pr", class_names=iris.target_names)
 
 
 def associations_iris_example():
@@ -79,11 +87,11 @@ def associations_iris_example():
 
     # Convert int classes to strings to allow associations method
     # to automatically recognize categorical columns
-    target = ['C{}'.format(i) for i in iris.target]
+    target = ["C{}".format(i) for i in iris.target]
 
     # Prepare data
     X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
-    y = pd.DataFrame(data=target, columns=['target'])
+    y = pd.DataFrame(data=target, columns=["target"])
     df = pd.concat([X, y], axis=1)
 
     # Plot features associations
@@ -97,14 +105,37 @@ def associations_mushrooms_example():
     """
 
     # Download and load data from UCI
-    df = pd.read_csv('http://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data')
-    df.columns = ['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 'gill-attachment',
-                  'gill-spacing', 'gill-size', 'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
-                  'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type',
-                  'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
+    df = pd.read_csv(
+        "http://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data"
+    )
+    df.columns = [
+        "class",
+        "cap-shape",
+        "cap-surface",
+        "cap-color",
+        "bruises",
+        "odor",
+        "gill-attachment",
+        "gill-spacing",
+        "gill-size",
+        "gill-color",
+        "stalk-shape",
+        "stalk-root",
+        "stalk-surface-above-ring",
+        "stalk-surface-below-ring",
+        "stalk-color-above-ring",
+        "stalk-color-below-ring",
+        "veil-type",
+        "veil-color",
+        "ring-number",
+        "ring-type",
+        "spore-print-color",
+        "population",
+        "habitat",
+    ]
 
     # Plot features associations
-    return associations(df, nom_nom_assoc='theil', figsize=(15, 15))
+    return associations(df, nom_nom_assoc="theil", figsize=(15, 15))
 
 
 def split_hist_example():
@@ -117,10 +148,10 @@ def split_hist_example():
     # Load data and convert to DataFrame
     data = datasets.load_breast_cancer()
     df = pd.DataFrame(data=data.data, columns=data.feature_names)
-    df['malignant'] = [not bool(x) for x in data.target]
+    df["malignant"] = [not bool(x) for x in data.target]
 
     # Plot histogram
-    return split_hist(df, 'mean radius', 'malignant', bins=20, figsize=(15,7))
+    return split_hist(df, "mean radius", "malignant", bins=20, figsize=(15, 7))
 
 
 def ks_abc_example():
@@ -131,12 +162,14 @@ def ks_abc_example():
 
     # Load and split data
     data = datasets.load_breast_cancer()
-    X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=.5, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(
+        data.data, data.target, test_size=0.5, random_state=0
+    )
 
     # Train model and predict
-    model = LogisticRegression(solver='liblinear')
+    model = LogisticRegression(solver="liblinear")
     model.fit(X_train, y_train)
     y_pred = model.predict_proba(X_test)
 
     # Perform KS test and compute area between curves
-    return ks_abc(y_test, y_pred[:,1], figsize=(7,7))
+    return ks_abc(y_test, y_pred[:, 1], figsize=(7, 7))

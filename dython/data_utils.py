@@ -5,10 +5,10 @@ from ._private import convert
 
 
 __all__ = [
-    'identify_columns_by_type',
-    'identify_columns_with_na',
-    'one_hot_encode',
-    'split_hist'
+    "identify_columns_by_type",
+    "identify_columns_with_na",
+    "one_hot_encode",
+    "split_hist",
 ]
 
 
@@ -35,19 +35,31 @@ def one_hot_encode(arr, classes=None):
            [1., 0., 0., 0., 0., 0.],
            [0., 0., 0., 0., 0., 1.]])
     """
-    arr = convert(arr, 'array').astype(int)
+    arr = convert(arr, "array").astype(int)
     if not len(arr.shape) == 1:
-        raise ValueError(f'array must have only one dimension, but has shape: {arr.shape}')
+        raise ValueError(
+            f"array must have only one dimension, but has shape: {arr.shape}"
+        )
     if arr.min() < 0:
-        raise ValueError('array cannot contain negative values')
-    classes = classes if classes is not None else arr.max()+1
+        raise ValueError("array cannot contain negative values")
+    classes = classes if classes is not None else arr.max() + 1
     h = np.zeros((arr.size, classes))
     h[np.arange(arr.size), arr] = 1
     return h
 
 
-def split_hist(dataset, values, split_by, title='', xlabel='', ylabel=None, figsize=None, legend='best', plot=True,
-               **hist_kwargs):
+def split_hist(
+    dataset,
+    values,
+    split_by,
+    title="",
+    xlabel="",
+    ylabel=None,
+    figsize=None,
+    legend="best",
+    plot=True,
+    **hist_kwargs,
+):
     """
     Plot a histogram of values from a given dataset, split by the values of a chosen column
 
@@ -87,17 +99,17 @@ def split_hist(dataset, values, split_by, title='', xlabel='', ylabel=None, figs
     data_split = list()
     for val in split_vals:
         data_split.append(dataset[dataset[split_by] == val][values])
-    hist_kwargs['label'] = split_vals
+    hist_kwargs["label"] = split_vals
     plt.hist(data_split, **hist_kwargs)
     if legend:
         plt.legend(loc=legend)
     if xlabel is not None:
-        if xlabel == '':
+        if xlabel == "":
             xlabel = values
         plt.xlabel(xlabel)
     if title is not None:
-        if title == '':
-            title = values + ' by ' + split_by
+        if title == "":
+            title = values + " by " + split_by
         plt.title(title)
     plt.ylabel(ylabel)
     ax = plt.gca()
@@ -127,7 +139,7 @@ def identify_columns_by_type(dataset, include):
     ['col2', 'col3']
 
     """
-    dataset = convert(dataset, 'dataframe')
+    dataset = convert(dataset, "dataframe")
     columns = list(dataset.select_dtypes(include=include).columns)
     return columns
 
@@ -153,8 +165,10 @@ def identify_columns_with_na(dataset):
     1   col2         2
     0   col1         1
     """
-    dataset = convert(dataset, 'dataframe')
+    dataset = convert(dataset, "dataframe")
     na_count = [sum(dataset[cc].isnull()) for cc in dataset.columns]
-    return pd.DataFrame({'column': dataset.columns, 'na_count': na_count}). \
-        query('na_count > 0').sort_values('na_count', ascending=False)
-
+    return (
+        pd.DataFrame({"column": dataset.columns, "na_count": na_count})
+        .query("na_count > 0")
+        .sort_values("na_count", ascending=False)
+    )

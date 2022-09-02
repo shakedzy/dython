@@ -14,7 +14,7 @@ def test_one_hot_encode_check():
 def test_negative_input():
     lst = [-1, -5, 0, 3]
 
-    with pytest.raises(ValueError, match='negative value'):
+    with pytest.raises(ValueError, match="negative value"):
         one_hot_encode(lst)
 
 
