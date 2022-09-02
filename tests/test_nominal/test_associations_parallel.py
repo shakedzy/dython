@@ -2,14 +2,18 @@ import pytest
 import matplotlib
 import pandas as pd
 import scipy.stats as ss
-from sklearn import datasets
+
+from psutil import cpu_count
 from datetime import datetime, timedelta
 
-from dython.nominal import associations_parallel, correlation_ratio
+from dython.nominal import associations, correlation_ratio
+
+MAX_CORE_COUNT = cpu_count(logical=False)
 
 
 def test_return_type_check(iris_df):
-    assoc = associations_parallel(iris_df)
+    assoc = associations(iris_df, use_multiprocessing=True,
+                         max_cpu_cores_to_use=MAX_CORE_COUNT)
 
     assert isinstance(assoc, dict), 'associations should return a dict'
     assert 'corr' in assoc, 'associations should return a dict containing "corr" key'
@@ -22,7 +26,8 @@ def test_return_type_check(iris_df):
 
 
 def test_dimension_check(iris_df):
-    corr = associations_parallel(iris_df)['corr']
+    corr = associations(iris_df, use_multiprocessing=True,
+                        max_cpu_cores_to_use=MAX_CORE_COUNT)['corr']
     corr_shape = corr.shape
     iris_shape = iris_df.shape
 
@@ -34,7 +39,8 @@ def test_single_value_zero_association(iris_df):
     SV_COL = 1
     iris_df.iloc[:, SV_COL] = 42
 
-    corr = associations_parallel(iris_df)['corr']
+    corr = associations(iris_df, use_multiprocessing=True,
+                        max_cpu_cores_to_use=MAX_CORE_COUNT)['corr']
 
     assert (corr.iloc[:, SV_COL] == 0).all(
     ), 'single-value variable should have zero association value'
@@ -44,22 +50,25 @@ def test_single_value_zero_association(iris_df):
 
 def test_bad_nom_nom_assoc_parameter(iris_df):
     with pytest.raises(ValueError, match='is not a supported'):
-        associations_parallel(iris_df, nom_nom_assoc='bad_parameter_name')
+        associations(iris_df, nom_nom_assoc='bad_parameter_name',
+                     use_multiprocessing=True, max_cpu_cores_to_use=MAX_CORE_COUNT)
 
 
 def test_bad_num_num_assoc_parameter(iris_df):
     with pytest.raises(ValueError, match='is not a supported'):
-        associations_parallel(iris_df, num_num_assoc='bad_parameter_name')
+        associations(iris_df, num_num_assoc='bad_parameter_name')
 
 
 def test_compute_only_ax_is_none(iris_df):
-    assoc = associations_parallel(iris_df, compute_only=True)
+    assoc = associations(iris_df, compute_only=True,
+                         use_multiprocessing=True, max_cpu_cores_to_use=MAX_CORE_COUNT)
 
     assert assoc['ax'] is None, 'associations with compute_only should return a None value for "ax" key'
 
 
 def test_mark_columns(iris_df):
-    corr = associations_parallel(iris_df, mark_columns=True)['corr']
+    corr = associations(iris_df, mark_columns=True,
+                        use_multiprocessing=True, max_cpu_cores_to_use=MAX_CORE_COUNT)['corr']
 
     assert '(con)' in corr.index[0], "first column should contain (con) mark if iris_df is used"
 
@@ -69,10 +78,10 @@ def pr(x, y):
 
 
 def test_udf(iris_df):
-    corr1 = associations_parallel(
-        iris_df, plot=False, num_num_assoc='pearson', nom_num_assoc='correlation_ratio')['corr']
-    corr2 = associations_parallel(
-        iris_df, plot=False, num_num_assoc=pr, nom_num_assoc=correlation_ratio)['corr']
+    corr1 = associations(
+        iris_df, plot=False, num_num_assoc='pearson', nom_num_assoc='correlation_ratio', use_multiprocessing=True, max_cpu_cores_to_use=MAX_CORE_COUNT)['corr']
+    corr2 = associations(
+        iris_df, plot=False, num_num_assoc=pr, nom_num_assoc=correlation_ratio, use_multiprocessing=True, max_cpu_cores_to_use=MAX_CORE_COUNT)['corr']
     assert corr1.compare(
         corr2).empty, 'Computation of built-in measures of associations differs from UDFs'
 
@@ -94,6 +103,7 @@ def test_datetime_data():
 
     correct_corr = pd.DataFrame(columns=['dates', 'up', 'down'], index=[
                                 'dates', 'up', 'down'], data=[[1., 1., -1.], [1., 1., -1.], [-1., -1., 1.]])
-    corr = associations_parallel(df, plot=False)['corr']
+    corr = associations(df, plot=False, use_multiprocessing=True,
+                        max_cpu_cores_to_use=MAX_CORE_COUNT)['corr']
     assert corr.compare(
         correct_corr).empty, f'datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}'
