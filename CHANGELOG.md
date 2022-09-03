@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.2
+* Using Black for code formatting (issue [#133](https://github.com/shakedzy/dython/issues/133), by **[@mahieyin-rahmun](https://github.com/mahieyin-rahmun)**)
+
 ## 0.7.1 (_post4_)
 * Fix floating point precision in `theils_u`, `cramer_v` and `correlation_ratio` (issue [#116](https://github.com/shakedzy/dython/issues/116))
 * Fix failing conda builds (by **[@sarthakpati](https://github.com/sarthakpati)**)
