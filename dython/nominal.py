@@ -524,16 +524,6 @@ def associations(dataset,
         elif isinstance(display_columns, str) or isinstance(display_columns, int):
             display_columns = [display_columns]
 
-    if hide_rows is not None:
-        if isinstance(hide_rows, str) or isinstance(hide_rows, int):
-            hide_rows = [hide_rows]
-        display_rows = [c for c in dataset.columns if c not in hide_rows]
-    else:
-        if display_rows == 'all':
-            display_rows = columns
-        elif isinstance(display_rows, str) or isinstance(display_rows, int):
-            display_columns = [display_rows]
-
     if display_rows is None or display_columns is None or len(display_rows) < 1 or len(display_columns) < 1:
         raise ValueError(
             'display_rows and display_columns must have at least one element')
