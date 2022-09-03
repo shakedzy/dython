@@ -1,9 +1,6 @@
 import numpy as np
 
-__all__ = [
-    'boltzmann_sampling',
-    'weighted_sampling'
-]
+__all__ = ["boltzmann_sampling", "weighted_sampling"]
 
 
 def _w_sampling(numbers, k, with_replacement, force_to_list):
@@ -57,7 +54,9 @@ def boltzmann_sampling(numbers, k=1, with_replacement=False):
     exp_sum = exp_numbers.sum()
     scaling_func = np.vectorize(lambda x: x / exp_sum)
     b_numbers = scaling_func(exp_numbers)
-    return _w_sampling(b_numbers,
-                       k=k,
-                       with_replacement=with_replacement,
-                       force_to_list=isinstance(numbers, list))
+    return _w_sampling(
+        b_numbers,
+        k=k,
+        with_replacement=with_replacement,
+        force_to_list=isinstance(numbers, list),
+    )

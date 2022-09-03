@@ -16,15 +16,15 @@ def y_pred():
 
 
 def test_metric_graph_check_types(y_true, y_pred):
-    result = metric_graph(y_true, y_pred, 'roc')
+    result = metric_graph(y_true, y_pred, "roc")
 
-    assert isinstance(result, dict), 'metric_graph should return a dict'
+    assert isinstance(result, dict), "metric_graph should return a dict"
 
-    assert 'ax' in result, 'metric_graph should return dict containing "ax" key'
+    assert "ax" in result, 'metric_graph should return dict containing "ax" key'
 
-    assert isinstance(result['ax'], matplotlib.axes.Axes)
+    assert isinstance(result["ax"], matplotlib.axes.Axes)
 
 
 def test_metric_graph_bad_metric_parameter(y_true, y_pred):
-    with pytest.raises(ValueError, match='Invalid metric'):
-        metric_graph(y_true, y_pred, 'bad_metric_param')
+    with pytest.raises(ValueError, match="Invalid metric"):
+        metric_graph(y_true, y_pred, "bad_metric_param")
