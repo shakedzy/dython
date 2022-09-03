@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
+    types: [opened, reopened, edited]
     branches: [ "master" ]
 
 permissions:
