@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.7.2
+## 0.7.2 (dev)
 * Using Black for code formatting (issue [#133](https://github.com/shakedzy/dython/issues/133), by **[@mahieyin-rahmun](https://github.com/mahieyin-rahmun)**)
 
 ## 0.7.1 (_post4_)
