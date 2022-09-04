@@ -356,8 +356,8 @@ def associations(dataset,
                  clustering=False,
                  title=None,
                  filename=None,
-                 use_multiprocessing=False,
-                 max_cpu_cores_to_use=None,
+                 multiprocessing=False,
+                 max_cpu_cores=None,
                  ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -459,7 +459,7 @@ def associations(dataset,
         happen, but the heat-map will not be displayed.
     compute_only : Boolean, default = False
         Use this flag only if you have no need of the plotting at all. This skips the entire
-        plotting mechanism (similar to the old `compute_associations` method).
+        plotting mechanism.
     clustering : Boolean, default = False
         If True, hierarchical clustering is applied in order to sort
         features into meaningful groups
@@ -467,9 +467,9 @@ def associations(dataset,
         Plotted graph title
     filename : string or None, default = None
         If not None, plot will be saved to the given file name
-    use_multiprocessing: Boolean, default = False
+    multiprocessing: Boolean, default = False
         If True, use `multiprocessing` to speed up computations. If None, falls back to single core computation
-    max_cpu_cores_to_use: int or None, default = None
+    max_cpu_cores: int or None, default = None
         If not None, ProcessPoolExecutor will use the given number of CPU cores
 
     Returns:
@@ -524,16 +524,6 @@ def associations(dataset,
         elif isinstance(display_columns, str) or isinstance(display_columns, int):
             display_columns = [display_columns]
 
-    if hide_rows is not None:
-        if isinstance(hide_rows, str) or isinstance(hide_rows, int):
-            hide_rows = [hide_rows]
-        display_rows = [c for c in dataset.columns if c not in hide_rows]
-    else:
-        if display_rows == 'all':
-            display_rows = columns
-        elif isinstance(display_rows, str) or isinstance(display_rows, int):
-            display_columns = [display_rows]
-
     if display_rows is None or display_columns is None or len(display_rows) < 1 or len(display_columns) < 1:
         raise ValueError(
             'display_rows and display_columns must have at least one element')
@@ -572,18 +562,18 @@ def associations(dataset,
 
     # current multiprocessing implementation performs worse on 2 cores than on 1 core,
     # so we only use multiprocessing if there are more than 2 physical cores available
-    if use_multiprocessing and n_cores > 2:
+    if multiprocessing and n_cores > 2:
         # find out the list of cartesian products of the column indices
         number_of_columns = len(columns)
         list_of_indices_pairs_lists = [(i, j) for i in range(
             number_of_columns) for j in range(number_of_columns)]
 
         # do not exceed 32 cores under any circumstances
-        if max_cpu_cores_to_use is not None:
-            max_cpu_cores_to_use = min(
-                32, min(max_cpu_cores_to_use, n_cores))
+        if max_cpu_cores is not None:
+            max_cpu_cores = min(
+                32, min(max_cpu_cores, n_cores))
         else:
-            max_cpu_cores_to_use = min(32, n_cores)
+            max_cpu_cores = min(32, n_cores)
 
         # submit each list of cartesian products of column indices to separate processes
         # for faster computation.
@@ -592,7 +582,7 @@ def associations(dataset,
         # ...
         # process m receives: [(n, 0), (n, 1), (n, 2), ... (n, n)]
         # where, n = num_columns - 1
-        with cf.ProcessPoolExecutor(max_workers=max_cpu_cores_to_use) as executor:
+        with cf.ProcessPoolExecutor(max_workers=max_cpu_cores) as executor:
             results = executor.map(_compute_associations,
                                    list_of_indices_pairs_lists,
                                    repeat(dataset),
@@ -605,7 +595,7 @@ def associations(dataset,
                                    repeat(num_num_assoc),
                                    repeat(nom_num_assoc),
                                    repeat(symmetric_num_num),
-                                   chunksize=max(1, len(list_of_indices_pairs_lists) // max_cpu_cores_to_use))
+                                   chunksize=max(1, len(list_of_indices_pairs_lists) // max_cpu_cores))
     else:
         results = []
 
@@ -751,8 +741,7 @@ def associations(dataset,
 
 def _nom_num(nom_column, num_column, dataset, nom_num_assoc, nom_nom_assoc):
     """
-        Computes the nominal-numerical association value. Used by 
-        associations_parallel() function internally.
+        Computes the nominal-numerical association value.
     """
     if callable(nom_num_assoc):
         cell = nom_num_assoc(dataset[nom_column],
@@ -783,9 +772,6 @@ def _compute_associations(indices_pair,
                           nom_num_assoc,
                           symmetric_num_num):
     """
-    Refactored code of association computation so that multiprocessing can be 
-    applied during the operation when use associations_parallel().
-
     Parameters:
     -----------
     indices_pair: Tuple[int, int]
