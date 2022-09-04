@@ -403,7 +403,7 @@ def associations(dataset,
         If False, heat-map values should be interpreted as f(row,col) 
     symmetric_num_num : Boolean, default = True
         Relevant only if `num_num_assoc` is a callable. Declare whether the function is symmetric (f(x,y) = f(y,x)).
-        If False, heat-map values should be interpreted as f(row,col) 
+        If False, heat-map values should be interpreted as f(row,col)
     display_rows : list / string, default = 'all'
         Choose which of the dataset's features will be displyed in the output's
         correlations table rows. If string, can either be a single feature's name or 'all'.
@@ -483,7 +483,7 @@ def associations(dataset,
     --------
     See examples under `dython.examples`
     """
-    dataset = convert(dataset, 'dataframe')
+    dataset = convert(dataset, "dataframe")
 
     if numerical_columns is not None:
         if numerical_columns == 'auto':
@@ -507,9 +507,9 @@ def associations(dataset,
     auto_nominal = False
     if nominal_columns is None:
         nominal_columns = list()
-    elif nominal_columns == 'all':
+    elif nominal_columns == "all":
         nominal_columns = columns
-    elif nominal_columns == 'auto':
+    elif nominal_columns == "auto":
         auto_nominal = True
         nominal_columns = identify_nominal_columns(dataset)
 
@@ -557,9 +557,9 @@ def associations(dataset,
     # this dataframe is used to keep track of invalid association values, which will be placed on top
     # of the corr dataframe. It is done for visualization purposes, so the heatmap values will remain
     # between -1 and 1
-    inf_nan = pd.DataFrame(data=np.zeros_like(corr),
-                           columns=columns,
-                           index=columns)
+    inf_nan = pd.DataFrame(
+        data=np.zeros_like(corr), columns=columns, index=columns
+    )
 
     # finding single-value columns
     single_value_columns_set = set()
@@ -682,21 +682,23 @@ def associations(dataset,
             plt.figure(figsize=figsize)
         if inf_nan.any(axis=None):
             inf_nan_mask = np.vectorize(lambda x: not bool(x))(inf_nan.values)
-            ax = sns.heatmap(inf_nan_mask,
-                             cmap=['white'],
-                             annot=inf_nan if annot else None,
-                             fmt='',
-                             center=0,
-                             square=True,
-                             ax=ax,
-                             mask=inf_nan_mask,
-                             cbar=False)
+            ax = sns.heatmap(
+                inf_nan_mask,
+                cmap=["white"],
+                annot=inf_nan if annot else None,
+                fmt="",
+                center=0,
+                square=True,
+                ax=ax,
+                mask=inf_nan_mask,
+                cbar=False,
+            )
         else:
             inf_nan_mask = np.ones_like(corr)
         if len(single_value_columns_set) > 0:
-            sv = pd.DataFrame(data=np.zeros_like(corr),
-                              columns=corr.columns,
-                              index=corr.index)
+            sv = pd.DataFrame(
+                data=np.zeros_like(corr), columns=corr.columns, index=corr.index
+            )
             for c in single_value_columns_set:
                 if c in display_rows and c in display_columns:
                     sv.loc[:, c] = ' '
@@ -709,15 +711,17 @@ def associations(dataset,
                     sv.loc[:, c] = ' '
                     sv.loc[sv.index[-1], c] = 'SV'
             sv_mask = np.vectorize(lambda x: not bool(x))(sv.values)
-            ax = sns.heatmap(sv_mask,
-                             cmap=[sv_color],
-                             annot=sv if annot else None,
-                             fmt='',
-                             center=0,
-                             square=True,
-                             ax=ax,
-                             mask=sv_mask,
-                             cbar=False)
+            ax = sns.heatmap(
+                sv_mask,
+                cmap=[sv_color],
+                annot=sv if annot else None,
+                fmt="",
+                center=0,
+                square=True,
+                ax=ax,
+                mask=sv_mask,
+                cbar=False,
+            )
         else:
             sv_mask = np.ones_like(corr)
         mask = np.vectorize(lambda x: not bool(x))(
@@ -974,7 +978,7 @@ def numerical_encoding(dataset,
     supplied by Pandas `factorize`. Will be empty if no two-value columns are
     present in the data-set
     """
-    dataset = convert(dataset, 'dataframe')
+    dataset = convert(dataset, "dataframe")
     if nan_strategy == _REPLACE:
         dataset.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
@@ -983,9 +987,9 @@ def numerical_encoding(dataset,
         dataset.dropna(axis=1, inplace=True)
     if nominal_columns is None:
         return dataset
-    elif nominal_columns == 'all':
+    elif nominal_columns == "all":
         nominal_columns = dataset.columns
-    elif nominal_columns == 'auto':
+    elif nominal_columns == "auto":
         nominal_columns = identify_nominal_columns(dataset)
     converted_dataset = pd.DataFrame()
     binary_columns_dict = dict()
@@ -997,12 +1001,15 @@ def numerical_encoding(dataset,
             if len(unique_values) == 1 and not drop_single_label:
                 converted_dataset.loc[:, col] = 0
             elif len(unique_values) == 2:
-                converted_dataset.loc[:, col], binary_columns_dict[
-                    col] = pd.factorize(dataset[col])
+                (
+                    converted_dataset.loc[:, col],
+                    binary_columns_dict[col],
+                ) = pd.factorize(dataset[col])
             else:
                 dummies = pd.get_dummies(dataset[col], prefix=col)
-                converted_dataset = pd.concat([converted_dataset, dummies],
-                                              axis=1)
+                converted_dataset = pd.concat(
+                    [converted_dataset, dummies], axis=1
+                )
     if drop_fact_dict:
         return converted_dataset
     else:
@@ -1039,9 +1046,10 @@ def cluster_correlations(corr_mat, indices=None):
     if indices is None:
         X = corr_mat.values
         d = sch.distance.pdist(X)
-        L = sch.linkage(d, method='complete')
-        indices = sch.fcluster(L, 0.5 * d.max(), 'distance')
-    columns = [corr_mat.columns.tolist()[i]
-               for i in list((np.argsort(indices)))]
+        L = sch.linkage(d, method="complete")
+        indices = sch.fcluster(L, 0.5 * d.max(), "distance")
+    columns = [
+        corr_mat.columns.tolist()[i] for i in list((np.argsort(indices)))
+    ]
     corr_mat = corr_mat.reindex(columns=columns).reindex(index=columns)
     return corr_mat, indices

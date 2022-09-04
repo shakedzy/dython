@@ -1,0 +1,10 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+    - repo: https://github.com/ambv/black
+      rev: 22.8.0
+      hooks:
+          - id: black
+            language: python
+            types: [python]
+            args: ["--line-length=80"]
