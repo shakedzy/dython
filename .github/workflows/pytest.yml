@@ -2,10 +2,26 @@ name: Run pytest
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "shakedzy:master" ]
+    paths-ignore:
+      - "README.md"
+      - "CHANGELOG.md"
+      - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.md"
+      - "VERSION"
+      - "LICENSE"
+      - ".gitignore"
   pull_request:
-    types: [opened, reopened, edited]
-    branches: [ "master" ]
+    types: [opened, reopened, edited, synchronize]
+    branches: [ "master", "shakedzy:master" ]
+    paths-ignore:
+      - "README.md"
+      - "CHANGELOG.md"
+      - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.md"
+      - "VERSION"
+      - "LICENSE"
+      - ".gitignore"
 
 permissions:
   contents: read
