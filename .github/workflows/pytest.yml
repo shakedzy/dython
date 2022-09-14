@@ -11,6 +11,7 @@ on:
       - "VERSION"
       - "LICENSE"
       - ".gitignore"
+      - "docs/*"
   pull_request:
     types: [opened, reopened, edited, synchronize]
     branches: [ "master", "shakedzy:master" ]
@@ -22,6 +23,7 @@ on:
       - "VERSION"
       - "LICENSE"
       - ".gitignore"
+      - "docs/*"
 
 permissions:
   contents: read
