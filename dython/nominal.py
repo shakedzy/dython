@@ -831,6 +831,8 @@ def _compute_associations(
     symmetric_num_num,
 ):
     """
+    Helper function of associations. 
+
     Parameters:
     -----------
     indices_pair: Tuple[int, int]
