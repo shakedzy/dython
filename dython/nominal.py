@@ -1,14 +1,19 @@
+import concurrent.futures as cf
 import math
 import warnings
+from collections import Counter
+from itertools import repeat
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import scipy.stats as ss
 import scipy.cluster.hierarchy as sch
-import matplotlib.pyplot as plt
-from collections import Counter
-from .data_utils import identify_columns_by_type
+import scipy.stats as ss
+import seaborn as sns
+from psutil import cpu_count
+
 from ._private import convert, remove_incomplete_samples, replace_nan_with_value
+from .data_utils import identify_columns_by_type
 
 __all__ = [
     "associations",
@@ -29,6 +34,11 @@ _DROP_FEATURES = "drop_features"
 _SKIP = "skip"
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
+
+_NO_OP = "no-op"
+_SINGLE_VALUE_COLUMN_OP = "single-value-column-op"
+_I_EQ_J_OP = "i-equal-j-op"
+_ASSOC_OP = "assoc-op"
 
 
 def _inf_nan_str(x):
@@ -360,6 +370,8 @@ def associations(
     clustering=False,
     title=None,
     filename=None,
+    multiprocessing=False,
+    max_cpu_cores=None,
 ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -461,7 +473,7 @@ def associations(
         happen, but the heat-map will not be displayed.
     compute_only : Boolean, default = False
         Use this flag only if you have no need of the plotting at all. This skips the entire
-        plotting mechanism (similar to the old `compute_associations` method).
+        plotting mechanism.
     clustering : Boolean, default = False
         If True, hierarchical clustering is applied in order to sort
         features into meaningful groups
@@ -469,6 +481,10 @@ def associations(
         Plotted graph title
     filename : string or None, default = None
         If not None, plot will be saved to the given file name
+    multiprocessing: Boolean, default = False
+        If True, use `multiprocessing` to speed up computations. If None, falls back to single core computation
+    max_cpu_cores: int or None, default = None
+        If not None, ProcessPoolExecutor will use the given number of CPU cores
 
     Returns:
     --------
@@ -513,6 +529,16 @@ def associations(
         nominal_columns = identify_nominal_columns(dataset)
 
     # selecting rows and columns to be displayed
+    if hide_rows is not None:
+        if isinstance(hide_rows, str) or isinstance(hide_rows, int):
+            hide_rows = [hide_rows]
+        display_rows = [c for c in dataset.columns if c not in hide_rows]
+    else:
+        if display_rows == "all":
+            display_rows = columns
+        elif isinstance(display_rows, str) or isinstance(display_rows, int):
+            display_columns = [display_rows]
+
     if hide_columns is not None:
         if isinstance(hide_columns, str) or isinstance(hide_columns, int):
             hide_columns = [hide_columns]
@@ -524,16 +550,6 @@ def associations(
             display_columns, int
         ):
             display_columns = [display_columns]
-
-    if hide_rows is not None:
-        if isinstance(hide_rows, str) or isinstance(hide_rows, int):
-            hide_rows = [hide_rows]
-        display_rows = [c for c in dataset.columns if c not in hide_rows]
-    else:
-        if display_rows == "all":
-            display_rows = columns
-        elif isinstance(display_rows, str) or isinstance(display_rows, int):
-            display_columns = [display_rows]
 
     if (
         display_rows is None
@@ -560,9 +576,8 @@ def associations(
             if auto_nominal:
                 nominal_columns = identify_nominal_columns(dataset)
 
-    corr = pd.DataFrame(
-        index=columns, columns=columns
-    )  # will be used to store associations values
+    # will be used to store associations values
+    corr = pd.DataFrame(index=columns, columns=columns)
 
     # this dataframe is used to keep track of invalid association values, which will be placed on top
     # of the corr dataframe. It is done for visualization purposes, so the heatmap values will remain
@@ -577,123 +592,87 @@ def associations(
         if dataset[c].unique().size == 1:
             single_value_columns_set.add(c)
 
-    # computing associations
-    def _nom_num(nom_column, num_column):
-        if callable(nom_num_assoc):
-            cell = nom_num_assoc(dataset[nom_column], dataset[num_column])
-            ij = cell
-            ji = cell
-        elif nom_num_assoc == "correlation_ratio":
-            cell = correlation_ratio(
-                dataset[nom_column], dataset[num_column], nan_strategy=_SKIP
-            )
-            ij = cell
-            ji = cell
-        else:
-            raise ValueError(
-                f"{nom_nom_assoc} is not a supported nominal-numerical association"
-            )
-        return ij, ji
+    # find the number of physical cpu cores available
+    n_cores = cpu_count(logical=False)
 
-    for i in range(0, len(columns)):
-        if columns[i] not in displayed_features_set:
-            continue
-        if columns[i] in single_value_columns_set:
-            corr.loc[:, columns[i]] = 0.0
-            corr.loc[columns[i], :] = 0.0
-            continue
-        for j in range(i, len(columns)):
-            if (
-                columns[j] in single_value_columns_set
-                or columns[j] not in displayed_features_set
-            ):
-                continue
-            elif i == j:
+    # current multiprocessing implementation performs worse on 2 cores than on 1 core,
+    # so we only use multiprocessing if there are more than 2 physical cores available
+    if multiprocessing and n_cores > 2:
+        # find out the list of cartesian products of the column indices
+        number_of_columns = len(columns)
+        list_of_indices_pairs_lists = [
+            (i, j)
+            for i in range(number_of_columns)
+            for j in range(number_of_columns)
+        ]
+
+        # do not exceed 32 cores under any circumstances
+        if max_cpu_cores is not None:
+            max_cpu_cores = min(32, min(max_cpu_cores, n_cores))
+        else:
+            max_cpu_cores = min(32, n_cores)
+
+        # submit each list of cartesian products of column indices to separate processes
+        # for faster computation.
+        # process 1 receives: [(0, 0), (0, 1), (0, 2), ... (0, n)]
+        # process 2 receives: [(1, 0), (1, 1), (1, 2), ... (1, n)]
+        # ...
+        # process m receives: [(n, 0), (n, 1), (n, 2), ... (n, n)]
+        # where, n = num_columns - 1
+        with cf.ProcessPoolExecutor(max_workers=max_cpu_cores) as executor:
+            results = executor.map(
+                _compute_associations,
+                list_of_indices_pairs_lists,
+                repeat(dataset),
+                repeat(displayed_features_set),
+                repeat(single_value_columns_set),
+                repeat(nominal_columns),
+                repeat(symmetric_nom_nom),
+                repeat(nom_nom_assoc),
+                repeat(cramers_v_bias_correction),
+                repeat(num_num_assoc),
+                repeat(nom_num_assoc),
+                repeat(symmetric_num_num),
+                chunksize=max(
+                    1, len(list_of_indices_pairs_lists) // max_cpu_cores
+                ),
+            )
+    else:
+        results = []
+
+        for i in range(0, len(columns)):
+            for j in range(i, len(columns)):
+                results.append(
+                    _compute_associations(
+                        [i, j],
+                        dataset,
+                        displayed_features_set,
+                        single_value_columns_set,
+                        nominal_columns,
+                        symmetric_nom_nom,
+                        nom_nom_assoc,
+                        cramers_v_bias_correction,
+                        num_num_assoc,
+                        nom_num_assoc,
+                        symmetric_num_num,
+                    )
+                )
+
+    # fill the correlation dataframe with the results
+    for result in results:
+        try:
+            if result[0] == _NO_OP:
+                pass
+            elif result[0] == _SINGLE_VALUE_COLUMN_OP:
+                i = result[1]
+                corr.loc[:, columns[i]] = 0.0
+                corr.loc[columns[i], :] = 0.0
+            elif result[0] == _I_EQ_J_OP:
+                i, j = result[1:]
                 corr.loc[columns[i], columns[j]] = 1.0
             else:
-                if columns[i] in nominal_columns:
-                    if columns[j] in nominal_columns:
-                        if callable(nom_nom_assoc):
-                            if symmetric_nom_nom:
-                                cell = nom_nom_assoc(
-                                    dataset[columns[i]], dataset[columns[j]]
-                                )
-                                ij = cell
-                                ji = cell
-                            else:
-                                ij = nom_nom_assoc(
-                                    dataset[columns[i]], dataset[columns[j]]
-                                )
-                                ji = nom_nom_assoc(
-                                    dataset[columns[j]], dataset[columns[i]]
-                                )
-                        elif nom_nom_assoc == "theil":
-                            ij = theils_u(
-                                dataset[columns[i]],
-                                dataset[columns[j]],
-                                nan_strategy=_SKIP,
-                            )
-                            ji = theils_u(
-                                dataset[columns[j]],
-                                dataset[columns[i]],
-                                nan_strategy=_SKIP,
-                            )
-                        elif nom_nom_assoc == "cramer":
-                            cell = cramers_v(
-                                dataset[columns[i]],
-                                dataset[columns[j]],
-                                bias_correction=cramers_v_bias_correction,
-                                nan_strategy=_SKIP,
-                            )
-                            ij = cell
-                            ji = cell
-                        else:
-                            raise ValueError(
-                                f"{nom_nom_assoc} is not a supported nominal-nominal association"
-                            )
-                    else:
-                        ij, ji = _nom_num(
-                            nom_column=columns[i], num_column=columns[j]
-                        )
-                else:
-                    if columns[j] in nominal_columns:
-                        ij, ji = _nom_num(
-                            nom_column=columns[j], num_column=columns[i]
-                        )
-                    else:
-                        if callable(num_num_assoc):
-                            if symmetric_num_num:
-                                cell = num_num_assoc(
-                                    dataset[columns[i]], dataset[columns[j]]
-                                )
-                                ij = cell
-                                ji = cell
-                            else:
-                                ij = num_num_assoc(
-                                    dataset[columns[i]], dataset[columns[j]]
-                                )
-                                ji = num_num_assoc(
-                                    dataset[columns[j]], dataset[columns[i]]
-                                )
-                        else:
-                            if num_num_assoc == "pearson":
-                                cell, _ = ss.pearsonr(
-                                    dataset[columns[i]], dataset[columns[j]]
-                                )
-                            elif num_num_assoc == "spearman":
-                                cell, _ = ss.spearmanr(
-                                    dataset[columns[i]], dataset[columns[j]]
-                                )
-                            elif num_num_assoc == "kendall":
-                                cell, _ = ss.kendalltau(
-                                    dataset[columns[i]], dataset[columns[j]]
-                                )
-                            else:
-                                raise ValueError(
-                                    f"{num_num_assoc} is not a supported numerical-numerical association"
-                                )
-                            ij = cell
-                            ji = cell
+                # assoc_op
+                i, j, ij, ji = result[1:]
                 corr.loc[columns[i], columns[j]] = (
                     ij if not np.isnan(ij) and abs(ij) < np.inf else 0.0
                 )
@@ -702,6 +681,9 @@ def associations(
                 )
                 inf_nan.loc[columns[i], columns[j]] = _inf_nan_str(ij)
                 inf_nan.loc[columns[j], columns[i]] = _inf_nan_str(ji)
+        except Exception as exception:
+            raise exception
+
     corr.fillna(value=np.nan, inplace=True)
 
     if clustering:
@@ -812,6 +794,202 @@ def associations(
             plt.show()
 
     return {"corr": corr, "ax": ax}
+
+
+def _nom_num(nom_column, num_column, dataset, nom_num_assoc, nom_nom_assoc):
+    """
+    Computes the nominal-numerical association value.
+    """
+    if callable(nom_num_assoc):
+        cell = nom_num_assoc(dataset[nom_column], dataset[num_column])
+        ij = cell
+        ji = cell
+    elif nom_num_assoc == "correlation_ratio":
+        cell = correlation_ratio(
+            dataset[nom_column], dataset[num_column], nan_strategy=_SKIP
+        )
+        ij = cell
+        ji = cell
+    else:
+        raise ValueError(
+            f"{nom_nom_assoc} is not a supported nominal-numerical association"
+        )
+    return ij, ji
+
+
+def _compute_associations(
+    indices_pair,
+    dataset,
+    displayed_features_set,
+    single_value_columns_set,
+    nominal_columns,
+    symmetric_nom_nom,
+    nom_nom_assoc,
+    cramers_v_bias_correction,
+    num_num_assoc,
+    nom_num_assoc,
+    symmetric_num_num,
+):
+    """
+    Helper function of associations. 
+
+    Parameters:
+    -----------
+    indices_pair: Tuple[int, int]
+        The tuple of indices pairs (i, j)
+    dataset: pandas.Dataframe
+        the pandas dataframe
+    displayed_features_set: Set[str]
+        The set of { display_rows } ∪ { display_columns }
+    single_value_columns_set: Set[str]
+        The set of single-value columns
+    nominal_columns : string / list / NumPy ndarray, default = 'auto'
+        Names of columns of the data-set which hold categorical values. Can
+        also be the string 'all' to state that all columns are categorical,
+        'auto' (default) to try to identify nominal columns, or None to state
+        none are categorical. Only used if `numerical_columns` is `None`.
+    symmetric_nom_nom : Boolean, default = True
+        Relevant only if `nom_nom_assoc` is a callable. Declare whether the function is symmetric (f(x,y) = f(y,x)).
+        If False, heat-map values should be interpreted as f(row,col)
+    nom_nom_assoc : callable / string, default = 'cramer'
+        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If string, name of nominal-nominal (categorical-categorical) association to use.
+        Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
+        heat-map columns are the provided information (U = U(row|col)).
+    num_num_assoc : callable / string, default = 'pearson'
+        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If string, name of numerical-numerical association to use. Options are 'pearson'
+        for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
+    nom_num_assoc : callable / string, default = 'correlation_ratio'
+        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If string, name of nominal-numerical association to use. Options are 'correlation_ratio'
+        for correlation ratio.
+    symmetric_num_num : Boolean, default = True
+        Relevant only if `num_num_assoc` is a callable. Declare whether the function is symmetric (f(x,y) = f(y,x)).
+        If False, heat-map values should be interpreted as f(row,col)
+    cramers_v_bias_correction : Boolean, default = True
+        Use bias correction for Cramer's V from Bergsma and Wicher,
+        Journal of the Korean Statistical Society 42 (2013): 323-328.
+
+    Returns:
+    --------
+    A list containing tuples. All tuples have one of the following strings in the
+    0-th index:
+        * _NO_OP
+        * _SINGLE_VALUE_COLUMN_OP
+        * _I_EQ_J_OP
+        * _ASSOC_OP
+    Then, additionally, they can have multiple numerical values.
+    """
+    columns = dataset.columns
+
+    i, j = indices_pair
+    if columns[i] not in displayed_features_set:
+        return (_NO_OP, None)
+    if columns[i] in single_value_columns_set:
+        return (_SINGLE_VALUE_COLUMN_OP, i)
+
+    if (
+        columns[j] in single_value_columns_set
+        or columns[j] not in displayed_features_set
+    ):
+        return (_NO_OP, None)
+    elif i == j:
+        return (_I_EQ_J_OP, i, j)
+    else:
+        if columns[i] in nominal_columns:
+            if columns[j] in nominal_columns:
+                if callable(nom_nom_assoc):
+                    if symmetric_nom_nom:
+                        cell = nom_nom_assoc(
+                            dataset[columns[i]], dataset[columns[j]]
+                        )
+                        ij = cell
+                        ji = cell
+                    else:
+                        ij = nom_nom_assoc(
+                            dataset[columns[i]], dataset[columns[j]]
+                        )
+                        ji = nom_nom_assoc(
+                            dataset[columns[j]], dataset[columns[i]]
+                        )
+                elif nom_nom_assoc == "theil":
+                    ij = theils_u(
+                        dataset[columns[i]],
+                        dataset[columns[j]],
+                        nan_strategy=_SKIP,
+                    )
+                    ji = theils_u(
+                        dataset[columns[j]],
+                        dataset[columns[i]],
+                        nan_strategy=_SKIP,
+                    )
+                elif nom_nom_assoc == "cramer":
+                    cell = cramers_v(
+                        dataset[columns[i]],
+                        dataset[columns[j]],
+                        bias_correction=cramers_v_bias_correction,
+                        nan_strategy=_SKIP,
+                    )
+                    ij = cell
+                    ji = cell
+                else:
+                    raise ValueError(
+                        f"{nom_nom_assoc} is not a supported nominal-nominal association"
+                    )
+            else:
+                ij, ji = _nom_num(
+                    nom_column=columns[i],
+                    num_column=columns[j],
+                    dataset=dataset,
+                    nom_num_assoc=nom_num_assoc,
+                    nom_nom_assoc=nom_nom_assoc,
+                )
+        else:
+            if columns[j] in nominal_columns:
+                ij, ji = _nom_num(
+                    nom_column=columns[j],
+                    num_column=columns[i],
+                    dataset=dataset,
+                    nom_num_assoc=nom_num_assoc,
+                    nom_nom_assoc=nom_nom_assoc,
+                )
+            else:
+                if callable(num_num_assoc):
+                    if symmetric_num_num:
+                        cell = num_num_assoc(
+                            dataset[columns[i]], dataset[columns[j]]
+                        )
+                        ij = cell
+                        ji = cell
+                    else:
+                        ij = num_num_assoc(
+                            dataset[columns[i]], dataset[columns[j]]
+                        )
+                        ji = num_num_assoc(
+                            dataset[columns[j]], dataset[columns[i]]
+                        )
+                else:
+                    if num_num_assoc == "pearson":
+                        cell, _ = ss.pearsonr(
+                            dataset[columns[i]], dataset[columns[j]]
+                        )
+                    elif num_num_assoc == "spearman":
+                        cell, _ = ss.spearmanr(
+                            dataset[columns[i]], dataset[columns[j]]
+                        )
+                    elif num_num_assoc == "kendall":
+                        cell, _ = ss.kendalltau(
+                            dataset[columns[i]], dataset[columns[j]]
+                        )
+                    else:
+                        raise ValueError(
+                            f"{num_num_assoc} is not a supported numerical-numerical association"
+                        )
+                    ij = cell
+                    ji = cell
+
+        return (_ASSOC_OP, i, j, ij, ji)
 
 
 def numerical_encoding(
