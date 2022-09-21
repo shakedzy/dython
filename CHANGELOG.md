@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.7.2 (dev)
+## 0.7.2
 * `nominal.associations` supports multi-core parallel processing (issue [#117](https://github.com/shakedzy/dython/issues/117), by **[@mahieyin-rahmun](https://github.com/mahieyin-rahmun)**)
 * Using Black for code formatting (issue [#133](https://github.com/shakedzy/dython/issues/133), by **[@mahieyin-rahmun](https://github.com/mahieyin-rahmun)**)
 
