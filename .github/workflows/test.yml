@@ -18,5 +18,5 @@ jobs:
         pip install .
     - name: Test with pytest
       run: |
-        pip install pytest hypothesis
-        pytest tests/ --doctest-modules
+        pip install -r dev_requirements.txt
+        pytest tests/ --doctest-modules --black
