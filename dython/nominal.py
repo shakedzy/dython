@@ -28,7 +28,7 @@ _REPLACE = 'replace'
 _DROP = 'drop'
 _DROP_SAMPLES = 'drop_samples'
 _DROP_FEATURES = 'drop_features'
-_DROP_MISSING_PAIRS = 'drop_missing_sample_pairs'
+_DROP_SAMPLE_PAIRS = 'drop_sample_pairs'
 _SKIP = 'skip'
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
@@ -197,7 +197,7 @@ def theils_u(x,
         return 1.
     else:
         u = (s_x - s_xy) / s_x
-        if -_PRECISION <= u < 0. or 1. < u <= 1.+_PRECISION:
+        if -_PRECISION <= u < 0. or 1. < u <= 1. + _PRECISION:
             rounded_u = 0. if u < 0 else 1.
             warnings.warn(f'Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.',
                           RuntimeWarning)
@@ -266,7 +266,7 @@ def correlation_ratio(categories,
         return 0.
     else:
         eta = np.sqrt(numerator / denominator)
-        if 1. < eta <= 1.+_PRECISION:
+        if 1. < eta <= 1. + _PRECISION:
             warnings.warn(f'Rounded eta = {eta} to 1. This is probably due to floating point precision issues.',
                           RuntimeWarning)
             return 1.
@@ -488,8 +488,8 @@ def associations(dataset,
         dataset.dropna(axis=0, inplace=True)
     elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
-    elif nan_strategy == _DROP_MISSING_PAIRS:
-        pass
+    elif nan_strategy == _DROP_SAMPLE_PAIRS:
+        pass  # will be handled pair-by-pair during calculations
     else:
         raise ValueError("Argument nan_stragety [{:s}] is not a valid choice.".format(nan_strategy))
 
@@ -510,22 +510,22 @@ def associations(dataset,
             hide_columns = [hide_columns]
         display_columns = [c for c in dataset.columns if c not in hide_columns]
     else:
-        if display_columns == 'all': 
+        if display_columns == 'all':
             display_columns = columns
         elif isinstance(display_columns, str) or isinstance(display_columns, int):
             display_columns = [display_columns]
-    
+
     if hide_rows is not None:
         if isinstance(hide_rows, str) or isinstance(hide_rows, int):
             hide_rows = [hide_rows]
         display_rows = [c for c in dataset.columns if c not in hide_rows]
     else:
-        if display_rows == 'all': 
+        if display_rows == 'all':
             display_rows = columns
         elif isinstance(display_rows, str) or isinstance(display_rows, int):
             display_columns = [display_rows]
 
-    if display_rows is None or display_columns is None or len(display_rows) <  1 or len(display_columns) < 1:
+    if display_rows is None or display_columns is None or len(display_rows) < 1 or len(display_columns) < 1:
         raise ValueError('display_rows and display_columns must have at least one element')
     displayed_features_set = set.union(set(display_rows), set(display_columns))
 
@@ -560,17 +560,17 @@ def associations(dataset,
             cell = nom_num_assoc(data_nom_column,
                                  data_num_column)
             ij = cell
-            ji = cell                                                              
+            ji = cell
         elif nom_num_assoc == 'correlation_ratio':
             cell = correlation_ratio(data_nom_column,
-                                    data_num_column,
-                                    nan_strategy=_SKIP)
+                                     data_num_column,
+                                     nan_strategy=_SKIP)
             ij = cell
             ji = cell
         else:
             raise ValueError(f'{nom_nom_assoc} is not a supported nominal-numerical association')
         return ij, ji
-    
+
     for i in range(0, len(columns)):
         if columns[i] not in displayed_features_set:
             continue
@@ -584,8 +584,8 @@ def associations(dataset,
             elif i == j:
                 corr.loc[columns[i], columns[j]] = 1.0
             else:
-                if nan_strategy in [ _DROP_MISSING_PAIRS, ]:
-                    dataset_c_ij = dataset[ [columns[i], columns[j] ] ].dropna(axis=0)
+                if nan_strategy in [_DROP_SAMPLE_PAIRS, ]:
+                    dataset_c_ij = dataset[[columns[i], columns[j]]].dropna(axis=0)
                     c_i, c_j = dataset_c_ij[columns[i]], dataset_c_ij[columns[j]]
 
                 else:
@@ -594,19 +594,19 @@ def associations(dataset,
                     if columns[j] in nominal_columns:
                         if callable(nom_nom_assoc):
                             if symmetric_nom_nom:
-                                cell = nom_nom_assoc( c_i, c_j, )
+                                cell = nom_nom_assoc(c_i, c_j, )
                                 ij = cell
                                 ji = cell
                             else:
-                                ij = nom_nom_assoc( c_i, c_j )
-                                ji = nom_nom_assoc( c_j, c_i )
+                                ij = nom_nom_assoc(c_i, c_j)
+                                ji = nom_nom_assoc(c_j, c_i)
                         elif nom_nom_assoc == 'theil':
-                            ij = theils_u( c_i, c_j,
-                                nan_strategy=_SKIP)
-                            ji = theils_u( c_j, c_i,
-                                nan_strategy=_SKIP)
+                            ij = theils_u(c_i, c_j,
+                                          nan_strategy=_SKIP)
+                            ji = theils_u(c_j, c_i,
+                                          nan_strategy=_SKIP)
                         elif nom_nom_assoc == 'cramer':
-                            cell = cramers_v( c_i, c_j,
+                            cell = cramers_v(c_i, c_j,
                                              bias_correction=cramers_v_bias_correction,
                                              nan_strategy=_SKIP)
                             ij = cell
@@ -621,19 +621,19 @@ def associations(dataset,
                     else:
                         if callable(num_num_assoc):
                             if symmetric_num_num:
-                                cell = num_num_assoc(c_i,c_j)
+                                cell = num_num_assoc(c_i, c_j)
                                 ij = cell
-                                ji = cell 
+                                ji = cell
                             else:
-                                ij = num_num_assoc(c_i,c_j)
-                                ji = num_num_assoc(c_j,c_i)
+                                ij = num_num_assoc(c_i, c_j)
+                                ji = num_num_assoc(c_j, c_i)
                         else:
                             if num_num_assoc == 'pearson':
-                                cell, _ = ss.pearsonr(c_i,c_j)
+                                cell, _ = ss.pearsonr(c_i, c_j)
                             elif num_num_assoc == 'spearman':
-                                cell, _ = ss.spearmanr(c_i,c_j)
+                                cell, _ = ss.spearmanr(c_i, c_j)
                             elif num_num_assoc == 'kendall':
-                                cell, _ = ss.kendalltau(c_i,c_j)
+                                cell, _ = ss.kendalltau(c_i, c_j)
                             else:
                                 raise ValueError(f'{num_num_assoc} is not a supported numerical-numerical association')
                             ij = cell
@@ -659,7 +659,7 @@ def associations(dataset,
     if mark_columns:
         def mark(col):
             return '{} (nom)'.format(col) if col in nominal_columns else '{} (con)'.format(col)
-        
+
         corr.columns = [mark(col) for col in corr.columns]
         corr.index = [mark(col) for col in corr.index]
         inf_nan.columns = corr.columns
@@ -695,10 +695,10 @@ def associations(dataset,
                     sv.loc[c, c] = 'SV'
                 elif c in display_rows:
                     sv.loc[c, :] = ' '
-                    sv.loc[c, sv.columns[0]] = 'SV' 
+                    sv.loc[c, sv.columns[0]] = 'SV'
                 else:  # c in display_columns
                     sv.loc[:, c] = ' '
-                    sv.loc[sv.index[-1], c] = 'SV'                    
+                    sv.loc[sv.index[-1], c] = 'SV'
             sv_mask = np.vectorize(lambda x: not bool(x))(sv.values)
             ax = sns.heatmap(sv_mask,
                              cmap=[sv_color],
