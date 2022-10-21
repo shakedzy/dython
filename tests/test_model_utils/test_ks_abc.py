@@ -18,24 +18,32 @@ def y_pred():
 def test_ks_abc_check_types(y_true, y_pred):
     result = ks_abc(y_true, y_pred)
 
-    assert isinstance(result, dict), 'ks_abc should return dict'
+    assert isinstance(result, dict), "ks_abc should return dict"
 
-    assert 'abc' in result, 'ks_abc should return dict containing "abc" key'
-    assert isinstance(result['abc'], float), 'area between curves should be a float'
+    assert "abc" in result, 'ks_abc should return dict containing "abc" key'
+    assert isinstance(
+        result["abc"], float
+    ), "area between curves should be a float"
 
-    assert 'ks_stat' in result, 'ks_abc should return dict containing "ks_stat" key'
-    assert isinstance(result['ks_stat'], float), 'ks statistic should be a float'
+    assert (
+        "ks_stat" in result
+    ), 'ks_abc should return dict containing "ks_stat" key'
+    assert isinstance(
+        result["ks_stat"], float
+    ), "ks statistic should be a float"
 
-    assert 'eopt' in result, 'ks_abc should return dict containing "eopt" key'
-    assert isinstance(result['eopt'], float), 'estimated optimal threshold should be a float'
+    assert "eopt" in result, 'ks_abc should return dict containing "eopt" key'
+    assert isinstance(
+        result["eopt"], float
+    ), "estimated optimal threshold should be a float"
 
-    assert 'ax' in result, 'ks_abc should return dict containing "ax" key'
-    assert isinstance(result['ax'], matplotlib.axes.Axes)
+    assert "ax" in result, 'ks_abc should return dict containing "ax" key'
+    assert isinstance(result["ax"], matplotlib.axes.Axes)
 
 
 def test_ks_abc_check_known_value(y_true, y_pred):
     result = ks_abc(y_true, y_pred)
 
-    assert result['abc'] == pytest.approx(0.55)
-    assert result['ks_stat'] == pytest.approx(1.0)
-    assert result['eopt'] == pytest.approx(0.4)
+    assert result["abc"] == pytest.approx(0.55)
+    assert result["ks_stat"] == pytest.approx(1.0)
+    assert result["eopt"] == pytest.approx(0.4)

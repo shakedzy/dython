@@ -2,14 +2,19 @@ import pytest
 import matplotlib
 import pandas as pd
 import scipy.stats as ss
-from sklearn import datasets
+
+from psutil import cpu_count
 from datetime import datetime, timedelta
 
 from dython.nominal import associations, correlation_ratio
 
+MAX_CORE_COUNT = cpu_count(logical=False)
+
 
 def test_return_type_check(iris_df):
-    assoc = associations(iris_df)
+    assoc = associations(
+        iris_df, multiprocessing=True, max_cpu_cores=MAX_CORE_COUNT
+    )
 
     assert isinstance(assoc, dict), "associations should return a dict"
     assert (
@@ -28,7 +33,9 @@ def test_return_type_check(iris_df):
 
 
 def test_dimension_check(iris_df):
-    corr = associations(iris_df)["corr"]
+    corr = associations(
+        iris_df, multiprocessing=True, max_cpu_cores=MAX_CORE_COUNT
+    )["corr"]
     corr_shape = corr.shape
     iris_shape = iris_df.shape
 
@@ -42,7 +49,9 @@ def test_single_value_zero_association(iris_df):
     SV_COL = 1
     iris_df.iloc[:, SV_COL] = 42
 
-    corr = associations(iris_df)["corr"]
+    corr = associations(
+        iris_df, multiprocessing=True, max_cpu_cores=MAX_CORE_COUNT
+    )["corr"]
 
     assert (
         corr.iloc[:, SV_COL] == 0
@@ -54,7 +63,12 @@ def test_single_value_zero_association(iris_df):
 
 def test_bad_nom_nom_assoc_parameter(iris_df):
     with pytest.raises(ValueError, match="is not a supported"):
-        associations(iris_df, nom_nom_assoc="bad_parameter_name")
+        associations(
+            iris_df,
+            nom_nom_assoc="bad_parameter_name",
+            multiprocessing=True,
+            max_cpu_cores=MAX_CORE_COUNT,
+        )
 
 
 def test_bad_num_num_assoc_parameter(iris_df):
@@ -63,7 +77,12 @@ def test_bad_num_num_assoc_parameter(iris_df):
 
 
 def test_compute_only_ax_is_none(iris_df):
-    assoc = associations(iris_df, compute_only=True)
+    assoc = associations(
+        iris_df,
+        compute_only=True,
+        multiprocessing=True,
+        max_cpu_cores=MAX_CORE_COUNT,
+    )
 
     assert (
         assoc["ax"] is None
@@ -71,25 +90,38 @@ def test_compute_only_ax_is_none(iris_df):
 
 
 def test_mark_columns(iris_df):
-    corr = associations(iris_df, mark_columns=True)["corr"]
+    corr = associations(
+        iris_df,
+        mark_columns=True,
+        multiprocessing=True,
+        max_cpu_cores=MAX_CORE_COUNT,
+    )["corr"]
 
     assert (
         "(con)" in corr.index[0]
     ), "first column should contain (con) mark if iris_df is used"
 
 
-def test_udf(iris_df):
-    def pr(x, y):
-        return ss.pearsonr(x, y)[0]
+def pr(x, y):
+    return ss.pearsonr(x, y)[0]
 
+
+def test_udf(iris_df):
     corr1 = associations(
         iris_df,
         plot=False,
         num_num_assoc="pearson",
         nom_num_assoc="correlation_ratio",
+        multiprocessing=True,
+        max_cpu_cores=MAX_CORE_COUNT,
     )["corr"]
     corr2 = associations(
-        iris_df, plot=False, num_num_assoc=pr, nom_num_assoc=correlation_ratio
+        iris_df,
+        plot=False,
+        num_num_assoc=pr,
+        nom_num_assoc=correlation_ratio,
+        multiprocessing=True,
+        max_cpu_cores=MAX_CORE_COUNT,
     )["corr"]
     assert corr1.compare(
         corr2
@@ -111,16 +143,17 @@ def test_datetime_data():
     df = pd.DataFrame(
         {"dates": result, "up": nums, "down": sorted(nums, reverse=True)}
     )
-    df["dates"] = pd.to_datetime(
-        df["dates"], format="%Y-%m-%d %H:%M:%S"
-    )  # without this, this column is considered as object rather than dates
+    # without this, this column is considered as object rather than dates
+    df["dates"] = pd.to_datetime(df["dates"], format="%Y-%m-%d %H:%M:%S")
 
     correct_corr = pd.DataFrame(
         columns=["dates", "up", "down"],
         index=["dates", "up", "down"],
         data=[[1.0, 1.0, -1.0], [1.0, 1.0, -1.0], [-1.0, -1.0, 1.0]],
     )
-    corr = associations(df, plot=False)["corr"]
+    corr = associations(
+        df, plot=False, multiprocessing=True, max_cpu_cores=MAX_CORE_COUNT
+    )["corr"]
     assert corr.compare(
         correct_corr
     ).empty, f"datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}"

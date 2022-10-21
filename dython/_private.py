@@ -4,7 +4,7 @@ import pandas as pd
 
 def convert(data, to, copy=True):
     converted = None
-    if to == 'array':
+    if to == "array":
         if isinstance(data, np.ndarray):
             converted = data.copy() if copy else data
         elif isinstance(data, pd.Series):
@@ -13,14 +13,14 @@ def convert(data, to, copy=True):
             converted = np.array(data)
         elif isinstance(data, pd.DataFrame):
             converted = data.values()
-    elif to == 'list':
+    elif to == "list":
         if isinstance(data, list):
             converted = data.copy() if copy else data
         elif isinstance(data, pd.Series):
             converted = data.values.tolist()
         elif isinstance(data, np.ndarray):
             converted = data.tolist()
-    elif to == 'dataframe':
+    elif to == "dataframe":
         if isinstance(data, pd.DataFrame):
             converted = data.copy(deep=True) if copy else data
         elif isinstance(data, np.ndarray):
@@ -29,8 +29,10 @@ def convert(data, to, copy=True):
         raise ValueError("Unknown data conversion: {}".format(to))
     if converted is None:
         raise TypeError(
-            'cannot handle data conversion of type: {} to {}'.format(
-                type(data), to))
+            "cannot handle data conversion of type: {} to {}".format(
+                type(data), to
+            )
+        )
     else:
         return converted
 
@@ -47,6 +49,8 @@ def remove_incomplete_samples(x, y):
 
 
 def replace_nan_with_value(x, y, value):
-    x = np.array([v if v == v and v is not None else value for v in x])  # NaN != NaN
+    x = np.array(
+        [v if v == v and v is not None else value for v in x]
+    )  # NaN != NaN
     y = np.array([v if v == v and v is not None else value for v in y])
     return x, y

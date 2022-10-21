@@ -1,3 +1,5 @@
+![banner](http://shakedzy.xyz/dython/images/index_banner.png)
+
 # Dython
 
 [![PyPI Version](https://img.shields.io/pypi/v/dython.svg)](https://pypi.org/project/dython/)

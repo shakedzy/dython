@@ -1,4 +1,3 @@
-name: Test Python Package
 
 on: [push]
 

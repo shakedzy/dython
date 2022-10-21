@@ -5,3 +5,7 @@ testpaths = [
     "./dython"
 ]
 doctest_optionflags = "NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ELLIPSIS"
+
+[tool.black]
+line-length = 80
+target-version = ['py38']
