@@ -31,6 +31,7 @@ _REPLACE = "replace"
 _DROP = "drop"
 _DROP_SAMPLES = "drop_samples"
 _DROP_FEATURES = "drop_features"
+_DROP_SAMPLE_PAIRS = 'drop_sample_pairs'
 _SKIP = "skip"
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
@@ -51,11 +52,11 @@ def _inf_nan_str(x):
 
 
 def conditional_entropy(
-    x,
-    y,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
-    log_base: float = math.e,
+        x,
+        y,
+        nan_strategy=_REPLACE,
+        nan_replace_value=_DEFAULT_REPLACE_VALUE,
+        log_base: float = math.e,
 ):
     """
     Calculates the conditional entropy of x given y: S(x|y)
@@ -98,11 +99,11 @@ def conditional_entropy(
 
 
 def cramers_v(
-    x,
-    y,
-    bias_correction=True,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
+        x,
+        y,
+        bias_correction=True,
+        nan_strategy=_REPLACE,
+        nan_replace_value=_DEFAULT_REPLACE_VALUE,
 ):
     """
     Calculates Cramer's V statistic for categorical-categorical association.
@@ -167,7 +168,7 @@ def cramers_v(
 
 
 def theils_u(
-    x, y, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE
+        x, y, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE
 ):
     """
     Calculates Theil's U statistic (Uncertainty coefficient) for categorical-
@@ -222,10 +223,10 @@ def theils_u(
 
 
 def correlation_ratio(
-    categories,
-    measurements,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
+        categories,
+        measurements,
+        nan_strategy=_REPLACE,
+        nan_replace_value=_DEFAULT_REPLACE_VALUE,
 ):
     """
     Calculates the Correlation Ratio (sometimes marked by the greek letter Eta)
@@ -340,38 +341,38 @@ def identify_numeric_columns(dataset):
 
 
 def associations(
-    dataset,
-    nominal_columns="auto",
-    numerical_columns=None,
-    mark_columns=False,
-    nom_nom_assoc="cramer",
-    num_num_assoc="pearson",
-    nom_num_assoc="correlation_ratio",
-    symmetric_nom_nom=True,
-    symmetric_num_num=True,
-    display_rows="all",
-    display_columns="all",
-    hide_rows=None,
-    hide_columns=None,
-    cramers_v_bias_correction=True,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
-    ax=None,
-    figsize=None,
-    annot=True,
-    fmt=".2f",
-    cmap=None,
-    sv_color="silver",
-    cbar=True,
-    vmax=1.0,
-    vmin=None,
-    plot=True,
-    compute_only=False,
-    clustering=False,
-    title=None,
-    filename=None,
-    multiprocessing=False,
-    max_cpu_cores=None,
+        dataset,
+        nominal_columns="auto",
+        numerical_columns=None,
+        mark_columns=False,
+        nom_nom_assoc="cramer",
+        num_num_assoc="pearson",
+        nom_num_assoc="correlation_ratio",
+        symmetric_nom_nom=True,
+        symmetric_num_num=True,
+        display_rows="all",
+        display_columns="all",
+        hide_rows=None,
+        hide_columns=None,
+        cramers_v_bias_correction=True,
+        nan_strategy=_REPLACE,
+        nan_replace_value=_DEFAULT_REPLACE_VALUE,
+        ax=None,
+        figsize=None,
+        annot=True,
+        fmt=".2f",
+        cmap=None,
+        sv_color="silver",
+        cbar=True,
+        vmax=1.0,
+        vmin=None,
+        plot=True,
+        compute_only=False,
+        clustering=False,
+        title=None,
+        filename=None,
+        multiprocessing=False,
+        max_cpu_cores=None,
 ):
     """
     Calculate the correlation/strength-of-association of features in data-set
@@ -440,8 +441,10 @@ def associations(
     nan_strategy : string, default = 'replace'
         How to handle missing values: can be either 'drop_samples' to remove
         samples with missing values, 'drop_features' to remove features
-        (columns) with missing values, or 'replace' to replace all missing
-        values with the nan_replace_value. Missing values are None and np.nan.
+        (columns) with missing values, 'replace' to replace all missing
+        values with the nan_replace_value, or 'drop_sample_pairs' to drop each
+        pair of missing observables separately before calculating the corresponding coefficient.
+        Missing values are None and np.nan.
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'
@@ -516,6 +519,10 @@ def associations(
         dataset.dropna(axis=0, inplace=True)
     elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
+    elif nan_strategy == _DROP_SAMPLE_PAIRS:
+        pass  # will be handled pair-by-pair during calculations
+    else:
+        raise ValueError("Argument nan_stragety [{:s}] is not a valid choice.".format(nan_strategy))
 
     # identifying categorical columns
     columns = dataset.columns
@@ -547,15 +554,15 @@ def associations(
         if display_columns == "all":
             display_columns = columns
         elif isinstance(display_columns, str) or isinstance(
-            display_columns, int
+                display_columns, int
         ):
             display_columns = [display_columns]
 
     if (
-        display_rows is None
-        or display_columns is None
-        or len(display_rows) < 1
-        or len(display_columns) < 1
+            display_rows is None
+            or display_columns is None
+            or len(display_rows) < 1
+            or len(display_columns) < 1
     ):
         raise ValueError(
             "display_rows and display_columns must have at least one element"
@@ -633,6 +640,7 @@ def associations(
                 repeat(num_num_assoc),
                 repeat(nom_num_assoc),
                 repeat(symmetric_num_num),
+                repeat(nan_strategy),
                 chunksize=max(
                     1, len(list_of_indices_pairs_lists) // max_cpu_cores
                 ),
@@ -655,6 +663,7 @@ def associations(
                         num_num_assoc,
                         nom_num_assoc,
                         symmetric_num_num,
+                        nan_strategy,
                     )
                 )
 
@@ -701,7 +710,6 @@ def associations(
     inf_nan = inf_nan.loc[display_rows, display_columns]
 
     if mark_columns:
-
         def mark(col):
             return (
                 "{} (nom)".format(col)
@@ -796,39 +804,40 @@ def associations(
     return {"corr": corr, "ax": ax}
 
 
-def _nom_num(nom_column, num_column, dataset, nom_num_assoc, nom_nom_assoc):
+def _nom_num(nom_column, num_column, nom_num_assoc):
     """
     Computes the nominal-numerical association value.
     """
     if callable(nom_num_assoc):
-        cell = nom_num_assoc(dataset[nom_column], dataset[num_column])
+        cell = nom_num_assoc(nom_column, num_column)
         ij = cell
         ji = cell
     elif nom_num_assoc == "correlation_ratio":
         cell = correlation_ratio(
-            dataset[nom_column], dataset[num_column], nan_strategy=_SKIP
+            nom_column, num_column, nan_strategy=_SKIP
         )
         ij = cell
         ji = cell
     else:
         raise ValueError(
-            f"{nom_nom_assoc} is not a supported nominal-numerical association"
+            f"{nom_num_assoc} is not a supported nominal-numerical association"
         )
     return ij, ji
 
 
 def _compute_associations(
-    indices_pair,
-    dataset,
-    displayed_features_set,
-    single_value_columns_set,
-    nominal_columns,
-    symmetric_nom_nom,
-    nom_nom_assoc,
-    cramers_v_bias_correction,
-    num_num_assoc,
-    nom_num_assoc,
-    symmetric_num_num,
+        indices_pair,
+        dataset,
+        displayed_features_set,
+        single_value_columns_set,
+        nominal_columns,
+        symmetric_nom_nom,
+        nom_nom_assoc,
+        cramers_v_bias_correction,
+        num_num_assoc,
+        nom_num_assoc,
+        symmetric_num_num,
+        nan_strategy
 ):
     """
     Helper function of associations. 
@@ -870,6 +879,8 @@ def _compute_associations(
     cramers_v_bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.
+    nan_strategy: string
+        The provided nan_strategy to associations
 
     Returns:
     --------
@@ -890,44 +901,46 @@ def _compute_associations(
         return (_SINGLE_VALUE_COLUMN_OP, i)
 
     if (
-        columns[j] in single_value_columns_set
-        or columns[j] not in displayed_features_set
+            columns[j] in single_value_columns_set
+            or columns[j] not in displayed_features_set
     ):
         return (_NO_OP, None)
     elif i == j:
         return (_I_EQ_J_OP, i, j)
     else:
+        if nan_strategy in [_DROP_SAMPLE_PAIRS, ]:
+            dataset_c_ij = dataset[[columns[i], columns[j]]].dropna(axis=0)
+            c_i, c_j = dataset_c_ij[columns[i]], dataset_c_ij[columns[j]]
+        else:
+            c_i, c_j = dataset[columns[i]], dataset[columns[j]]
         if columns[i] in nominal_columns:
             if columns[j] in nominal_columns:
                 if callable(nom_nom_assoc):
                     if symmetric_nom_nom:
                         cell = nom_nom_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ij = cell
                         ji = cell
                     else:
                         ij = nom_nom_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ji = nom_nom_assoc(
-                            dataset[columns[j]], dataset[columns[i]]
+                            c_j, c_i
                         )
                 elif nom_nom_assoc == "theil":
                     ij = theils_u(
-                        dataset[columns[i]],
-                        dataset[columns[j]],
+                        c_i, c_j,
                         nan_strategy=_SKIP,
                     )
                     ji = theils_u(
-                        dataset[columns[j]],
-                        dataset[columns[i]],
+                        c_j, c_i,
                         nan_strategy=_SKIP,
                     )
                 elif nom_nom_assoc == "cramer":
                     cell = cramers_v(
-                        dataset[columns[i]],
-                        dataset[columns[j]],
+                        c_i, c_j,
                         bias_correction=cramers_v_bias_correction,
                         nan_strategy=_SKIP,
                     )
@@ -939,48 +952,44 @@ def _compute_associations(
                     )
             else:
                 ij, ji = _nom_num(
-                    nom_column=columns[i],
-                    num_column=columns[j],
-                    dataset=dataset,
-                    nom_num_assoc=nom_num_assoc,
-                    nom_nom_assoc=nom_nom_assoc,
+                    nom_column=c_i,
+                    num_column=c_j,
+                    nom_num_assoc=nom_num_assoc
                 )
         else:
             if columns[j] in nominal_columns:
                 ij, ji = _nom_num(
-                    nom_column=columns[j],
-                    num_column=columns[i],
-                    dataset=dataset,
-                    nom_num_assoc=nom_num_assoc,
-                    nom_nom_assoc=nom_nom_assoc,
+                    nom_column=c_j,
+                    num_column=c_i,
+                    nom_num_assoc=nom_num_assoc
                 )
             else:
                 if callable(num_num_assoc):
                     if symmetric_num_num:
                         cell = num_num_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ij = cell
                         ji = cell
                     else:
                         ij = num_num_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ji = num_num_assoc(
-                            dataset[columns[j]], dataset[columns[i]]
+                            c_j, c_i
                         )
                 else:
                     if num_num_assoc == "pearson":
                         cell, _ = ss.pearsonr(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                     elif num_num_assoc == "spearman":
                         cell, _ = ss.spearmanr(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                     elif num_num_assoc == "kendall":
                         cell, _ = ss.kendalltau(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                     else:
                         raise ValueError(
@@ -993,12 +1002,12 @@ def _compute_associations(
 
 
 def numerical_encoding(
-    dataset,
-    nominal_columns="auto",
-    drop_single_label=False,
-    drop_fact_dict=True,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
+        dataset,
+        nominal_columns="auto",
+        drop_single_label=False,
+        drop_fact_dict=True,
+        nan_strategy=_REPLACE,
+        nan_replace_value=_DEFAULT_REPLACE_VALUE,
 ):
     """
     Encoding a data-set with mixed data (numerical and categorical) to a
