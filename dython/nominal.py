@@ -511,6 +511,15 @@ def associations(
 
     # handling NaN values in data
     if nan_strategy == _REPLACE:
+
+        # handling pandas categorical
+        pd_categorical_columns = identify_columns_by_type(dataset, include=["category"])
+        if pd_categorical_columns:
+            for col in pd_categorical_columns:
+                value = nan_replace_value if not isinstance(nan_replace_value, dict) else nan_replace_value[col]
+                if not value in dataset[col].cat.categories:
+                    dataset[col] = dataset[col].cat.add_categories(value)
+                    
         dataset.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
         dataset.dropna(axis=0, inplace=True)
