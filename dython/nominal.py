@@ -513,13 +513,8 @@ def associations(
     if nan_strategy == _REPLACE:
 
         # handling pandas categorical
-        pd_categorical_columns = identify_columns_by_type(dataset, include=["category"])
-        if pd_categorical_columns:
-            for col in pd_categorical_columns:
-                value = nan_replace_value if not isinstance(nan_replace_value, dict) else nan_replace_value[col]
-                if not value in dataset[col].cat.categories:
-                    dataset[col] = dataset[col].cat.add_categories(value)
-                    
+        dataset = handling_category_for_nan_imputation(dataset, nan_replace_value)
+
         dataset.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
         dataset.dropna(axis=0, inplace=True)
@@ -805,6 +800,25 @@ def associations(
     return {"corr": corr, "ax": ax}
 
 
+def handling_category_for_nan_imputation(dataset, nan_replace_value):
+    pd_categorical_columns = identify_columns_by_type(
+        dataset, include=["category"]
+    )
+    if pd_categorical_columns:
+        for col in pd_categorical_columns:
+            if isinstance(nan_replace_value, pd.DataFrame):
+                values_ = nan_replace_value[col].unique().tolist()
+                values = [x for x in values_ if x not in dataset[col].cat.categories]
+                dataset[col] = dataset[col].cat.add_categories(values)
+            else:
+                if  isinstance(nan_replace_value, dict):
+                    value = nan_replace_value[col]
+                else:
+                    value = nan_replace_value
+                if not value in dataset[col].cat.categories:
+                    dataset[col] = dataset[col].cat.add_categories(value)
+    return dataset
+
 def _nom_num(nom_column, num_column, dataset, nom_num_assoc, nom_nom_assoc):
     """
     Computes the nominal-numerical association value.
@@ -840,7 +854,7 @@ def _compute_associations(
     symmetric_num_num,
 ):
     """
-    Helper function of associations. 
+    Helper function of associations.
 
     Parameters:
     -----------
