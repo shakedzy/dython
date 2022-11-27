@@ -581,7 +581,7 @@ def associations(
                 nominal_columns = identify_nominal_columns(dataset)
 
     # will be used to store associations values
-    corr = pd.DataFrame(index=columns, columns=columns)
+    corr = pd.DataFrame(index=columns, columns=columns, dtype=np.float64)
 
     # this dataframe is used to keep track of invalid association values, which will be placed on top
     # of the corr dataframe. It is done for visualization purposes, so the heatmap values will remain
