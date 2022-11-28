@@ -142,7 +142,12 @@ continuous features using:
 
     _Default: 'replace'_
 
-    How to handle missing values: can be either 'drop_samples' to remove samples with missing values, 'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing values with the nan_replace_value. Missing values are None and np.nan.
+    How to handle missing values: can be either `'drop_samples'` to remove
+    samples with missing values, `'drop_features'` to remove features
+    (columns) with missing values, `'replace'` to replace all missing
+    values with the `nan_replace_value`, or `'drop_sample_pairs'` to drop each
+    pair of missing observables separately before calculating the corresponding coefficient.
+    Missing values are `None` and `np.nan`.
 
 - **`nan_replace_value`** : `any`
 
