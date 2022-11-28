@@ -829,7 +829,7 @@ def _handling_category_for_nan_imputation(dataset, nan_replace_value):
     return dataset
 
 
-def _nom_num(nom_column, num_column, nom_num_assoc, nom_nom_assoc):
+def _nom_num(nom_column, num_column, nom_num_assoc):
     """
     Computes the nominal-numerical association value.
     """
