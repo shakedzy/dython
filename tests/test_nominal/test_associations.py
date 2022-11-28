@@ -1,6 +1,7 @@
 import pytest
 import matplotlib
 import pandas as pd
+import numpy as np
 import scipy.stats as ss
 from sklearn import datasets
 from datetime import datetime, timedelta
@@ -124,3 +125,12 @@ def test_datetime_data():
     assert corr.compare(
         correct_corr
     ).empty, f"datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}"
+
+
+def test_category_nan_replace(iris_df):
+    iris_df["extra"] = iris_df["extra"].astype("category")
+    iris_df.loc[5, "extra"] = np.nan
+    try:
+        associations(iris_df, nan_strategy="replace")
+    except TypeError as exception:
+        assert False, f"nan_strategy='replace' with a pandas.CategoricalDtype column raised an exception {exception}"
