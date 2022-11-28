@@ -513,7 +513,7 @@ def associations(
     if nan_strategy == _REPLACE:
 
         # handling pandas categorical
-        dataset = handling_category_for_nan_imputation(dataset, nan_replace_value)
+        dataset = _handling_category_for_nan_imputation(dataset, nan_replace_value)
 
         dataset.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
@@ -800,7 +800,7 @@ def associations(
     return {"corr": corr, "ax": ax}
 
 
-def handling_category_for_nan_imputation(dataset, nan_replace_value):
+def _handling_category_for_nan_imputation(dataset, nan_replace_value):
     pd_categorical_columns = identify_columns_by_type(
         dataset, include=["category"]
     )
@@ -818,6 +818,7 @@ def handling_category_for_nan_imputation(dataset, nan_replace_value):
                 if not value in dataset[col].cat.categories:
                     dataset[col] = dataset[col].cat.add_categories(value)
     return dataset
+
 
 def _nom_num(nom_column, num_column, dataset, nom_num_assoc, nom_nom_assoc):
     """
