@@ -133,4 +133,6 @@ def test_category_nan_replace(iris_df):
     try:
         associations(iris_df, nan_strategy="replace")
     except TypeError as exception:
-        assert False, f"nan_strategy='replace' with a pandas.CategoricalDtype column raised an exception {exception}"
+        assert (
+            False
+        ), f"nan_strategy='replace' with a pandas.CategoricalDtype column raised an exception {exception}"

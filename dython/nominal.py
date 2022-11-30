@@ -31,7 +31,7 @@ _REPLACE = "replace"
 _DROP = "drop"
 _DROP_SAMPLES = "drop_samples"
 _DROP_FEATURES = "drop_features"
-_DROP_SAMPLE_PAIRS = 'drop_sample_pairs'
+_DROP_SAMPLE_PAIRS = "drop_sample_pairs"
 _SKIP = "skip"
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
@@ -516,7 +516,9 @@ def associations(
     if nan_strategy == _REPLACE:
 
         # handling pandas categorical
-        dataset = _handling_category_for_nan_imputation(dataset, nan_replace_value)
+        dataset = _handling_category_for_nan_imputation(
+            dataset, nan_replace_value
+        )
 
         dataset.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
@@ -526,7 +528,11 @@ def associations(
     elif nan_strategy == _DROP_SAMPLE_PAIRS:
         pass  # will be handled pair-by-pair during calculations
     else:
-        raise ValueError("Argument nan_stragety [{:s}] is not a valid choice.".format(nan_strategy))
+        raise ValueError(
+            "Argument nan_stragety [{:s}] is not a valid choice.".format(
+                nan_strategy
+            )
+        )
 
     # identifying categorical columns
     columns = dataset.columns
@@ -817,10 +823,12 @@ def _handling_category_for_nan_imputation(dataset, nan_replace_value):
         for col in pd_categorical_columns:
             if isinstance(nan_replace_value, pd.DataFrame):
                 values_ = nan_replace_value[col].unique().tolist()
-                values = [x for x in values_ if x not in dataset[col].cat.categories]
+                values = [
+                    x for x in values_ if x not in dataset[col].cat.categories
+                ]
                 dataset[col] = dataset[col].cat.add_categories(values)
             else:
-                if  isinstance(nan_replace_value, dict):
+                if isinstance(nan_replace_value, dict):
                     value = nan_replace_value[col]
                 else:
                     value = nan_replace_value
@@ -838,9 +846,7 @@ def _nom_num(nom_column, num_column, nom_num_assoc):
         ij = cell
         ji = cell
     elif nom_num_assoc == "correlation_ratio":
-        cell = correlation_ratio(
-            nom_column, num_column, nan_strategy=_SKIP
-        )
+        cell = correlation_ratio(nom_column, num_column, nan_strategy=_SKIP)
         ij = cell
         ji = cell
     else:
@@ -862,7 +868,7 @@ def _compute_associations(
     num_num_assoc,
     nom_num_assoc,
     symmetric_num_num,
-    nan_strategy
+    nan_strategy,
 ):
     """
     Helper function of associations.
@@ -933,7 +939,9 @@ def _compute_associations(
     elif i == j:
         return (_I_EQ_J_OP, i, j)
     else:
-        if nan_strategy in [_DROP_SAMPLE_PAIRS, ]:
+        if nan_strategy in [
+            _DROP_SAMPLE_PAIRS,
+        ]:
             dataset_c_ij = dataset[[columns[i], columns[j]]].dropna(axis=0)
             c_i, c_j = dataset_c_ij[columns[i]], dataset_c_ij[columns[j]]
         else:
@@ -942,30 +950,27 @@ def _compute_associations(
             if columns[j] in nominal_columns:
                 if callable(nom_nom_assoc):
                     if symmetric_nom_nom:
-                        cell = nom_nom_assoc(
-                            c_i, c_j
-                        )
+                        cell = nom_nom_assoc(c_i, c_j)
                         ij = cell
                         ji = cell
                     else:
-                        ij = nom_nom_assoc(
-                            c_i, c_j
-                        )
-                        ji = nom_nom_assoc(
-                            c_j, c_i
-                        )
+                        ij = nom_nom_assoc(c_i, c_j)
+                        ji = nom_nom_assoc(c_j, c_i)
                 elif nom_nom_assoc == "theil":
                     ij = theils_u(
-                        c_i, c_j,
+                        c_i,
+                        c_j,
                         nan_strategy=_SKIP,
                     )
                     ji = theils_u(
-                        c_j, c_i,
+                        c_j,
+                        c_i,
                         nan_strategy=_SKIP,
                     )
                 elif nom_nom_assoc == "cramer":
                     cell = cramers_v(
-                        c_i, c_j,
+                        c_i,
+                        c_j,
                         bias_correction=cramers_v_bias_correction,
                         nan_strategy=_SKIP,
                     )
@@ -977,45 +982,29 @@ def _compute_associations(
                     )
             else:
                 ij, ji = _nom_num(
-                    nom_column=c_i,
-                    num_column=c_j,
-                    nom_num_assoc=nom_num_assoc
+                    nom_column=c_i, num_column=c_j, nom_num_assoc=nom_num_assoc
                 )
         else:
             if columns[j] in nominal_columns:
                 ij, ji = _nom_num(
-                    nom_column=c_j,
-                    num_column=c_i,
-                    nom_num_assoc=nom_num_assoc
+                    nom_column=c_j, num_column=c_i, nom_num_assoc=nom_num_assoc
                 )
             else:
                 if callable(num_num_assoc):
                     if symmetric_num_num:
-                        cell = num_num_assoc(
-                            c_i, c_j
-                        )
+                        cell = num_num_assoc(c_i, c_j)
                         ij = cell
                         ji = cell
                     else:
-                        ij = num_num_assoc(
-                            c_i, c_j
-                        )
-                        ji = num_num_assoc(
-                            c_j, c_i
-                        )
+                        ij = num_num_assoc(c_i, c_j)
+                        ji = num_num_assoc(c_j, c_i)
                 else:
                     if num_num_assoc == "pearson":
-                        cell, _ = ss.pearsonr(
-                            c_i, c_j
-                        )
+                        cell, _ = ss.pearsonr(c_i, c_j)
                     elif num_num_assoc == "spearman":
-                        cell, _ = ss.spearmanr(
-                            c_i, c_j
-                        )
+                        cell, _ = ss.spearmanr(c_i, c_j)
                     elif num_num_assoc == "kendall":
-                        cell, _ = ss.kendalltau(
-                            c_i, c_j
-                        )
+                        cell, _ = ss.kendalltau(c_i, c_j)
                     else:
                         raise ValueError(
                             f"{num_num_assoc} is not a supported numerical-numerical association"
