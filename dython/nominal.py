@@ -31,6 +31,7 @@ _REPLACE = "replace"
 _DROP = "drop"
 _DROP_SAMPLES = "drop_samples"
 _DROP_FEATURES = "drop_features"
+_DROP_SAMPLE_PAIRS = 'drop_sample_pairs'
 _SKIP = "skip"
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
@@ -440,8 +441,10 @@ def associations(
     nan_strategy : string, default = 'replace'
         How to handle missing values: can be either 'drop_samples' to remove
         samples with missing values, 'drop_features' to remove features
-        (columns) with missing values, or 'replace' to replace all missing
-        values with the nan_replace_value. Missing values are None and np.nan.
+        (columns) with missing values, 'replace' to replace all missing
+        values with the nan_replace_value, or 'drop_sample_pairs' to drop each
+        pair of missing observables separately before calculating the corresponding coefficient.
+        Missing values are None and np.nan.
     nan_replace_value : any, default = 0.0
         The value used to replace missing values with. Only applicable when
         nan_strategy is set to 'replace'
@@ -520,6 +523,10 @@ def associations(
         dataset.dropna(axis=0, inplace=True)
     elif nan_strategy == _DROP_FEATURES:
         dataset.dropna(axis=1, inplace=True)
+    elif nan_strategy == _DROP_SAMPLE_PAIRS:
+        pass  # will be handled pair-by-pair during calculations
+    else:
+        raise ValueError("Argument nan_stragety [{:s}] is not a valid choice.".format(nan_strategy))
 
     # identifying categorical columns
     columns = dataset.columns
@@ -637,6 +644,7 @@ def associations(
                 repeat(num_num_assoc),
                 repeat(nom_num_assoc),
                 repeat(symmetric_num_num),
+                repeat(nan_strategy),
                 chunksize=max(
                     1, len(list_of_indices_pairs_lists) // max_cpu_cores
                 ),
@@ -659,6 +667,7 @@ def associations(
                         num_num_assoc,
                         nom_num_assoc,
                         symmetric_num_num,
+                        nan_strategy,
                     )
                 )
 
@@ -820,23 +829,23 @@ def _handling_category_for_nan_imputation(dataset, nan_replace_value):
     return dataset
 
 
-def _nom_num(nom_column, num_column, dataset, nom_num_assoc, nom_nom_assoc):
+def _nom_num(nom_column, num_column, nom_num_assoc):
     """
     Computes the nominal-numerical association value.
     """
     if callable(nom_num_assoc):
-        cell = nom_num_assoc(dataset[nom_column], dataset[num_column])
+        cell = nom_num_assoc(nom_column, num_column)
         ij = cell
         ji = cell
     elif nom_num_assoc == "correlation_ratio":
         cell = correlation_ratio(
-            dataset[nom_column], dataset[num_column], nan_strategy=_SKIP
+            nom_column, num_column, nan_strategy=_SKIP
         )
         ij = cell
         ji = cell
     else:
         raise ValueError(
-            f"{nom_nom_assoc} is not a supported nominal-numerical association"
+            f"{nom_num_assoc} is not a supported nominal-numerical association"
         )
     return ij, ji
 
@@ -853,6 +862,7 @@ def _compute_associations(
     num_num_assoc,
     nom_num_assoc,
     symmetric_num_num,
+    nan_strategy
 ):
     """
     Helper function of associations.
@@ -894,6 +904,8 @@ def _compute_associations(
     cramers_v_bias_correction : Boolean, default = True
         Use bias correction for Cramer's V from Bergsma and Wicher,
         Journal of the Korean Statistical Society 42 (2013): 323-328.
+    nan_strategy: string
+        The provided nan_strategy to associations
 
     Returns:
     --------
@@ -921,37 +933,39 @@ def _compute_associations(
     elif i == j:
         return (_I_EQ_J_OP, i, j)
     else:
+        if nan_strategy in [_DROP_SAMPLE_PAIRS, ]:
+            dataset_c_ij = dataset[[columns[i], columns[j]]].dropna(axis=0)
+            c_i, c_j = dataset_c_ij[columns[i]], dataset_c_ij[columns[j]]
+        else:
+            c_i, c_j = dataset[columns[i]], dataset[columns[j]]
         if columns[i] in nominal_columns:
             if columns[j] in nominal_columns:
                 if callable(nom_nom_assoc):
                     if symmetric_nom_nom:
                         cell = nom_nom_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ij = cell
                         ji = cell
                     else:
                         ij = nom_nom_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ji = nom_nom_assoc(
-                            dataset[columns[j]], dataset[columns[i]]
+                            c_j, c_i
                         )
                 elif nom_nom_assoc == "theil":
                     ij = theils_u(
-                        dataset[columns[i]],
-                        dataset[columns[j]],
+                        c_i, c_j,
                         nan_strategy=_SKIP,
                     )
                     ji = theils_u(
-                        dataset[columns[j]],
-                        dataset[columns[i]],
+                        c_j, c_i,
                         nan_strategy=_SKIP,
                     )
                 elif nom_nom_assoc == "cramer":
                     cell = cramers_v(
-                        dataset[columns[i]],
-                        dataset[columns[j]],
+                        c_i, c_j,
                         bias_correction=cramers_v_bias_correction,
                         nan_strategy=_SKIP,
                     )
@@ -963,48 +977,44 @@ def _compute_associations(
                     )
             else:
                 ij, ji = _nom_num(
-                    nom_column=columns[i],
-                    num_column=columns[j],
-                    dataset=dataset,
-                    nom_num_assoc=nom_num_assoc,
-                    nom_nom_assoc=nom_nom_assoc,
+                    nom_column=c_i,
+                    num_column=c_j,
+                    nom_num_assoc=nom_num_assoc
                 )
         else:
             if columns[j] in nominal_columns:
                 ij, ji = _nom_num(
-                    nom_column=columns[j],
-                    num_column=columns[i],
-                    dataset=dataset,
-                    nom_num_assoc=nom_num_assoc,
-                    nom_nom_assoc=nom_nom_assoc,
+                    nom_column=c_j,
+                    num_column=c_i,
+                    nom_num_assoc=nom_num_assoc
                 )
             else:
                 if callable(num_num_assoc):
                     if symmetric_num_num:
                         cell = num_num_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ij = cell
                         ji = cell
                     else:
                         ij = num_num_assoc(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                         ji = num_num_assoc(
-                            dataset[columns[j]], dataset[columns[i]]
+                            c_j, c_i
                         )
                 else:
                     if num_num_assoc == "pearson":
                         cell, _ = ss.pearsonr(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                     elif num_num_assoc == "spearman":
                         cell, _ = ss.spearmanr(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                     elif num_num_assoc == "kendall":
                         cell, _ = ss.kendalltau(
-                            dataset[columns[i]], dataset[columns[j]]
+                            c_i, c_j
                         )
                     else:
                         raise ValueError(
