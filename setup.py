@@ -21,7 +21,9 @@ INSTALL_REQUIRES = [s.strip() for s in requirements.split("\n")]
 dev_requirements = (HERE / "dev_requirements.txt").read_text(encoding="utf8")
 EXTRAS_REQUIRE = {"dev": [s.strip() for s in dev_requirements.split("\n")]}
 
-CLASSIFIERS = [f"Programming Language :: Python :: 3.{str(v)}" for v in range(7, 12)]
+CLASSIFIERS = [
+    f"Programming Language :: Python :: 3.{str(v)}" for v in range(7, 12)
+]
 PYTHON_REQUIRES = ">=3.7"
 
 setup(
