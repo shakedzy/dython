@@ -24,6 +24,7 @@ __all__ = [
     "identify_nominal_columns",
     "identify_numeric_columns",
     "numerical_encoding",
+    "replot_last_associations",
     "theils_u",
 ]
 
