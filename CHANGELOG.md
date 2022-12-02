@@ -2,7 +2,7 @@
 
 ## 0.7.3 (_dev_)
 * _Dython now officialy supports only Python 3.7 or above_ (by-product of issue [#137](https://github.com/shakedzy/dython/issues/137))
-* Adding option to drop NaN values in each pair of columns independently in `associations` (issue [#130](https://github.com/shakedzy/dython/issues/130), by [@matbb](https://github.com/matbb))
+* Adding option to drop NaN values in each pair of columns independently in `associations` (issue [#130](https://github.com/shakedzy/dython/issues/130), by **[@matbb](https://github.com/matbb)**)
 * Fixing issues [#139](https://github.com/shakedzy/dython/issues/139) and [#140](https://github.com/shakedzy/dython/issues/140) (by **[@enrir](https://github.com/enrir)**)
 
 ## 0.7.2
