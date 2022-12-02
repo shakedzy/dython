@@ -741,16 +741,43 @@ def associations(
         display_columns = [mark(col) for col in display_columns]
 
     if not compute_only:
-        for v in ['corr', 'inf_nan', 'single_value_columns_set', 'display_rows', 'display_columns',
-                  'displayed_features_set', 'nominal_columns',
-                  'figsize', 'vmin', 'vmax', 'cbar', 'cmap', 'sv_color', 'fmt', 'annot', 'title']:
+        for v in [
+            "corr",
+            "inf_nan",
+            "single_value_columns_set",
+            "display_rows",
+            "display_columns",
+            "displayed_features_set",
+            "nominal_columns",
+            "figsize",
+            "vmin",
+            "vmax",
+            "cbar",
+            "cmap",
+            "sv_color",
+            "fmt",
+            "annot",
+            "title",
+        ]:
             _ASSOC_PLOT_PARAMS[v] = locals()[v]
         ax = _plot_associations(ax, filename, plot, **_ASSOC_PLOT_PARAMS)
     return {"corr": corr, "ax": ax}
 
 
-def replot_last_associations(ax=None, figsize=None, annot=None, fmt=None, cmap=None, sv_color=None, cbar=None,
-                             vmax=None, vmin=None, plot=True, title=None, filename=None):
+def replot_last_associations(
+    ax=None,
+    figsize=None,
+    annot=None,
+    fmt=None,
+    cmap=None,
+    sv_color=None,
+    cbar=None,
+    vmax=None,
+    vmin=None,
+    plot=True,
+    title=None,
+    filename=None,
+):
     """
     Re-plot last computed associations heat-map. This method performs no new computations, but only allows
     to change the visual output of the last computed heat-map.
@@ -792,19 +819,36 @@ def replot_last_associations(ax=None, figsize=None, annot=None, fmt=None, cmap=N
     A Matplotlib `Axe`
     """
     new_vars = locals()
-    new_vars.pop('filename')
-    new_vars.pop('ax')
-    new_vars.pop('plot')
+    new_vars.pop("filename")
+    new_vars.pop("ax")
+    new_vars.pop("plot")
     plot_vars = _ASSOC_PLOT_PARAMS.copy()
     for v in new_vars:
         plot_vars[v] = new_vars[v] or plot_vars[v]
     return _plot_associations(ax, filename, plot, **plot_vars)
 
 
-def _plot_associations(ax, filename, plot,
-                       corr, inf_nan, single_value_columns_set, display_rows, display_columns,
-                       displayed_features_set, nominal_columns,
-                       figsize, vmin, vmax, cbar, cmap, sv_color, fmt, annot, title):
+def _plot_associations(
+    ax,
+    filename,
+    plot,
+    corr,
+    inf_nan,
+    single_value_columns_set,
+    display_rows,
+    display_columns,
+    displayed_features_set,
+    nominal_columns,
+    figsize,
+    vmin,
+    vmax,
+    cbar,
+    cmap,
+    sv_color,
+    fmt,
+    annot,
+    title,
+):
     if ax is None:
         plt.figure(figsize=figsize)
     if inf_nan.any(axis=None):
@@ -855,9 +899,7 @@ def _plot_associations(ax, filename, plot,
         lambda x: not bool(x)
     )(sv_mask)
     vmin = vmin or (
-        -1.0
-        if len(displayed_features_set) - len(nominal_columns) >= 2
-        else 0.0
+        -1.0 if len(displayed_features_set) - len(nominal_columns) >= 2 else 0.0
     )
     ax = sns.heatmap(
         corr,
