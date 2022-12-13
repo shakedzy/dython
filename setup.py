@@ -22,9 +22,9 @@ dev_requirements = (HERE / "dev_requirements.txt").read_text(encoding="utf8")
 EXTRAS_REQUIRE = {"dev": [s.strip() for s in dev_requirements.split("\n")]}
 
 CLASSIFIERS = [
-    f"Programming Language :: Python :: 3.{str(v)}" for v in range(7, 12)
+    f"Programming Language :: Python :: 3.{str(v)}" for v in range(8, 12)
 ]
-PYTHON_REQUIRES = ">=3.7"
+PYTHON_REQUIRES = ">=3.8"
 
 setup(
     name=PACKAGE_NAME,
