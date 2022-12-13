@@ -552,6 +552,95 @@ present in the data-set
 
 __________________
 
+#### `replot_last_associations`
+
+`replot_last_associations(ax=None, figsize=None, annot=None, fmt=None, cmap=None, sv_color=None, cbar=None, vmax=None, vmin=None, plot=True, title=None, filename=None)`
+
+Re-plot last computed associations heat-map. This method performs no new computations, but only allows
+to change the visual output of the last computed heat-map.
+
+- **`ax`** : matplotlib `Axe` 
+
+    _Default: `None`_
+
+    Matplotlib Axis on which the heat-map will be plotted
+
+- **`figsize`** : `(int,int)` or `None`
+
+    _Default: `None`_
+
+    A Matplotlib figure-size tuple. If `None`, uses the last `associations` call value.
+    Only used if `ax=None`.
+
+- **`annot`** : `Boolean` or `None`
+
+    _Default: `None`_
+
+    Plot number annotations on the heat-map. If `None`, uses the last `associations` call value.
+
+- **`fmt`** : `string`
+
+    _Default: `None`_
+
+    String formatting of annotations. If `None`, uses the last `associations` call value.
+
+- **`cmap`** : Matplotlib `colormap` or `None`
+
+    _Default: `None`_
+
+    A colormap to be used for the heat-map. If `None`, uses the last `associations` call value.
+
+- **`sv_color`** : `string`
+
+    _Default: `None`_
+
+    A Matplotlib color. The color to be used when displaying single-value.
+    If `None`, uses the last `associations` call value.
+
+- **`cbar`** : `Boolean `or `None`
+
+    _Default: `None`_
+
+    Display heat-map's color-bar. If `None`, uses the last `associations` call value.
+
+- **`vmax`** : `float` or `None`
+
+    _Default: `None`_
+
+    Set heat-map `vmax` option. If `None`, uses the last `associations` call value.
+
+- **`vmin`** : `float` or `None`
+
+    _Default: `None`_
+
+    Set heat-map `vmin` option. If `None`, uses the last `associations` call value.
+
+- **`plot`** : `Boolean`
+
+    _Default: `True`_
+
+    Plot a heat-map of the correlation matrix. If False, plotting still
+    happens, but the heat-map will not be displayed.
+
+- **`title`** : `string` or `None`
+
+    _Default: `None`_
+
+    Plotted graph title. If `None`, uses the last `associations` call value.
+
+- **`filename`** : `string` or `None`
+
+    _Default: `None`_
+
+    If not `None`, plot will be saved to the given file name. Note: in order to avoid accidental file
+    overwrites, the last `associations` call value is never used, and when filename is set to None,
+    no writing to file occurs.
+
+    **Returns:** A Matplotlib `Axe`
+    """
+
+__________________
+
 #### `theils_u`
 
 `theils_u(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)`
