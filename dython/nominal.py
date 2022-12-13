@@ -799,11 +799,11 @@ def replot_last_associations(
     sv_color : string, default = None
         A Matplotlib color. The color to be used when displaying single-value.
         If `None`, uses the last `associations` call value.
-    cbar: Boolean or None, default = None
+    cbar : Boolean or None, default = None
         Display heat-map's color-bar. If `None`, uses the last `associations` call value.
-    vmax: float or None, default = None
+    vmax : float or None, default = None
         Set heat-map vmax option. If `None`, uses the last `associations` call value.
-    vmin: float or None, default = None
+    vmin : float or None, default = None
         Set heat-map vmin option. If `None`, uses the last `associations` call value.
     plot : Boolean, default = True
         Plot a heat-map of the correlation matrix. If False, plotting still
