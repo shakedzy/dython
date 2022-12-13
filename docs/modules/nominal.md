@@ -636,8 +636,7 @@ to change the visual output of the last computed heat-map.
     overwrites, the last `associations` call value is never used, and when filename is set to None,
     no writing to file occurs.
 
-    **Returns:** A Matplotlib `Axe`
-    """
+**Returns:** A Matplotlib `Axe`
 
 __________________
 
