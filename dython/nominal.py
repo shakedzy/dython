@@ -819,6 +819,8 @@ def replot_last_associations(
     --------
     A Matplotlib `Axe`
     """
+    if not bool(_ASSOC_PLOT_PARAMS):
+        raise RuntimeError("No associations found to replot.")
     new_vars = locals()
     new_vars.pop("filename")
     new_vars.pop("ax")
