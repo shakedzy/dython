@@ -24,6 +24,7 @@ __all__ = [
     "identify_nominal_columns",
     "identify_numeric_columns",
     "numerical_encoding",
+    "replot_last_associations",
     "theils_u",
 ]
 
@@ -35,6 +36,8 @@ _DROP_SAMPLE_PAIRS = "drop_sample_pairs"
 _SKIP = "skip"
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
+
+_ASSOC_PLOT_PARAMS = dict()
 
 _NO_OP = "no-op"
 _SINGLE_VALUE_COLUMN_OP = "single-value-column-op"
@@ -472,7 +475,7 @@ def associations(
         between 0 and -1, depending on the types of associations used (-1 if Pearson's R
         is used, 0 otherwise)
     plot : Boolean, default = True
-        Plot a heat-map of the correlation matrix. If false, the all axes and plotting still
+        Plot a heat-map of the correlation matrix. If False, plotting still
         happen, but the heat-map will not be displayed.
     compute_only : Boolean, default = False
         Use this flag only if you have no need of the plotting at all. This skips the entire
@@ -739,80 +742,187 @@ def associations(
         display_columns = [mark(col) for col in display_columns]
 
     if not compute_only:
-        if ax is None:
-            plt.figure(figsize=figsize)
-        if inf_nan.any(axis=None):
-            inf_nan_mask = np.vectorize(lambda x: not bool(x))(inf_nan.values)
-            ax = sns.heatmap(
-                inf_nan_mask,
-                cmap=["white"],
-                annot=inf_nan if annot else None,
-                fmt="",
-                center=0,
-                square=True,
-                ax=ax,
-                mask=inf_nan_mask,
-                cbar=False,
-            )
-        else:
-            inf_nan_mask = np.ones_like(corr)
-        if len(single_value_columns_set) > 0:
-            sv = pd.DataFrame(
-                data=np.zeros_like(corr), columns=corr.columns, index=corr.index
-            )
-            for c in single_value_columns_set:
-                if c in display_rows and c in display_columns:
-                    sv.loc[:, c] = " "
-                    sv.loc[c, :] = " "
-                    sv.loc[c, c] = "SV"
-                elif c in display_rows:
-                    sv.loc[c, :] = " "
-                    sv.loc[c, sv.columns[0]] = "SV"
-                else:  # c in display_columns
-                    sv.loc[:, c] = " "
-                    sv.loc[sv.index[-1], c] = "SV"
-            sv_mask = np.vectorize(lambda x: not bool(x))(sv.values)
-            ax = sns.heatmap(
-                sv_mask,
-                cmap=[sv_color],
-                annot=sv if annot else None,
-                fmt="",
-                center=0,
-                square=True,
-                ax=ax,
-                mask=sv_mask,
-                cbar=False,
-            )
-        else:
-            sv_mask = np.ones_like(corr)
-        mask = np.vectorize(lambda x: not bool(x))(inf_nan_mask) + np.vectorize(
-            lambda x: not bool(x)
-        )(sv_mask)
-        vmin = vmin or (
-            -1.0
-            if len(displayed_features_set) - len(nominal_columns) >= 2
-            else 0.0
-        )
-        ax = sns.heatmap(
-            corr,
-            cmap=cmap,
-            annot=annot,
-            fmt=fmt,
-            center=0,
-            vmax=vmax,
-            vmin=vmin,
-            square=True,
-            mask=mask,
-            ax=ax,
-            cbar=cbar,
-        )
-        plt.title(title)
-        if filename:
-            plt.savefig(filename)
-        if plot:
-            plt.show()
-
+        for v in [
+            "corr",
+            "inf_nan",
+            "single_value_columns_set",
+            "display_rows",
+            "display_columns",
+            "displayed_features_set",
+            "nominal_columns",
+            "figsize",
+            "vmin",
+            "vmax",
+            "cbar",
+            "cmap",
+            "sv_color",
+            "fmt",
+            "annot",
+            "title",
+        ]:
+            _ASSOC_PLOT_PARAMS[v] = locals()[v]
+        ax = _plot_associations(ax, filename, plot, **_ASSOC_PLOT_PARAMS)
     return {"corr": corr, "ax": ax}
+
+
+def replot_last_associations(
+    ax=None,
+    figsize=None,
+    annot=None,
+    fmt=None,
+    cmap=None,
+    sv_color=None,
+    cbar=None,
+    vmax=None,
+    vmin=None,
+    plot=True,
+    title=None,
+    filename=None,
+):
+    """
+    Re-plot last computed associations heat-map. This method performs no new computations, but only allows
+    to change the visual output of the last computed heat-map.
+
+    Parameters:
+    -----------
+    ax : matplotlib ax, default = None
+        Matplotlib Axis on which the heat-map will be plotted
+    figsize : (int,int) or None, default = None
+        A Matplotlib figure-size tuple. If `None`, uses the last `associations` call value.
+        Only used if `ax=None`.
+    annot : Boolean or None, default = None
+        Plot number annotations on the heat-map. If `None`, uses the last `associations` call value.
+    fmt : string, default = None
+        String formatting of annotations. If `None`, uses the last `associations` call value.
+    cmap : Matplotlib colormap or None, default = None
+        A colormap to be used for the heat-map. If `None`, uses the last `associations` call value.
+    sv_color : string, default = None
+        A Matplotlib color. The color to be used when displaying single-value.
+        If `None`, uses the last `associations` call value.
+    cbar : Boolean or None, default = None
+        Display heat-map's color-bar. If `None`, uses the last `associations` call value.
+    vmax : float or None, default = None
+        Set heat-map vmax option. If `None`, uses the last `associations` call value.
+    vmin : float or None, default = None
+        Set heat-map vmin option. If `None`, uses the last `associations` call value.
+    plot : Boolean, default = True
+        Plot a heat-map of the correlation matrix. If False, plotting still
+        happens, but the heat-map will not be displayed.
+    title : string or None, default = None
+        Plotted graph title. If `None`, uses the last `associations` call value.
+    filename : string or None, default = None
+        If not None, plot will be saved to the given file name. Note: in order to avoid accidental file
+        overwrites, the last `associations` call value is never used, and when filename is set to None,
+        no writing to file occurs.
+
+    Returns:
+    --------
+    A Matplotlib `Axe`
+    """
+    if not bool(_ASSOC_PLOT_PARAMS):
+        raise RuntimeError("No associations found to replot.")
+    new_vars = locals()
+    new_vars.pop("filename")
+    new_vars.pop("ax")
+    new_vars.pop("plot")
+    plot_vars = _ASSOC_PLOT_PARAMS.copy()
+    for v in new_vars:
+        plot_vars[v] = new_vars[v] or plot_vars[v]
+    return _plot_associations(ax, filename, plot, **plot_vars)
+
+
+def _plot_associations(
+    ax,
+    filename,
+    plot,
+    corr,
+    inf_nan,
+    single_value_columns_set,
+    display_rows,
+    display_columns,
+    displayed_features_set,
+    nominal_columns,
+    figsize,
+    vmin,
+    vmax,
+    cbar,
+    cmap,
+    sv_color,
+    fmt,
+    annot,
+    title,
+):
+    if ax is None:
+        plt.figure(figsize=figsize)
+    if inf_nan.any(axis=None):
+        inf_nan_mask = np.vectorize(lambda x: not bool(x))(inf_nan.values)
+        ax = sns.heatmap(
+            inf_nan_mask,
+            cmap=["white"],
+            annot=inf_nan if annot else None,
+            fmt="",
+            center=0,
+            square=True,
+            ax=ax,
+            mask=inf_nan_mask,
+            cbar=False,
+        )
+    else:
+        inf_nan_mask = np.ones_like(corr)
+    if len(single_value_columns_set) > 0:
+        sv = pd.DataFrame(
+            data=np.zeros_like(corr), columns=corr.columns, index=corr.index
+        )
+        for c in single_value_columns_set:
+            if c in display_rows and c in display_columns:
+                sv.loc[:, c] = " "
+                sv.loc[c, :] = " "
+                sv.loc[c, c] = "SV"
+            elif c in display_rows:
+                sv.loc[c, :] = " "
+                sv.loc[c, sv.columns[0]] = "SV"
+            else:  # c in display_columns
+                sv.loc[:, c] = " "
+                sv.loc[sv.index[-1], c] = "SV"
+        sv_mask = np.vectorize(lambda x: not bool(x))(sv.values)
+        ax = sns.heatmap(
+            sv_mask,
+            cmap=[sv_color],
+            annot=sv if annot else None,
+            fmt="",
+            center=0,
+            square=True,
+            ax=ax,
+            mask=sv_mask,
+            cbar=False,
+        )
+    else:
+        sv_mask = np.ones_like(corr)
+    mask = np.vectorize(lambda x: not bool(x))(inf_nan_mask) + np.vectorize(
+        lambda x: not bool(x)
+    )(sv_mask)
+    vmin = vmin or (
+        -1.0 if len(displayed_features_set) - len(nominal_columns) >= 2 else 0.0
+    )
+    ax = sns.heatmap(
+        corr,
+        cmap=cmap,
+        annot=annot,
+        fmt=fmt,
+        center=0,
+        vmax=vmax,
+        vmin=vmin,
+        square=True,
+        mask=mask,
+        ax=ax,
+        cbar=cbar,
+    )
+    plt.title(title)
+    if filename:
+        plt.savefig(filename)
+    if plot:
+        plt.show()
+    return ax
 
 
 def _handling_category_for_nan_imputation(dataset, nan_replace_value):
