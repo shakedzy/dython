@@ -10,13 +10,15 @@ theme:
   name: material
   custom_dir: docs/overrides
   palette:
-    - scheme: default
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       primary: light blue
       accent: blue
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
-    - scheme: slate
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       primary: teal
       accent: cyan
       toggle:
