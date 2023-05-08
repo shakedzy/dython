@@ -522,7 +522,6 @@ def associations(
 
     # handling NaN values in data
     if nan_strategy == _REPLACE:
-
         # handling pandas categorical
         dataset = _handling_category_for_nan_imputation(
             dataset, nan_replace_value
