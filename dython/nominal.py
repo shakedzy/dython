@@ -12,7 +12,7 @@ import scipy.stats as ss
 import seaborn as sns
 from psutil import cpu_count
 
-from ._private import convert, remove_incomplete_samples, replace_nan_with_value
+from ._private import convert, remove_incomplete_samples, replace_nan_with_value, plot_or_not
 from .data_utils import identify_columns_by_type
 
 __all__ = [
@@ -920,8 +920,7 @@ def _plot_associations(
     plt.title(title)
     if filename:
         plt.savefig(filename)
-    if plot:
-        plt.show()
+    plot_or_not(plot)
     return ax
 
 

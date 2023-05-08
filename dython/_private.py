@@ -1,6 +1,24 @@
+import sys
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
+IS_JUPYTER = None
+
+
+def set_is_jupyter(force_to=None):
+    global IS_JUPYTER
+    if force_to is not None:
+        IS_JUPYTER = force_to
+    else:
+        IS_JUPYTER = "ipykernel_launcher.py" in sys.argv[0]
+
+
+def plot_or_not(plot):
+    if plot:
+        plt.show()
+    elif not plot and IS_JUPYTER:
+        plt.close()
 
 def convert(data, to, copy=True):
     converted = None

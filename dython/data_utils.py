@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from ._private import convert
+from ._private import convert, plot_or_not
 
 
 __all__ = [
@@ -113,8 +113,7 @@ def split_hist(
         plt.title(title)
     plt.ylabel(ylabel)
     ax = plt.gca()
-    if plot:
-        plt.show()
+    plot_or_not(plot)
     return ax
 
 
