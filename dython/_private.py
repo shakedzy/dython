@@ -20,6 +20,7 @@ def plot_or_not(plot):
     elif not plot and IS_JUPYTER:
         plt.close()
 
+
 def convert(data, to, copy=True):
     converted = None
     if to == "array":

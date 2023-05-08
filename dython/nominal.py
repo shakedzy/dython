@@ -12,7 +12,12 @@ import scipy.stats as ss
 import seaborn as sns
 from psutil import cpu_count
 
-from ._private import convert, remove_incomplete_samples, replace_nan_with_value, plot_or_not
+from ._private import (
+    convert,
+    remove_incomplete_samples,
+    replace_nan_with_value,
+    plot_or_not,
+)
 from .data_utils import identify_columns_by_type
 
 __all__ = [
