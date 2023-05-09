@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.7.4 _(dev)_
+## 0.7.4
 * Handling running plotting functions with `plot=False` in Jupyter and truly avoid plotting (issue [#147](https://github.com/shakedzy/dython/issues/147))
 
 ## 0.7.3
