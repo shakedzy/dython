@@ -1,4 +1,5 @@
 from . import nominal, model_utils, sampling, data_utils
+from ._private import set_is_jupyter
 
 
 def _get_version_from_setuptools():
@@ -9,3 +10,4 @@ def _get_version_from_setuptools():
 
 __all__ = ["__version__"]
 __version__ = _get_version_from_setuptools()
+set_is_jupyter()

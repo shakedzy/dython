@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, precision_recall_curve, auc
 from scikitplot.helpers import binary_ks_curve
-from ._private import convert
+from ._private import convert, plot_or_not
 
 __all__ = ["random_forest_feature_importance", "metric_graph", "ks_abc"]
 
@@ -28,8 +28,7 @@ def _display_metric_plot(
         ax.legend(loc=legend)
     if filename:
         plt.savefig(filename)
-    if plot:
-        plt.show()
+    plot_or_not(plot)
     return ax
 
 
@@ -516,8 +515,7 @@ def ks_abc(
         ax.legend(loc=legend)
     if filename:
         plt.savefig(filename)
-    if plot:
-        plt.show()
+    plot_or_not(plot)
     return {
         "abc": abc,
         "ks_stat": ks_statistic,

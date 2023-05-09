@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.4
+* Handling running plotting functions with `plot=False` in Jupyter and truly avoid plotting (issue [#147](https://github.com/shakedzy/dython/issues/147))
+
 ## 0.7.3
 * _Dython now officially supports only Python 3.8 or above_ (by-product of issue [#137](https://github.com/shakedzy/dython/issues/137))
 * Added `nominal.replot_last_associations`: a new method to replot `nominal.associations` heat-maps (issue [#136](https://github.com/shakedzy/dython/issues/136))
