@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
+from typing import Optional, Tuple, List, Any, Union
 import matplotlib.pyplot as plt
+from numpy.typing import NDArray, ArrayLike
 from ._private import convert, plot_or_not
 
 
@@ -12,7 +14,10 @@ __all__ = [
 ]
 
 
-def one_hot_encode(arr, classes=None):
+def one_hot_encode(
+        arr: ArrayLike[Union[int, float, str]],
+        classes: Optional[int] = None
+) -> NDArray:
     """
     One-hot encode a 1D array.
     Based on this StackOverflow answer: https://stackoverflow.com/a/29831596/5863503
@@ -49,17 +54,17 @@ def one_hot_encode(arr, classes=None):
 
 
 def split_hist(
-    dataset,
-    values,
-    split_by,
-    title="",
-    xlabel="",
-    ylabel=None,
-    figsize=None,
-    legend="best",
-    plot=True,
-    **hist_kwargs,
-):
+        dataset: pd.DataFrame,
+        values: str,
+        split_by: str,
+        title: Optional[str] = "",
+        xlabel: Optional[str] = "",
+        ylabel: Optional[str] = None,
+        figsize: Optional[Tuple[int, int]] = None,
+        legend: Optional[str] = "best",
+        plot: bool = True,
+        **hist_kwargs,
+) -> plt.Axes:
     """
     Plot a histogram of values from a given dataset, split by the values of a chosen column
 
@@ -88,7 +93,7 @@ def split_hist(
 
     Returns:
     --------
-    A Matplotlib `Axe`
+    A Matplotlib `Axes`
 
     Example:
     --------
@@ -117,7 +122,10 @@ def split_hist(
     return ax
 
 
-def identify_columns_by_type(dataset, include):
+def identify_columns_by_type(
+        dataset: ArrayLike[Any],
+        include: List[str]
+) -> List[Any]:
     """
     Given a dataset, identify columns of the types requested.
 
@@ -143,7 +151,7 @@ def identify_columns_by_type(dataset, include):
     return columns
 
 
-def identify_columns_with_na(dataset):
+def identify_columns_with_na(dataset: ArrayLike[Any]) -> pd.DataFrame:
     """
     Return columns names having NA values, sorted in descending order by their number of NAs
 

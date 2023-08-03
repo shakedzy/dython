@@ -2,11 +2,14 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from numpy.typing import ArrayLike, NDArray
+from typing import Optional, Any, Tuple
 
-IS_JUPYTER = None
+
+IS_JUPYTER: bool = False
 
 
-def set_is_jupyter(force_to=None):
+def set_is_jupyter(force_to: Optional[bool] = None) -> None:
     global IS_JUPYTER
     if force_to is not None:
         IS_JUPYTER = force_to
@@ -14,14 +17,19 @@ def set_is_jupyter(force_to=None):
         IS_JUPYTER = "ipykernel_launcher.py" in sys.argv[0]
 
 
-def plot_or_not(plot):
+def plot_or_not(plot: bool) -> None:
     if plot:
         plt.show()
     elif not plot and IS_JUPYTER:
         plt.close()
 
 
-def convert(data, to, copy=True):
+def convert(
+        data: ArrayLike[Any],
+        to: str,
+        copy: bool = True
+) -> ArrayLike:
+
     converted = None
     if to == "array":
         if isinstance(data, np.ndarray):
@@ -56,7 +64,11 @@ def convert(data, to, copy=True):
         return converted
 
 
-def remove_incomplete_samples(x, y):
+def remove_incomplete_samples(
+        x: ArrayLike[Any],
+        y: ArrayLike[Any]
+)-> ArrayLike:
+
     x = [v if v is not None else np.nan for v in x]
     y = [v if v is not None else np.nan for v in y]
     arr = np.array([x, y]).transpose()
@@ -67,7 +79,11 @@ def remove_incomplete_samples(x, y):
         return arr[0], arr[1]
 
 
-def replace_nan_with_value(x, y, value):
+def replace_nan_with_value(
+        x: ArrayLike[Any],
+        y: ArrayLike[Any],
+        value: Any
+) -> Tuple[NDArray, NDArray]:
     x = np.array(
         [v if v == v and v is not None else value for v in x]
     )  # NaN != NaN

@@ -3,7 +3,6 @@ import math
 import warnings
 from collections import Counter
 from itertools import repeat
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -11,6 +10,10 @@ import scipy.cluster.hierarchy as sch
 import scipy.stats as ss
 import seaborn as sns
 from psutil import cpu_count
+from typing import Union, Any, List, Optional, Callable, Tuple, Dict
+from numpy.typing import ArrayLike, NDArray
+from matplotlib.colors import Colormap
+
 
 from ._private import (
     convert,
@@ -50,7 +53,7 @@ _I_EQ_J_OP = "i-equal-j-op"
 _ASSOC_OP = "assoc-op"
 
 
-def _inf_nan_str(x):
+def _inf_nan_str(x: Union[int, float]) -> str:
     if np.isnan(x):
         return "NaN"
     elif abs(x) == np.inf:
@@ -60,12 +63,12 @@ def _inf_nan_str(x):
 
 
 def conditional_entropy(
-    x,
-    y,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
-    log_base: float = math.e,
-):
+        x: ArrayLike,
+        y: ArrayLike,
+        nan_strategy: str = _REPLACE,
+        nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
+        log_base: float = math.e,
+) -> float:
     """
     Calculates the conditional entropy of x given y: S(x|y)
 
@@ -107,12 +110,12 @@ def conditional_entropy(
 
 
 def cramers_v(
-    x,
-    y,
-    bias_correction=True,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
-):
+        x: ArrayLike[Union[int, float, str]],
+        y: ArrayLike[Union[int, float, str]],
+        bias_correction: bool = True,
+        nan_strategy: str = _REPLACE,
+        nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
+) -> float:
     """
     Calculates Cramer's V statistic for categorical-categorical association.
     This is a symmetric coefficient: V(x,y) = V(y,x)
@@ -176,8 +179,11 @@ def cramers_v(
 
 
 def theils_u(
-    x, y, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE
-):
+        x: ArrayLike[Union[int, float, str]],
+        y: ArrayLike[Union[int, float, str]],
+        nan_strategy: str = _REPLACE,
+        nan_replace_value: Any = _DEFAULT_REPLACE_VALUE
+) -> float:
     """
     Calculates Theil's U statistic (Uncertainty coefficient) for categorical-
     categorical association. This is the uncertainty of x given y: value is
@@ -231,11 +237,11 @@ def theils_u(
 
 
 def correlation_ratio(
-    categories,
-    measurements,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
-):
+        categories: ArrayLike[Union[int, float, str]],
+        measurements: ArrayLike[Union[int, float]],
+        nan_strategy: str = _REPLACE,
+        nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
+) -> float:
     """
     Calculates the Correlation Ratio (sometimes marked by the greek letter Eta)
     for categorical-continuous association.
@@ -304,7 +310,7 @@ def correlation_ratio(
             return eta
 
 
-def identify_nominal_columns(dataset):
+def identify_nominal_columns(dataset: ArrayLike[Any]) -> List[Any]:
     """
     Given a dataset, identify categorical columns.
 
@@ -326,7 +332,7 @@ def identify_nominal_columns(dataset):
     return identify_columns_by_type(dataset, include=["object", "category"])
 
 
-def identify_numeric_columns(dataset):
+def identify_numeric_columns(dataset: ArrayLike[Any]) -> List[Any]:
     """
     Given a dataset, identify numeric columns.
 
@@ -349,39 +355,39 @@ def identify_numeric_columns(dataset):
 
 
 def associations(
-    dataset,
-    nominal_columns="auto",
-    numerical_columns=None,
-    mark_columns=False,
-    nom_nom_assoc="cramer",
-    num_num_assoc="pearson",
-    nom_num_assoc="correlation_ratio",
-    symmetric_nom_nom=True,
-    symmetric_num_num=True,
-    display_rows="all",
-    display_columns="all",
-    hide_rows=None,
-    hide_columns=None,
-    cramers_v_bias_correction=True,
-    nan_strategy=_REPLACE,
-    nan_replace_value=_DEFAULT_REPLACE_VALUE,
-    ax=None,
-    figsize=None,
-    annot=True,
-    fmt=".2f",
-    cmap=None,
-    sv_color="silver",
-    cbar=True,
-    vmax=1.0,
-    vmin=None,
-    plot=True,
-    compute_only=False,
-    clustering=False,
-    title=None,
-    filename=None,
-    multiprocessing=False,
-    max_cpu_cores=None,
-):
+        dataset: Union[NDArray, pd.DataFrame],
+        nominal_columns: Union[ArrayLike, str] = "auto",
+        numerical_columns: Optional[Union[ArrayLike, str]] = None,
+        mark_columns: bool = False,
+        nom_nom_assoc: Union[str, Callable[[pd.Series, pd.Series], float]] = "cramer",
+        num_num_assoc: Union[str, Callable[[pd.Series, pd.Series], float]] = "pearson",
+        nom_num_assoc: Union[str, Callable[[pd.Series, pd.Series], float]] = "correlation_ratio",
+        symmetric_nom_nom: bool = True,
+        symmetric_num_num: bool = True,
+        display_rows: Union[str, List[str]] = "all",
+        display_columns: Union[str, List[str]] = "all",
+        hide_rows: Optional[Union[str, List[str]]] = None,
+        hide_columns: Optional[Union[str, List[str]]]=None,
+        cramers_v_bias_correction: bool = True,
+        nan_strategy: str = _REPLACE,
+        nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
+        ax: Optional[plt.Axes] = None,
+        figsize: Optional[Tuple[int, int]] = None,
+        annot: bool = True,
+        fmt: str = ".2f",
+        cmap: Optional[Colormap] = None,
+        sv_color: str = "silver",
+        cbar: bool = True,
+        vmax: float = 1.0,
+        vmin: Optional[float] = None,
+        plot: bool = True,
+        compute_only: bool = False,
+        clustering: bool = False,
+        title: Optional[str] = None,
+        filename: Optional[str] = None,
+        multiprocessing: bool = False,
+        max_cpu_cores: Optional[int] = None,
+) -> Dict[str, Union[pd.DataFrame, plt.Axes]]:
     """
     Calculate the correlation/strength-of-association of features in data-set
     with both categorical and continuous features using:
@@ -770,19 +776,19 @@ def associations(
 
 
 def replot_last_associations(
-    ax=None,
-    figsize=None,
-    annot=None,
-    fmt=None,
-    cmap=None,
-    sv_color=None,
-    cbar=None,
-    vmax=None,
-    vmin=None,
-    plot=True,
-    title=None,
-    filename=None,
-):
+        ax: Optional[plt.Axes] = None,
+        figsize: Optional[Tuple[int, int]] = None,
+        annot: Optional[bool] = None,
+        fmt: Optional[str] = None,
+        cmap: Optional[Colormap] = None,
+        sv_color: Optional[str] = None,
+        cbar: Optional[bool] = None,
+        vmax: Optional[float] = None,
+        vmin: Optional[float] = None,
+        plot: Optional[bool] = True,
+        title: Optional[str] = None,
+        filename: Optional[str] = None,
+) -> plt.Axes:
     """
     Re-plot last computed associations heat-map. This method performs no new computations, but only allows
     to change the visual output of the last computed heat-map.
@@ -821,7 +827,7 @@ def replot_last_associations(
 
     Returns:
     --------
-    A Matplotlib `Axe`
+    A Matplotlib `Axes`
     """
     if not bool(_ASSOC_PLOT_PARAMS):
         raise RuntimeError("No associations found to replot.")
