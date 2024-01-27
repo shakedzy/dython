@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
-from typing import Optional, Tuple, List, Any, Union
 import matplotlib.pyplot as plt
-from numpy.typing import NDArray, ArrayLike
+from typing import Optional, Tuple, List, Any, Union
+from numpy.typing import NDArray
+from .typing import Number, TwoDimArray
 from ._private import convert, plot_or_not
 
 
@@ -15,8 +16,8 @@ __all__ = [
 
 
 def one_hot_encode(
-        arr: ArrayLike[Union[int, float, str]],
-        classes: Optional[int] = None
+    array: Union[List[Union[Number, str]], NDArray],
+    classes: Optional[int] = None,
 ) -> NDArray:
     """
     One-hot encode a 1D array.
@@ -40,7 +41,7 @@ def one_hot_encode(
            [1., 0., 0., 0., 0., 0.],
            [0., 0., 0., 0., 0., 1.]])
     """
-    arr = convert(arr, "array").astype(int)
+    arr: NDArray = convert(array, "array").astype(int)  # type: ignore
     if not len(arr.shape) == 1:
         raise ValueError(
             f"array must have only one dimension, but has shape: {arr.shape}"
@@ -48,22 +49,22 @@ def one_hot_encode(
     if arr.min() < 0:
         raise ValueError("array cannot contain negative values")
     classes = classes if classes is not None else arr.max() + 1
-    h = np.zeros((arr.size, classes))
+    h = np.zeros((arr.size, classes))  # type: ignore
     h[np.arange(arr.size), arr] = 1
     return h
 
 
 def split_hist(
-        dataset: pd.DataFrame,
-        values: str,
-        split_by: str,
-        title: Optional[str] = "",
-        xlabel: Optional[str] = "",
-        ylabel: Optional[str] = None,
-        figsize: Optional[Tuple[int, int]] = None,
-        legend: Optional[str] = "best",
-        plot: bool = True,
-        **hist_kwargs,
+    dataset: pd.DataFrame,
+    values: str,
+    split_by: str,
+    title: Optional[str] = "",
+    xlabel: Optional[str] = "",
+    ylabel: Optional[str] = None,
+    figsize: Optional[Tuple[int, int]] = None,
+    legend: Optional[str] = "best",
+    plot: bool = True,
+    **hist_kwargs,
 ) -> plt.Axes:
     """
     Plot a histogram of values from a given dataset, split by the values of a chosen column
@@ -116,15 +117,15 @@ def split_hist(
         if title == "":
             title = values + " by " + split_by
         plt.title(title)
-    plt.ylabel(ylabel)
+    if ylabel:
+        plt.ylabel(ylabel)
     ax = plt.gca()
     plot_or_not(plot)
     return ax
 
 
 def identify_columns_by_type(
-        dataset: ArrayLike[Any],
-        include: List[str]
+    dataset: TwoDimArray, include: List[str]
 ) -> List[Any]:
     """
     Given a dataset, identify columns of the types requested.
@@ -146,12 +147,12 @@ def identify_columns_by_type(
     ['col2', 'col3']
 
     """
-    dataset = convert(dataset, "dataframe")
-    columns = list(dataset.select_dtypes(include=include).columns)
+    df: pd.DataFrame = convert(dataset, "dataframe")  # type: ignore
+    columns = list(df.select_dtypes(include=include).columns)
     return columns
 
 
-def identify_columns_with_na(dataset: ArrayLike[Any]) -> pd.DataFrame:
+def identify_columns_with_na(dataset: TwoDimArray) -> pd.DataFrame:
     """
     Return columns names having NA values, sorted in descending order by their number of NAs
 
@@ -172,10 +173,10 @@ def identify_columns_with_na(dataset: ArrayLike[Any]) -> pd.DataFrame:
     1   col2         2
     0   col1         1
     """
-    dataset = convert(dataset, "dataframe")
-    na_count = [sum(dataset[cc].isnull()) for cc in dataset.columns]
+    df: pd.DataFrame = convert(dataset, "dataframe")  # type: ignore
+    na_count = [sum(df[cc].isnull()) for cc in df.columns]
     return (
-        pd.DataFrame({"column": dataset.columns, "na_count": na_count})
+        pd.DataFrame({"column": df.columns, "na_count": na_count})
         .query("na_count > 0")
         .sort_values("na_count", ascending=False)
     )

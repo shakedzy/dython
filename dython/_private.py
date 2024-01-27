@@ -2,8 +2,9 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from numpy.typing import ArrayLike, NDArray
-from typing import Optional, Any, Tuple
+from numpy.typing import NDArray
+from typing import Optional, Any, Tuple, Union, List, Literal
+from .typing import Number, OneDimArray
 
 
 IS_JUPYTER: bool = False
@@ -25,11 +26,10 @@ def plot_or_not(plot: bool) -> None:
 
 
 def convert(
-        data: ArrayLike[Any],
-        to: str,
-        copy: bool = True
-) -> ArrayLike:
-
+    data: Union[List[Number], NDArray, pd.DataFrame],
+    to: Literal["array", "list", "dataframe"],
+    copy: bool = True,
+) -> Union[List[Number], NDArray, pd.DataFrame]:
     converted = None
     if to == "array":
         if isinstance(data, np.ndarray):
@@ -39,7 +39,7 @@ def convert(
         elif isinstance(data, list):
             converted = np.array(data)
         elif isinstance(data, pd.DataFrame):
-            converted = data.values()
+            converted = data.values()  # type: ignore
     elif to == "list":
         if isinstance(data, list):
             converted = data.copy() if copy else data
@@ -61,14 +61,12 @@ def convert(
             )
         )
     else:
-        return converted
+        return converted  # type: ignore
 
 
 def remove_incomplete_samples(
-        x: ArrayLike[Any],
-        y: ArrayLike[Any]
-)-> ArrayLike:
-
+    x: Union[List[Any], OneDimArray], y: Union[List[Any], OneDimArray]
+) -> Tuple[Union[List[Any], OneDimArray], Union[List[Any], OneDimArray]]:
     x = [v if v is not None else np.nan for v in x]
     y = [v if v is not None else np.nan for v in y]
     arr = np.array([x, y]).transpose()
@@ -80,9 +78,9 @@ def remove_incomplete_samples(
 
 
 def replace_nan_with_value(
-        x: ArrayLike[Any],
-        y: ArrayLike[Any],
-        value: Any
+    x: Union[List[Any], OneDimArray],
+    y: Union[List[Any], OneDimArray],
+    value: Any,
 ) -> Tuple[NDArray, NDArray]:
     x = np.array(
         [v if v == v and v is not None else value for v in x]

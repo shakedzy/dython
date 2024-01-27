@@ -42,7 +42,9 @@ def roc_graph_example():
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
     # Plot ROC graphs
-    return metric_graph(y_test, y_score, "roc", class_names=iris.target_names)
+    return metric_graph(
+        y_test, y_score, "roc", class_names_list=iris.target_names
+    )
 
 
 def pr_graph_example():
@@ -73,7 +75,9 @@ def pr_graph_example():
     y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
     # Plot PR graphs
-    return metric_graph(y_test, y_score, "pr", class_names=iris.target_names)
+    return metric_graph(
+        y_test, y_score, "pr", class_names_list=iris.target_names
+    )
 
 
 def associations_iris_example():
