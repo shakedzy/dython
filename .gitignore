@@ -4,8 +4,8 @@ syntax: glob
 env/*
 venv/*
 ENV/*
-.idea/*
-.vscode/*
+.idea
+.vscode
 .DS_Store
 dython.egg*/*
 *__pycache__*
