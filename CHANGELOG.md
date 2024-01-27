@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.7.5 _(dev)_
+* Adding type hints to all functions (issue [#153](https://github.com/shakedzy/dython/issues/153))
+* Dropping dependency in `scikit-plot` as it is no longer maintained (issue [#156](https://github.com/shakedzy/dython/issues/156))
+
 ## 0.7.4
 * Handling running plotting functions with `plot=False` in Jupyter and truly avoid plotting (issue [#147](https://github.com/shakedzy/dython/issues/147))
 
