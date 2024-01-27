@@ -4,5 +4,5 @@ from numpy.typing import NDArray
 
 
 Number = Union[int, float]
-OneDimArray = Union[List[Number], NDArray, Series[Number]]
+OneDimArray = Union[List[Number], NDArray, Series]
 TwoDimArray = Union[NDArray, DataFrame]
