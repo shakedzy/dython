@@ -17,3 +17,4 @@ site/*
 debug.py
 .coverage
 .hypothesis
+.pytest_cache*
