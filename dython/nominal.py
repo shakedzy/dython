@@ -635,7 +635,7 @@ def associations(
     # of the corr dataframe. It is done for visualization purposes, so the heatmap values will remain
     # between -1 and 1
     inf_nan = pd.DataFrame(
-        data=np.zeros_like(corr), columns=columns, index=columns
+        data=np.zeros_like(corr), columns=columns, index=columns, dtype='object'
     )
 
     # finding single-value columns
@@ -903,7 +903,7 @@ def _plot_associations(
         inf_nan_mask = np.ones_like(corr)
     if len(single_value_columns_set) > 0:
         sv = pd.DataFrame(
-            data=np.zeros_like(corr), columns=corr.columns, index=corr.index
+            data=np.zeros_like(corr), columns=corr.columns, index=corr.index, dtype='object'
         )
         for c in single_value_columns_set:
             if c in display_rows and c in display_columns:
