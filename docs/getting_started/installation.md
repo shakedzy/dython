@@ -26,14 +26,3 @@ pip install git+https://github.com/shakedzy/dython.git`
 * Download the source code as a [ZIP file](https://github.com/shakedzy/dython/zipball/master)
 * Download the source code as a [TAR ball](https://github.com/shakedzy/dython/tarball/master)
 
-## Dependencies 
-
-Dython requires Python 3.5 or higher, and the following packages:
-
-* `numpy`
-* `pandas`
-* `seaborn`
-* `scipy`
-* `matplotlib`
-* `sklearn`
-* `scikit-plot`
