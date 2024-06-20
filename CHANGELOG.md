@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.6
+* Fix issue [#162](https://github.com/shakedzy/dython/issues/162)
+
 ## 0.7.5
 * Adding type hints to all functions (issue [#153](https://github.com/shakedzy/dython/issues/153))
 * Dropping dependency in `scikit-plot` as it is no longer maintained (issue [#156](https://github.com/shakedzy/dython/issues/156))
