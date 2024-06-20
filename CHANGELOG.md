@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.7.6 _(dev)_
+## 0.7.6
 * Fix issue [#162](https://github.com/shakedzy/dython/issues/162)
 
 ## 0.7.5
