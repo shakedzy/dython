@@ -7,7 +7,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython)](https://pypistats.org/packages/dython)
 [![License](https://img.shields.io/pypi/l/dython)](https://github.com/shakedzy/dython/blob/master/LICENSE)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12698421-blue)](https://zenodo.org/doi/10.5281/zenodo.12698421)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12698421-eb34c6)](https://zenodo.org/doi/10.5281/zenodo.12698421)
 
 A set of **D**ata analysis tools in p**YTHON** 3.x.
 
