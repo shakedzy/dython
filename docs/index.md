@@ -9,6 +9,7 @@ is_homepage:
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg?style=for-the-badge)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython?style=for-the-badge)](https://pypistats.org/packages/dython)
 [![License](https://img.shields.io/pypi/l/dython?style=for-the-badge)](https://github.com/shakedzy/dython/blob/master/LICENSE)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12698421-eb34c6?style=for-the-badge)](https://zenodo.org/doi/10.5281/zenodo.12698421)
 
 ![banner](images/index_banner.png)
 
@@ -57,13 +58,14 @@ for more information.
 See some usage examples of `nominal.associations` and `model_utils.roc_graph` on the [examples page](getting_started/examples.md).
 All examples can also be imported and executed from `dython.examples`.
 
-## Modules Documentation
-Full documentation of all modues and public methods is available:
-
-* [data_utils](modules/data_utils.md)
-
-* [nominal](modules/nominal.md)
-
-* [model_utils](modules/model_utils.md)
-
-* [sampling](modules/sampling.md)
+## Citing
+Use this reference to cite if you use Dython in a paper:
+```bibtex
+@software{Zychlinski_dython_2018,
+  author = {Zychlinski, Shaked},
+  title = {{dython}},
+  year = {2018},
+  url = {https://github.com/shakedzy/dython},
+  doi = {10.5281/zenodo.12698421}
+}
+```
