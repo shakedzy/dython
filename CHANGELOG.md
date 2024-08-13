@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.7
+* Fix issue [#160](https://github.com/shakedzy/dython/issues/160)
+
 ## 0.7.6
 * Fix issue [#162](https://github.com/shakedzy/dython/issues/162)
 

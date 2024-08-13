@@ -1,5 +1,5 @@
-pytest[testing]>=6.2.2,<8.0.0
-hypothesis>=6.24.0
-black>=22.8.0
-pre-commit>=2.20.0
-pytest-black-multipy>=1.0.1
+pytest[testing]>=8.3.2
+hypothesis>=6.111.0
+black>=24.8.0
+pre-commit>=3.8.0
+pytest-enabler>=3.1.1
