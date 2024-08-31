@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.7.7
+* _Drop support for Python 3.8 as it reaches its end-of-life date_
 * Fix issue [#160](https://github.com/shakedzy/dython/issues/160)
 
 ## 0.7.6

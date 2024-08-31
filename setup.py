@@ -21,10 +21,12 @@ INSTALL_REQUIRES = [s.strip() for s in requirements.split("\n")]
 dev_requirements = (HERE / "dev_requirements.txt").read_text(encoding="utf8")
 EXTRAS_REQUIRE = {"dev": [s.strip() for s in dev_requirements.split("\n")]}
 
+min_minor = 9
+max_minor = 12
 CLASSIFIERS = [
-    f"Programming Language :: Python :: 3.{str(v)}" for v in range(8, 13)
+    f"Programming Language :: Python :: 3.{str(v)}" for v in range(min_minor, max_minor+1)
 ]
-PYTHON_REQUIRES = ">=3.8"
+PYTHON_REQUIRES = f">=3.{min_minor}"
 
 setup(
     name=PACKAGE_NAME,
