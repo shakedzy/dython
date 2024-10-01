@@ -614,6 +614,12 @@ def associations(
         )
     displayed_features_set = set.union(set(display_rows), set(display_columns))
 
+    #  Adjusting figsize based on the number of features
+    if figsize is None:
+        num_features = len(displayed_features_set)
+        base_size = 1.5  # Size multiplier per feature
+        figsize = (base_size * num_features, base_size * num_features)
+
     # convert timestamp columns to numerical columns, so correlation can be performed
     datetime_dtypes = [
         str(x) for x in df.dtypes if str(x).startswith("datetime64")
