@@ -396,7 +396,7 @@ def associations(
     nan_strategy: str = _REPLACE,
     nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
     ax: Optional[plt.Axes] = None,
-    figsize: Optional[Tuple[int, int]] = None,
+    figsize: Optional[Tuple[float, float]] = None,
     annot: bool = True,
     fmt: str = ".2f",
     cmap: Optional[Colormap] = None,
@@ -439,16 +439,16 @@ def associations(
         '(con)' based on their type (nominal or continuous), as provided
         by nominal_columns
     nom_nom_assoc : callable / string, default = 'cramer'
-        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If callable, a function which receives two `pd.Series` and returns a single number.
         If string, name of nominal-nominal (categorical-categorical) association to use.
         Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
         heat-map columns are the provided information (U = U(row|col)).
     num_num_assoc : callable / string, default = 'pearson'
-        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If callable, a function which receives two `pd.Series` and returns a single number.
         If string, name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R, 'kendall' for Kendall's Tau.
     nom_num_assoc : callable / string, default = 'correlation_ratio'
-        If callable, a function which recieves two `pd.Series` and returns a single number.
+        If callable, a function which receives two `pd.Series` and returns a single number.
         If string, name of nominal-numerical association to use. Options are 'correlation_ratio'
         for correlation ratio.
     symmetric_nom_nom : Boolean, default = True
@@ -458,19 +458,19 @@ def associations(
         Relevant only if `num_num_assoc` is a callable. Declare whether the function is symmetric (f(x,y) = f(y,x)).
         If False, heat-map values should be interpreted as f(row,col)
     display_rows : list / string, default = 'all'
-        Choose which of the dataset's features will be displyed in the output's
+        Choose which of the dataset's features will be displayed in the output's
         correlations table rows. If string, can either be a single feature's name or 'all'.
         Only used if `hide_rows` is `None`.
     display_columns : list / string, default = 'all'
-        Choose which of the dataset's features will be displyed in the output's
+        Choose which of the dataset's features will be displayed in the output's
         correlations table columns. If string, can either be a single feature's name or 'all'.
         Only used if `hide_columns` is `None`.
     hide_rows : list / string, default = None
-        Choose which of the dataset's features will not be displyed in the output's
+        Choose which of the dataset's features will not be displayed in the output's
         correlations table rows. If string, must be a single feature's name. If `None`,
         `display_rows` is used.
     hide_columns : list / string, default = None
-        Choose which of the dataset's features will not be displyed in the output's
+        Choose which of the dataset's features will not be displayed in the output's
         correlations table columns. If string, must be a single feature's name. If `None`,
         `display_columns` is used.
     cramers_v_bias_correction : Boolean, default = True
@@ -488,9 +488,9 @@ def associations(
         nan_strategy is set to 'replace'
     ax : matplotlib ax, default = None
         Matplotlib Axis on which the heat-map will be plotted
-    figsize : (int,int) or None, default = None
-        A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's
-        default. Only used if `ax=None`.
+    figsize : (float, float) or None, default = None
+        A Matplotlib figure-size tuple. If `None`, will attempt to set the size automatically.
+        Only used if `ax=None`.
     annot : Boolean, default = True
         Plot number annotations on the heat-map
     fmt : string, default = '.2f'
@@ -564,7 +564,7 @@ def associations(
         pass  # will be handled pair-by-pair during calculations
     else:
         raise ValueError(
-            "Argument nan_stragety [{:s}] is not a valid choice.".format(
+            "Argument nan_strategy [{:s}] is not a valid choice.".format(
                 nan_strategy
             )
         )
@@ -616,9 +616,9 @@ def associations(
 
     #  Adjusting figsize based on the number of features
     if figsize is None:
+        BASE_SIZE = 1.5  # Size multiplier per feature
         num_features = len(displayed_features_set)
-        base_size = 1.5  # Size multiplier per feature
-        figsize = (base_size * num_features, base_size * num_features)
+        figsize = (BASE_SIZE * num_features, BASE_SIZE * num_features)
 
     # convert timestamp columns to numerical columns, so correlation can be performed
     datetime_dtypes = [
