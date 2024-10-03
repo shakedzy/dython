@@ -1,4 +1,4 @@
-pytest[testing]>=8.3.2
+pytest>=8.3.2
 hypothesis>=6.111.0
 black>=24.8.0
 pre-commit>=3.8.0

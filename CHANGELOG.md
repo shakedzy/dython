@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.8
+* `nominal.associations` now attempts to set the figure-size automatically based on output (issue [#30](https://github.com/shakedzy/dython/issues/30), by **[@Swish78](https://github.com/Swish78)**)
+
 ## 0.7.7
 * _Drop support for Python 3.8 as it reaches its end-of-life date_
 * Fix issue [#160](https://github.com/shakedzy/dython/issues/160)
