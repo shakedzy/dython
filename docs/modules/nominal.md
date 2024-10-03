@@ -161,11 +161,12 @@ continuous features using:
 
      Matplotlib Axis on which the heat-map will be plotted
 
-- **`figsize`** : `(int,int)` or `None`
+- **`figsize`** : `(float, float)` or `None`
 
      _Default: None_
 
-     A Matplotlib figure-size tuple. If `None`, falls back to Matplotlib's default. Only used if `ax=None`.
+     A Matplotlib figure-size tuple. If `None`, will attempt to set the size automatically.
+     Only used if `ax=None`.
 
 - **`annot`** : `Boolean`
 
