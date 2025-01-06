@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.9
+* Fixing `nominal.associations(plot=False)` not working as expected on Jupyter-based notebooks (issues [#167](https://github.com/shakedzy/dython/issues/167) & [#168](https://github.com/shakedzy/dython/issues/168))
+
 ## 0.7.8
 * `nominal.associations` now attempts to set the figure-size automatically based on output (issue [#30](https://github.com/shakedzy/dython/issues/30), by **[@Swish78](https://github.com/Swish78)**)
 
