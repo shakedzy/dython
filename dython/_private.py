@@ -22,7 +22,9 @@ def plot_or_not(plot: bool) -> None:
     if plot:
         plt.show()
     elif not plot and IS_JUPYTER:
-        plt.close()
+        fig = plt.gcf()
+        if fig:  
+            plt.close(fig)  
 
 
 def convert(
