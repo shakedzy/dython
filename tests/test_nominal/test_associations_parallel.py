@@ -2,7 +2,7 @@ import pytest
 import matplotlib
 import pandas as pd
 import scipy.stats as ss
-
+import numpy as np
 from psutil import cpu_count
 from datetime import datetime, timedelta
 
