@@ -21,8 +21,8 @@ INSTALL_REQUIRES = [s.strip() for s in requirements.split("\n")]
 dev_requirements = (HERE / "dev_requirements.txt").read_text(encoding="utf8")
 EXTRAS_REQUIRE = {"dev": [s.strip() for s in dev_requirements.split("\n")]}
 
-min_minor = 9
-max_minor = 12
+min_minor = 10
+max_minor = 13
 CLASSIFIERS = [
     f"Programming Language :: Python :: 3.{str(v)}" for v in range(min_minor, max_minor+1)
 ]

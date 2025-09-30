@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.7.10
+* _Dython now officially supports only Python 3.10 or above_
 * Fix a bug in `model_utils.metric_graph`
 * Fix failing tests
 
