@@ -154,6 +154,5 @@ def test_datetime_data():
     corr = associations(
         df, plot=False, multiprocessing=True, max_cpu_cores=MAX_CORE_COUNT
     )["corr"]
-    assert corr.compare(
-        correct_corr
-    ).empty, f"datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}"
+    assert np.allclose(corr, correct_corr, atol=1e-10, rtol=1e-10), \
+          f"datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}"

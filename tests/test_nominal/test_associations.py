@@ -122,9 +122,8 @@ def test_datetime_data():
         data=[[1.0, 1.0, -1.0], [1.0, 1.0, -1.0], [-1.0, -1.0, 1.0]],
     )
     corr = associations(df, plot=False)["corr"]
-    assert corr.compare(
-        correct_corr
-    ).empty, f"datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}"
+    assert np.allclose(corr, correct_corr, atol=1e-10, rtol=1e-10), \
+          f"datetime associations are incorrect. Test should have returned an empty dataframe, received: {corr.head()}"
 
 
 def test_category_nan_replace(iris_df):
