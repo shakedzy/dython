@@ -309,7 +309,7 @@ def metric_graph(
     class_names_list: Optional[List[str]]
     if class_names is not None:
         if not isinstance(class_names, str):
-            class_names_list = convert(class_names_list, "list")  # type: ignore
+            class_names_list = convert(class_names, "list")  # type: ignore
         else:
             class_names_list = [class_names]
     else:

@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.10
+* Fix a bug in `model_utils.metric_graph`
+
 ## 0.7.9
 * Fixing `nominal.associations(plot=False)` not working as expected on Jupyter-based notebooks (issues [#167](https://github.com/shakedzy/dython/issues/167) & [#168](https://github.com/shakedzy/dython/issues/168))
 
