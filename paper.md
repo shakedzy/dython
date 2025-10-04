@@ -103,9 +103,9 @@ Several libraries provide components somewhat overlapping `dython`’s functiona
 You can install the released version via:
 
 * **`pip`**: `pip install dython`
-* 
+
 * **`conda`**: `conda install -c conda-forge dython`
-* 
+
 * **Source**: `pip install git+https://github.com/shakedzy/dython.git`
 
 Dependencies include standard scientific Python packages such as 
