@@ -79,7 +79,9 @@ Below is a non-exhaustive overview of core modules and features. For full API an
 
 * `dython.model_utils.metric_graph(y_true, y_pred, metric='roc', **kwargs)`
     This utility helps visualize classification performance. For a given true-label array y_true and predicted scores y_pred, it can plot ROC curves, compute AUC for each class (in multiclass settings), and show threshold recommendations.
+
     Example:
+
     ```python
     from dython.model_utils import metric_graph
     metric_graph(y_true, y_pred_probs, metric='roc')
@@ -87,7 +89,9 @@ Below is a non-exhaustive overview of core modules and features. For full API an
 
 * `dython.model_utils.ks_abc(y_true, y_pred, **kwargs)`
     Perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute the area between curves.
+
     Example:
+    
     ```python
     from dython.model_utils import ks_abc
     ks_abc(y_true, y_pred_probs)
