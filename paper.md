@@ -1,8 +1,8 @@
 ---
 title: "dython: A Set of Analysis Tools for Data and Variables in Python"
 authors:  
-  - given-names: Shaked 
-  - surname: Zychlinski  
+  - name: Shaked Zychlinski
+  - orcid: 0009-0003-7968-6489
 date: 4 February 2018
 tags: 
     - Python
@@ -37,11 +37,15 @@ This fragmentation results in boilerplate, inconsistency, or mistake-risk, espec
 
 **`dython`** addresses this gap by providing a unified, high-level API that:  
 
-- **infers variable types**,  
-- **automatically selects appropriate measures**,  
-- **returns structured and annotated output**,  
-- **offers visualization** (heatmaps, annotation) integrated,  
-- **offers model evaluation tools** (ROC, AUC, thresholding) for classification tasks.
+- **infers variable types** 
+ 
+- **automatically selects appropriate measures** 
+ 
+- **returns structured and annotated output**
+  
+- **offers visualization** (heatmaps, annotation) integrated
+   
+- **offers model evaluation tools** (ROC, AUC, thresholding) for classification tasks
 
 Therefore, **`dython`** helps data scientists, statisticians, and researchers spend less time writing glue code and more time focusing on insights.
 
@@ -87,15 +91,21 @@ Below is a non-exhaustive overview of core modules and features. For full API an
 
 # Related work
 Several libraries provide components somewhat overlapping `dython`’s functionality:
+
 * `scipy.stats` [@scipy], `statsmodels` [@statsmodels] — full support for continuous correlations and tests, but limited categorical association tools
+
 * `scikit-learn` [@scikit-learn] — mutual information, label encoding, classification metrics, but lacks seamless cross-type association matrices
+
 * `pingouin` [@pingouin] — a statistical package including correlation, effect sizes, but does not integrate categorical–categorical measures like Theil’s U or automatic visualization
 
 # Installation
 
 You can install the released version via:
+
 * **`pip`**: `pip install dython`
+* 
 * **`conda`**: `conda install -c conda-forge dython`
+* 
 * **Source**: `pip install git+https://github.com/shakedzy/dython.git`
 
 Dependencies include standard scientific Python packages such as 
