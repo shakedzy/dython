@@ -186,6 +186,19 @@ This would output:
 ![Example of a ROC graph plotted over the Iris Dataset](roc.png)
 
 
+# Usage Mention
+
+Throughout its lifetime, `dython` has been used in many projects, including:
+
+* [Official implementation](`https://github.com/yandex-research/tab-ddpm`) of TabDDPM [@tabddpm] by [Yandex Research](https://research.yandex.com)
+
+* [`gretel-synthetics`](https://github.com/gretelai/gretel-synthetics/tree/a0e712852f74c238ce848456952e90a141e8da2a) by [Gretal.ai](https://gretel.ai)
+
+* [`torchmetrics`](https://github.com/Lightning-AI/torchmetrics?tab=readme-ov-file) by [Lightning AI](https://lightning.ai)
+
+* [`ydata-quiality`](https://github.com/ydataai/ydata-quality) by [YData](https://ydata.ai)
+
+
 # Acknowledgements
 
 The author thanks users and contributors who have filed issues, submitted pull requests, or suggested enhancements, as well as the authors and 
