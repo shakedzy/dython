@@ -4,7 +4,7 @@ authors:
   - name: Shaked Zychlinski
     orcid: 0009-0003-7968-6489
     affiliation: 1
-affiliation:
+affiliations:
   - index: 1
     name: "Independent Researcher"
 date: 4 February 2018
