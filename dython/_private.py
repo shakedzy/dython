@@ -2,15 +2,14 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from numpy.typing import NDArray
-from typing import Optional, Any, Tuple, Union, List, Literal
+from typing import Any, Literal
 from .typing import Number, OneDimArray
 
 
 IS_JUPYTER: bool = False
 
 
-def set_is_jupyter(force_to: Optional[bool] = None) -> None:
+def set_is_jupyter(force_to: bool | None = None) -> None:
     global IS_JUPYTER
     if force_to is not None:
         IS_JUPYTER = force_to
@@ -28,10 +27,10 @@ def plot_or_not(plot: bool) -> None:
 
 
 def convert(
-    data: Union[List[Number], NDArray, pd.DataFrame],
+    data: list[Number] | np.ndarray | pd.DataFrame,
     to: Literal["array", "list", "dataframe"],
     copy: bool = True,
-) -> Union[List[Number], NDArray, pd.DataFrame]:
+) -> list[Number] | np.ndarray | pd.DataFrame:
     converted = None
     if to == "array":
         if isinstance(data, np.ndarray):
@@ -67,8 +66,9 @@ def convert(
 
 
 def remove_incomplete_samples(
-    x: Union[List[Any], OneDimArray], y: Union[List[Any], OneDimArray]
-) -> Tuple[Union[List[Any], OneDimArray], Union[List[Any], OneDimArray]]:
+    x: OneDimArray, 
+    y: OneDimArray,
+) -> tuple[OneDimArray, OneDimArray]:
     x = [v if v is not None else np.nan for v in x]
     y = [v if v is not None else np.nan for v in y]
     arr = np.array([x, y]).transpose()
@@ -80,10 +80,10 @@ def remove_incomplete_samples(
 
 
 def replace_nan_with_value(
-    x: Union[List[Any], OneDimArray],
-    y: Union[List[Any], OneDimArray],
+    x: OneDimArray,
+    y: OneDimArray,
     value: Any,
-) -> Tuple[NDArray, NDArray]:
+) -> tuple[np.ndarray, np.ndarray]:
     x = np.array(
         [v if v == v and v is not None else value for v in x]
     )  # NaN != NaN

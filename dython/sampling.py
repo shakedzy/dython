@@ -1,6 +1,4 @@
 import numpy as np
-from typing import Union, List
-from numpy.typing import NDArray
 from .typing import Number, OneDimArray
 
 
@@ -9,7 +7,7 @@ __all__ = ["boltzmann_sampling", "weighted_sampling"]
 
 def _w_sampling(
     numbers: OneDimArray, k: int, with_replacement: bool, force_to_list: bool
-) -> Union[Number, OneDimArray]:
+) -> Number | OneDimArray:
     sampled = np.random.choice(numbers, size=k, replace=with_replacement)
     if (isinstance(numbers, list) or force_to_list) and k is not None:
         sampled = sampled.tolist()
@@ -18,7 +16,7 @@ def _w_sampling(
 
 def weighted_sampling(
     numbers: OneDimArray, k: int = 1, with_replacement: bool = False
-) -> Union[Number, OneDimArray]:
+) -> Number | OneDimArray:
     """
     Return k numbers from a weighted-sampling over the supplied numbers
 
@@ -41,7 +39,7 @@ def weighted_sampling(
 
 def boltzmann_sampling(
     numbers: OneDimArray, k: int = 1, with_replacement: bool = False
-) -> Union[Number, OneDimArray]:
+) -> Number | OneDimArray:
     """
     Return k numbers from a boltzmann-sampling over the supplied numbers
 

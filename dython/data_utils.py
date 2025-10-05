@@ -1,9 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from typing import Optional, Tuple, List, Any, Union
-from numpy.typing import NDArray
-from .typing import Number, TwoDimArray
+from typing import Any
+from .typing import Number, TwoDimArray, OneDimArray
 from ._private import convert, plot_or_not
 
 
@@ -16,9 +15,9 @@ __all__ = [
 
 
 def one_hot_encode(
-    array: Union[List[Union[Number, str]], NDArray],
+    array: OneDimArray,
     classes: Optional[int] = None,
-) -> NDArray:
+) -> np.ndarray:
     """
     One-hot encode a 1D array.
     Based on this StackOverflow answer: https://stackoverflow.com/a/29831596/5863503
@@ -58,11 +57,11 @@ def split_hist(
     dataset: pd.DataFrame,
     values: str,
     split_by: str,
-    title: Optional[str] = "",
-    xlabel: Optional[str] = "",
-    ylabel: Optional[str] = None,
-    figsize: Optional[Tuple[int, int]] = None,
-    legend: Optional[str] = "best",
+    title: str | None = "",
+    xlabel: str | None = "",
+    ylabel: str | None = None,
+    figsize: tuple[int, int] | None = None,
+    legend: str | None = "best",
     plot: bool = True,
     **hist_kwargs,
 ) -> plt.Axes:
@@ -125,8 +124,8 @@ def split_hist(
 
 
 def identify_columns_by_type(
-    dataset: TwoDimArray, include: List[str]
-) -> List[Any]:
+    dataset: TwoDimArray, include: list[str]
+) -> list[Any]:
     """
     Given a dataset, identify columns of the types requested.
 

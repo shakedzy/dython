@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_curve, precision_recall_curve, auc
 from sklearn.preprocessing import LabelEncoder
-from typing import List, Union, Optional, Tuple, Dict, Any, Iterable
-from numpy.typing import NDArray
+from typing import Any, Iterable
 from .typing import Number, OneDimArray
 from ._private import convert, plot_or_not
 
@@ -16,12 +15,12 @@ _ROC_PLOT_COLORS = ["b", "g", "r", "c", "m", "y", "k", "darkorange"]
 def _display_metric_plot(
     ax: plt.Axes,
     metric: str,
-    naives: List[Tuple[Number, Number, Number, Number, str]],
-    xlim: Tuple[float, float],
-    ylim: Tuple[float, float],
-    legend: Optional[str],
-    title: Optional[str],
-    filename: Optional[str],
+    naives: list[tuple[Number, Number, Number, Number, str]],
+    xlim: tuple[float, float],
+    ylim: tuple[float, float],
+    legend: str | None,
+    title: str | None,
+    filename: str | None,
     plot: bool,
 ) -> plt.Axes:
     for n in naives:
@@ -53,7 +52,7 @@ def _draw_estimated_optimal_threshold_mark(
     ms: int,
     fmt: str,
     ax: plt.Axes,
-) -> Tuple[Number, Number, Number]:
+) -> tuple[Number, Number, Number]:
     annotation_offset = (-0.027, 0.03)
     a = np.zeros((len(x_axis), 2))
     a[:, 0] = x_axis
@@ -107,16 +106,16 @@ def _binary_metric_graph(
     y_true: OneDimArray,
     y_pred: OneDimArray,
     eoptimal: bool,
-    class_label: Optional[str],
+    class_label: str | None,
     color: str,
     lw: int,
     ls: str,
     ms: int,
     fmt: str,
     ax: plt.Axes,
-) -> Dict[str, Any]:
-    y_true_array: NDArray = convert(y_true, "array")  # type: ignore
-    y_pred_array: NDArray = convert(y_pred, "array")  # type: ignore
+) -> dict[str, Any]:
+    y_true_array: np.ndarray = convert(y_true, "array")  # type: ignore
+    y_pred_array: np.ndarray = convert(y_pred, "array")  # type: ignore
     if y_pred_array.shape != y_true_array.shape:
         raise ValueError("y_true and y_pred must have the same shape")
     elif len(y_pred_array.shape) == 1:
@@ -166,8 +165,9 @@ def _binary_metric_graph(
 
 
 def _build_metric_graph_output_dict(
-    metric: str, d: Dict[str, Any]
-) -> Dict[str, Dict[str, Any]]:
+    metric: str, 
+    d: dict[str, Any]
+) -> dict[str, dict[str, Any]]:
     naive = d["y_t_ratio"] if metric == "pr" else 0.5
     return {
         "auc": {"val": d["auc"], "naive": naive},
@@ -183,22 +183,22 @@ def metric_graph(
     micro: bool = True,
     macro: bool = True,
     eopt: bool = True,
-    class_names: Optional[Union[str, List[str]]] = None,
-    colors: Optional[str] = None,
-    ax: Optional[plt.Axes] = None,
-    figsize: Optional[Tuple[int, int]] = None,
-    xlim: Tuple[float, float] = (0.0, 1.0),
-    ylim: Tuple[float, float] = (0.0, 1.02),
+    class_names: str | list[str] | None = None,
+    colors: str | None = None,
+    ax: plt.Axes | None = None,
+    figsize: tuple[int, int] | None = None,
+    xlim: tuple[float, float] = (0.0, 1.0),
+    ylim: tuple[float, float] = (0.0, 1.02),
     lw: int = 2,
     ls: str = "-",
     ms: int = 10,
     fmt: str = ".2f",
-    legend: Optional[str] = "best",
+    legend: str | None = "best",
     plot: bool = True,
-    title: Optional[str] = None,
-    filename: Optional[str] = None,
+    title: str | None = None,
+    filename: str | None = None,
     force_multiclass: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Plot a ROC graph of predictor's results (including AUC scores), where each
     row of y_true and y_pred represent a single example.
@@ -300,8 +300,8 @@ def metric_graph(
 
     all_x_axis = list()
     all_y_axis = list()
-    y_true_array: NDArray = convert(y_true, "array")  # type: ignore
-    y_pred_array: NDArray = convert(y_pred, "array")  # type: ignore
+    y_true_array: np.ndarray = convert(y_true, "array")  # type: ignore
+    y_pred_array: np.ndarray = convert(y_pred, "array")  # type: ignore
 
     if y_pred_array.shape != y_true_array.shape:
         raise ValueError("y_true and y_pred must have the same shape")
@@ -428,8 +428,10 @@ def metric_graph(
 
 
 def random_forest_feature_importance(
-    forest: RandomForestClassifier, features: List[str], precision: int = 4
-) -> Iterable[Tuple[float, str]]:
+    forest: RandomForestClassifier, 
+    features: list[str], 
+    precision: int = 4
+) -> Iterable[tuple[float, str]]:
     """
     Given a trained `sklearn.ensemble.RandomForestClassifier`, plot the
     different features based on their importance according to the classifier,
@@ -459,18 +461,18 @@ def ks_abc(
     y_true: OneDimArray,
     y_pred: OneDimArray,
     *,
-    ax: Optional[plt.Axes] = None,
-    figsize: Optional[Tuple[int, int]] = None,
-    colors: Tuple[str, str] = ("darkorange", "b"),
-    title: Optional[str] = None,
-    xlim: Tuple[float, float] = (0.0, 1.0),
-    ylim: Tuple[float, float] = (0.0, 1.0),
+    ax: plt.Axes | None = None,
+    figsize: tuple[int, int] | None = None,
+    colors: tuple[str, str] = ("darkorange", "b"),
+    title: str | None = None,
+    xlim: tuple[float, float] = (0.0, 1.0),
+    ylim: tuple[float, float] = (0.0, 1.0),
     fmt: str = ".2f",
     lw: int = 2,
-    legend: Optional[str] = "best",
+    legend: str | None = "best",
     plot: bool = True,
-    filename: Optional[str] = None,
-) -> Dict[str, Any]:
+    filename: str | None = None,
+) -> dict[str, Any]:
     """
     Perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute
     the area between curves.
@@ -519,8 +521,8 @@ def ks_abc(
     'eopt': estimated optimal threshold,
     'ax': the ax used to plot the curves
     """
-    y_true_arr: NDArray = convert(y_true, "array")  # type: ignore
-    y_pred_arr: NDArray = convert(y_pred, "array")  # type: ignore
+    y_true_arr: np.ndarray = convert(y_true, "array")  # type: ignore
+    y_pred_arr: np.ndarray = convert(y_pred, "array")  # type: ignore
     if y_pred_arr.shape != y_true_arr.shape:
         raise ValueError("y_true and y_pred must have the same shape")
     elif len(y_pred_arr.shape) == 1 or y_pred_arr.shape[1] == 1:
@@ -587,8 +589,9 @@ def ks_abc(
 
 
 def _binary_ks_curve(
-    y_true: OneDimArray, y_probas: OneDimArray
-) -> Tuple[NDArray, NDArray, NDArray, Number, Number, NDArray]:
+    y_true: OneDimArray, 
+    y_probas: OneDimArray
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, Number, Number, np.ndarray]:
     """Copied from scikit-plot: https://github.com/reiinakano/scikit-plot/blob/master/scikitplot/helpers.py
 
     This function generates the points necessary to calculate the KS
