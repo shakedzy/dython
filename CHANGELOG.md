@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.7.11
+* Fixing dependency issue ([#170](https://github.com/shakedzy/dython/issues/170))
+
 ## 0.7.10
 * _Dython now officially supports only Python 3.10 or above_
 * Fix a bug in `model_utils.metric_graph`
