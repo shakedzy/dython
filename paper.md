@@ -6,7 +6,7 @@ authors:
     affiliation: 1
 affiliations:
   - index: 1
-    name: "Independent Researcher"
+    name: "Independent Researcher, Israel"
 date: 4 February 2018
 tags: 
     - Python
@@ -211,3 +211,5 @@ Throughout its lifetime, `dython` has been used in many projects, including:
 
 The author thanks users and contributors who have filed issues, submitted pull requests, or suggested enhancements, as well as the authors and 
 communities of the foundational packages on which `dython` builds.
+
+# References
