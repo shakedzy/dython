@@ -1,35 +1,20 @@
-import concurrent.futures as cf
+
 import math
 import warnings
-from collections import Counter
-from itertools import repeat
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import scipy.cluster.hierarchy as sch
-import scipy.stats as ss
 import seaborn as sns
+import scipy.stats as ss
+import matplotlib.pyplot as plt
+import concurrent.futures as cf
+import scipy.cluster.hierarchy as sch
+from itertools import repeat
 from psutil import cpu_count
-from typing import (
-    Union,
-    Any,
-    List,
-    Optional,
-    Callable,
-    Tuple,
-    Dict,
-    Iterable,
-    Set,
-    Literal,
-)
-from numpy.typing import NDArray, ArrayLike
+from collections import Counter
 from matplotlib.colors import Colormap
-from ._private import (
-    convert,
-    remove_incomplete_samples,
-    replace_nan_with_value,
-    plot_or_not,
-)
+from matplotlib.axes._axes import Axes
+from typing import Any, Callable, Iterable, Literal, TypedDict, cast, overload
+from ._private import convert, remove_incomplete_samples, replace_nan_with_value, plot_or_not
 from .data_utils import identify_columns_by_type
 from .typing import Number, OneDimArray, TwoDimArray
 
@@ -56,7 +41,7 @@ _SKIP = "skip"
 _DEFAULT_REPLACE_VALUE = 0.0
 _PRECISION = 1e-13
 
-_ASSOC_PLOT_PARAMS: Dict[str, Any] = dict()
+_ASSOC_PLOT_PARAMS: dict[str, Any] = dict()
 
 _NO_OP = "no-op"
 _SINGLE_VALUE_COLUMN_OP = "single-value-column-op"
@@ -68,7 +53,12 @@ NumNumAssocStr = Literal["pearson", "spearman", "kendall"]
 NomNomAssocStr = Literal["cramer", "theil"]
 
 
-def _inf_nan_str(x: Union[int, float]) -> str:
+class AssociationsResult(TypedDict):
+    corr: pd.DataFrame
+    ax: Axes | None
+
+
+def _inf_nan_str(x: Number) -> str:
     if np.isnan(x):
         return "NaN"
     elif abs(x) == np.inf:
@@ -78,8 +68,8 @@ def _inf_nan_str(x: Union[int, float]) -> str:
 
 
 def conditional_entropy(
-    x: Union[OneDimArray, List[str]],
-    y: Union[OneDimArray, List[str]],
+    x: OneDimArray,
+    y: OneDimArray,
     nan_strategy: str = _REPLACE,
     nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
     log_base: Number = math.e,
@@ -125,8 +115,8 @@ def conditional_entropy(
 
 
 def cramers_v(
-    x: Union[OneDimArray, List[str]],
-    y: Union[OneDimArray, List[str]],
+    x: OneDimArray,
+    y: OneDimArray,
     bias_correction: bool = True,
     nan_strategy: str = _REPLACE,
     nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
@@ -163,7 +153,7 @@ def cramers_v(
         x, y = replace_nan_with_value(x, y, nan_replace_value)
     elif nan_strategy == _DROP:
         x, y = remove_incomplete_samples(x, y)
-    confusion_matrix = pd.crosstab(x, y)
+    confusion_matrix = pd.crosstab(x, y)   # pyright: ignore[reportArgumentType]
     chi2 = ss.chi2_contingency(confusion_matrix)[0]
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
@@ -194,8 +184,8 @@ def cramers_v(
 
 
 def theils_u(
-    x: Union[OneDimArray, List[str]],
-    y: Union[OneDimArray, List[str]],
+    x: OneDimArray,
+    y: OneDimArray,
     nan_strategy: str = _REPLACE,
     nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
 ) -> float:
@@ -239,7 +229,8 @@ def theils_u(
     if s_x == 0:
         return 1.0
     else:
-        u = (s_x - s_xy) / s_x  # type: ignore
+        u = (s_x - s_xy) / s_x  
+        u = cast(float, u)
         if -_PRECISION <= u < 0.0 or 1.0 < u <= 1.0 + _PRECISION:
             rounded_u = 0.0 if u < 0 else 1.0
             warnings.warn(
@@ -252,7 +243,7 @@ def theils_u(
 
 
 def correlation_ratio(
-    categories: Union[OneDimArray, List[str]],
+    categories: OneDimArray,
     measurements: OneDimArray,
     nan_strategy: str = _REPLACE,
     nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
@@ -296,9 +287,9 @@ def correlation_ratio(
         categories, measurements = remove_incomplete_samples(
             categories, measurements
         )
-    categories_array: NDArray = convert(categories, "array")  # type: ignore
-    measurements_array: NDArray = convert(measurements, "array")  # type: ignore
-    fcat, _ = pd.factorize(categories_array)  # type: ignore
+    categories_array = convert(categories, np.ndarray)  
+    measurements_array = convert(measurements, np.ndarray) 
+    fcat, _ = pd.factorize(categories_array) 
     cat_num = np.max(fcat) + 1
     y_avg_array = np.zeros(cat_num)
     n_array = np.zeros(cat_num)
@@ -327,7 +318,7 @@ def correlation_ratio(
             return eta
 
 
-def identify_nominal_columns(dataset: TwoDimArray) -> List[Any]:
+def identify_nominal_columns(dataset: TwoDimArray) -> list[Any]:
     """
     Given a dataset, identify categorical columns.
 
@@ -349,7 +340,7 @@ def identify_nominal_columns(dataset: TwoDimArray) -> List[Any]:
     return identify_columns_by_type(dataset, include=["object", "category"])
 
 
-def identify_numeric_columns(dataset: TwoDimArray) -> List[Any]:
+def identify_numeric_columns(dataset: TwoDimArray) -> list[Any]:
     """
     Given a dataset, identify numeric columns.
 
@@ -373,45 +364,39 @@ def identify_numeric_columns(dataset: TwoDimArray) -> List[Any]:
 
 def associations(
     dataset: TwoDimArray,
-    nominal_columns: Optional[Union[OneDimArray, List[str], str]] = "auto",
+    nominal_columns: OneDimArray | str | None = "auto",
     *,
-    numerical_columns: Optional[Union[OneDimArray, List[str], str]] = None,
+    numerical_columns: OneDimArray | str | None = None,
     mark_columns: bool = False,
-    nom_nom_assoc: Union[
-        NomNomAssocStr, Callable[[pd.Series, pd.Series], Number]
-    ] = "cramer",
-    num_num_assoc: Union[
-        NumNumAssocStr, Callable[[pd.Series, pd.Series], Number]
-    ] = "pearson",
-    nom_num_assoc: Union[
-        NomNumAssocStr, Callable[[pd.Series, pd.Series], Number]
-    ] = "correlation_ratio",
+    nom_nom_assoc: NomNomAssocStr | Callable[[pd.Series, pd.Series], Number] = "cramer",
+    num_num_assoc: NumNumAssocStr | Callable[[pd.Series, pd.Series], Number] = "pearson",
+    nom_num_assoc: NomNumAssocStr | Callable[[pd.Series, pd.Series], Number] = "correlation_ratio",
     symmetric_nom_nom: bool = True,
     symmetric_num_num: bool = True,
-    display_rows: Union[str, List[str]] = "all",
-    display_columns: Union[str, List[str]] = "all",
-    hide_rows: Optional[Union[str, List[str]]] = None,
-    hide_columns: Optional[Union[str, List[str]]] = None,
+    display_rows: str | int | list[str | int] = "all",
+    display_columns: str | int | list[str | int] = "all",
+    hide_rows: str | int | list[str | int] | None = None,
+    hide_columns: str | int | list[str | int] | None = None,
     cramers_v_bias_correction: bool = True,
     nan_strategy: str = _REPLACE,
     nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
-    ax: Optional[plt.Axes] = None,
-    figsize: Optional[Tuple[float, float]] = None,
+    ax: Axes | None = None,
+    figsize: tuple[float, float] | None = None,
     annot: bool = True,
     fmt: str = ".2f",
-    cmap: Optional[Colormap] = None,
+    cmap: Colormap | None = None,
     sv_color: str = "silver",
     cbar: bool = True,
     vmax: float = 1.0,
-    vmin: Optional[float] = None,
+    vmin: float | None = None,
     plot: bool = True,
     compute_only: bool = False,
     clustering: bool = False,
-    title: Optional[str] = None,
-    filename: Optional[str] = None,
+    title: str | None = None,
+    filename: str | None = None,
     multiprocessing: bool = False,
-    max_cpu_cores: Optional[int] = None,
-) -> Dict[str, Union[pd.DataFrame, plt.Axes]]:
+    max_cpu_cores: int | None = None,
+) -> AssociationsResult: 
     """
     Calculate the correlation/strength-of-association of features in data-set
     with both categorical and continuous features using:
@@ -457,19 +442,19 @@ def associations(
     symmetric_num_num : Boolean, default = True
         Relevant only if `num_num_assoc` is a callable. Declare whether the function is symmetric (f(x,y) = f(y,x)).
         If False, heat-map values should be interpreted as f(row,col)
-    display_rows : list / string, default = 'all'
+    display_rows : list / string / int, default = 'all'
         Choose which of the dataset's features will be displayed in the output's
         correlations table rows. If string, can either be a single feature's name or 'all'.
         Only used if `hide_rows` is `None`.
-    display_columns : list / string, default = 'all'
+    display_columns : list / string / int, default = 'all'
         Choose which of the dataset's features will be displayed in the output's
         correlations table columns. If string, can either be a single feature's name or 'all'.
         Only used if `hide_columns` is `None`.
-    hide_rows : list / string, default = None
+    hide_rows : list / string / int, default = None
         Choose which of the dataset's features will not be displayed in the output's
         correlations table rows. If string, must be a single feature's name. If `None`,
         `display_rows` is used.
-    hide_columns : list / string, default = None
+    hide_columns : list / string / int, default = None
         Choose which of the dataset's features will not be displayed in the output's
         correlations table columns. If string, must be a single feature's name. If `None`,
         `display_columns` is used.
@@ -538,12 +523,12 @@ def associations(
     --------
     See examples under `dython.examples`
     """
-    df: pd.DataFrame = convert(dataset, "dataframe")  # type: ignore
+    df = convert(dataset, pd.DataFrame)
 
     if numerical_columns is not None:
-        if numerical_columns == "auto":
+        if isinstance(numerical_columns, str) and numerical_columns == "auto":
             nominal_columns = "auto"
-        elif numerical_columns == "all":
+        elif isinstance(numerical_columns, str) and numerical_columns == "all":
             nominal_columns = None
         else:
             nominal_columns = [
@@ -574,34 +559,37 @@ def associations(
     auto_nominal = False
     if nominal_columns is None:
         nominal_columns = list()
-    elif nominal_columns == "all":
+    elif isinstance(nominal_columns, str) and nominal_columns == "all":
         nominal_columns = columns.tolist()
-    elif nominal_columns == "auto":
+    elif isinstance(nominal_columns, str) and nominal_columns == "auto":
         auto_nominal = True
         nominal_columns = identify_nominal_columns(df)
 
     # selecting rows and columns to be displayed
     if hide_rows is not None:
         if isinstance(hide_rows, str) or isinstance(hide_rows, int):
-            hide_rows = [hide_rows]  # type: ignore
-        display_rows = [c for c in df.columns if c not in hide_rows]  # type: ignore
+            hide_rows = [hide_rows] 
+        display_rows = [c for c in df.columns if c not in hide_rows]  
     else:
-        if display_rows == "all":
-            display_rows = columns.tolist()
+        if isinstance(display_rows, str) and display_rows == "all":
+            display_rows = columns.tolist()   # pyright: ignore[reportAssignmentType]
         elif isinstance(display_rows, str) or isinstance(display_rows, int):
-            display_columns = [display_rows]  # type: ignore
+            display_columns = [display_rows]  
 
     if hide_columns is not None:
         if isinstance(hide_columns, str) or isinstance(hide_columns, int):
-            hide_columns = [hide_columns]  # type: ignore
-        display_columns = [c for c in df.columns if c not in hide_columns]  # type: ignore
+            hide_columns = [hide_columns] 
+        display_columns = [c for c in df.columns if c not in hide_columns]  
     else:
-        if display_columns == "all":
-            display_columns = columns.tolist()
+        if isinstance(display_columns, str) and display_columns == "all":
+            display_columns = columns.tolist()  # pyright: ignore[reportAssignmentType]
         elif isinstance(display_columns, str) or isinstance(
             display_columns, int
         ):
-            display_columns = [display_columns]  # type: ignore
+            display_columns = [display_columns]  
+
+    display_rows = cast(list[str | int], display_rows)
+    display_columns = cast(list[str | int], display_columns)
 
     if (
         display_rows is None
@@ -629,7 +617,7 @@ def associations(
         datetime_cols = [c for c in datetime_cols if c not in nominal_columns]
         if datetime_cols:
             df[datetime_cols] = df[datetime_cols].apply(
-                lambda col: col.view(np.int64), axis=0
+                lambda col: col.astype(np.int64), axis=0
             )
             if auto_nominal:
                 nominal_columns = identify_nominal_columns(df)
@@ -655,7 +643,7 @@ def associations(
 
     # current multiprocessing implementation performs worse on 2 cores than on 1 core,
     # so we only use multiprocessing if there are more than 2 physical cores available
-    if multiprocessing and n_cores > 2:
+    if multiprocessing and n_cores is not None and n_cores > 2:
         # find out the list of cartesian products of the column indices
         number_of_columns = len(columns)
         list_of_indices_pairs_lists = [
@@ -697,7 +685,7 @@ def associations(
                 ),
             )
     else:
-        results: Iterable[Tuple] = []
+        results: Iterable[tuple] = []
 
         for i in range(0, len(columns)):
             for j in range(i, len(columns)):
@@ -705,7 +693,7 @@ def associations(
                     _compute_associations(
                         (i, j),
                         df,
-                        displayed_features_set,
+                        displayed_features_set,       # pyright: ignore[reportArgumentType]
                         single_value_columns_set,
                         nominal_columns,
                         symmetric_nom_nom,
@@ -747,7 +735,7 @@ def associations(
     corr.fillna(value=np.nan, inplace=True)
 
     if clustering:
-        corr, _ = cluster_correlations(corr)  # type: ignore
+        corr, _ = cluster_correlations(corr)
         inf_nan = inf_nan.reindex(columns=corr.columns).reindex(
             index=corr.index
         )
@@ -757,8 +745,8 @@ def associations(
         display_rows = [c for c in corr.index if c in display_rows]
 
     # keep only displayed columns and rows
-    corr: pd.DataFrame = corr.loc[display_rows, display_columns]  # type: ignore
-    inf_nan = inf_nan.loc[display_rows, display_columns]  # type: ignore
+    corr: pd.DataFrame = corr.loc[display_rows, display_columns]
+    inf_nan = inf_nan.loc[display_rows, display_columns] 
 
     if mark_columns:
 
@@ -770,9 +758,9 @@ def associations(
             )
 
         corr.columns = [mark(col) for col in corr.columns]
-        corr.index = [mark(col) for col in corr.index]  # type: ignore
+        corr.index = [mark(col) for col in corr.index]  # pyright: ignore[reportAttributeAccessIssue]
         inf_nan.columns = corr.columns
-        inf_nan.index = corr.index
+        inf_nan.index = corr.index                      # pyright: ignore[reportAttributeAccessIssue]
         single_value_columns_set = {
             mark(col) for col in single_value_columns_set
         }
@@ -800,23 +788,23 @@ def associations(
         ]:
             _ASSOC_PLOT_PARAMS[v] = locals()[v]
         ax = _plot_associations(ax, filename, plot, **_ASSOC_PLOT_PARAMS)
-    return {"corr": corr, "ax": ax}  # type: ignore
+    return {"corr": corr, "ax": ax}  
 
 
 def replot_last_associations(
-    ax: Optional[plt.Axes] = None,
-    figsize: Optional[Tuple[int, int]] = None,
-    annot: Optional[bool] = None,
-    fmt: Optional[str] = None,
-    cmap: Optional[Colormap] = None,
-    sv_color: Optional[str] = None,
-    cbar: Optional[bool] = None,
-    vmax: Optional[float] = None,
-    vmin: Optional[float] = None,
+    ax: Axes | None = None,
+    figsize: tuple[int, int] | None = None,
+    annot: bool | None = None,
+    fmt: str | None = None,
+    cmap: Colormap | None = None,
+    sv_color: str | None = None,
+    cbar: bool | None = None,
+    vmax: float | None = None,
+    vmin: float | None = None,
     plot: bool = True,
-    title: Optional[str] = None,
-    filename: Optional[str] = None,
-) -> plt.Axes:
+    title: str | None = None,
+    filename: str | None = None,
+) -> Axes:
     """
     Re-plot last computed associations heat-map. This method performs no new computations, but only allows
     to change the visual output of the last computed heat-map.
@@ -870,18 +858,18 @@ def replot_last_associations(
 
 
 def _plot_associations(
-    ax: Optional[plt.Axes],
-    filename: Optional[str],
+    ax: Axes | None,
+    filename: str | None,
     plot: bool,
     corr: pd.DataFrame,
     inf_nan: pd.DataFrame,
-    single_value_columns_set: Set[str],
-    display_rows: List[str],
-    display_columns: List[str],
-    displayed_features_set: Set[str],
-    nominal_columns: List[str],
-    figsize: Tuple[int, int],
-    vmin: Optional[Number],
+    single_value_columns_set: set[str],
+    display_rows: list[str],
+    display_columns: list[str],
+    displayed_features_set: set[str],
+    nominal_columns: list[str],
+    figsize: tuple[int, int],
+    vmin: Number | None,
     vmax: Number,
     cbar: bool,
     cmap: Colormap,
@@ -889,7 +877,7 @@ def _plot_associations(
     fmt: str,
     annot: bool,
     title: str,
-) -> plt.Axes:
+) -> Axes:
     if ax is None:
         plt.figure(figsize=figsize)
     if inf_nan.any(axis=None):
@@ -966,7 +954,8 @@ def _plot_associations(
 
 
 def _handling_category_for_nan_imputation(
-    dataset: pd.DataFrame, nan_replace_value: Any
+    dataset: pd.DataFrame, 
+    nan_replace_value: Any
 ) -> pd.DataFrame:
     pd_categorical_columns = identify_columns_by_type(
         dataset, include=["category"]
@@ -992,8 +981,8 @@ def _handling_category_for_nan_imputation(
 def _nom_num(
     nom_column: OneDimArray,
     num_column: OneDimArray,
-    nom_num_assoc: Union[Callable, NomNumAssocStr],
-) -> Tuple[Number, Number]:
+    nom_num_assoc: Callable | NomNumAssocStr,
+) -> tuple[Number, Number]:
     """
     Computes the nominal-numerical association value.
     """
@@ -1013,25 +1002,19 @@ def _nom_num(
 
 
 def _compute_associations(
-    indices_pair: Tuple[int, int],
+    indices_pair: tuple[int, int],
     dataset: pd.DataFrame,
-    displayed_features_set: Set[str],
-    single_value_columns_set: Set[str],
-    nominal_columns: Union[OneDimArray, List[str], str],
+    displayed_features_set: set[str],
+    single_value_columns_set: set[str],
+    nominal_columns: OneDimArray | list[str] | str,
     symmetric_nom_nom: bool,
-    nom_nom_assoc: Union[
-        NomNomAssocStr, Callable[[pd.Series, pd.Series], Number]
-    ],
+    nom_nom_assoc: NomNomAssocStr | Callable[[pd.Series, pd.Series], Number],
     cramers_v_bias_correction: bool,
-    num_num_assoc: Union[
-        NumNumAssocStr, Callable[[pd.Series, pd.Series], Number]
-    ],
-    nom_num_assoc: Union[
-        NomNumAssocStr, Callable[[pd.Series, pd.Series], Number]
-    ],
+    num_num_assoc: NumNumAssocStr | Callable[[pd.Series, pd.Series], Number],
+    nom_num_assoc: NomNumAssocStr | Callable[[pd.Series, pd.Series], Number],
     symmetric_num_num: bool,
     nan_strategy: str,
-) -> Tuple:
+) -> tuple:
     """
     Helper function of associations.
 
@@ -1179,14 +1162,12 @@ def _compute_associations(
 
 def numerical_encoding(
     dataset: TwoDimArray,
-    nominal_columns: Optional[
-        Union[List[str], Literal["all", "auto"]]
-    ] = "auto",
+    nominal_columns: list[str] | Literal["all", "auto"] | None = "auto",
     drop_single_label: bool = False,
     drop_fact_dict: bool = True,
     nan_strategy: str = _REPLACE,
     nan_replace_value: Any = _DEFAULT_REPLACE_VALUE,
-) -> Union[pd.DataFrame, Tuple[pd.DataFrame, Dict]]:
+) -> pd.DataFrame | tuple[pd.DataFrame, dict]:
     """
     Encoding a data-set with mixed data (numerical and categorical) to a
     numerical-only data-set using the following logic:
@@ -1231,7 +1212,7 @@ def numerical_encoding(
     supplied by Pandas `factorize`. Will be empty if no two-value columns are
     present in the data-set
     """
-    df: pd.DataFrame = convert(dataset, "dataframe")  # type: ignore
+    df = convert(dataset, pd.DataFrame) 
     if nan_strategy == _REPLACE:
         df.fillna(nan_replace_value, inplace=True)
     elif nan_strategy == _DROP_SAMPLES:
@@ -1269,9 +1250,24 @@ def numerical_encoding(
         return converted_dataset, binary_columns_dict
 
 
+@overload
 def cluster_correlations(
-    corr_mat: TwoDimArray, indices: Optional[ArrayLike] = None
-) -> Tuple[TwoDimArray, ArrayLike]:
+    corr_mat: pd.DataFrame, 
+    indices: OneDimArray | None = None
+) -> tuple[pd.DataFrame, OneDimArray]:
+    ...
+
+@overload
+def cluster_correlations(
+    corr_mat: np.ndarray, 
+    indices: OneDimArray | None = None
+) -> tuple[np.ndarray, OneDimArray]:
+    ...
+
+def cluster_correlations(
+    corr_mat: TwoDimArray, 
+    indices: OneDimArray | None = None
+) -> tuple[TwoDimArray, OneDimArray]:
     """
     Apply agglomerative clustering in order to sort
     a correlation matrix.
@@ -1298,12 +1294,12 @@ def cluster_correlations(
     >>> correlations = assoc['corr']
     >>> correlations, _ = cluster_correlations(correlations)
     """
-    df: pd.DataFrame = convert(corr_mat, "dataframe")  # type: ignore
+    df = convert(corr_mat, pd.DataFrame)
     if indices is None:
         X = df.values
         d = sch.distance.pdist(X)
         L = sch.linkage(d, method="complete")
-        ind: ArrayLike = sch.fcluster(L, 0.5 * d.max(), "distance")  # type: ignore
+        ind: OneDimArray = sch.fcluster(L, 0.5 * d.max(), "distance") 
     else:
         ind = indices
 

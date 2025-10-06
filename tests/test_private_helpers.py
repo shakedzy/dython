@@ -1,6 +1,6 @@
+import pytest
 import numpy as np
 import pandas as pd
-import pytest
 from sklearn import datasets
 from dython._private import (
     convert,
@@ -18,8 +18,8 @@ pd.set_option("mode.chained_assignment", None)
 @pytest.fixture
 def iris_df():
     iris = datasets.load_iris()
-    df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
-    df["target"] = iris.target
+    df = pd.DataFrame(data=iris.data, columns=iris.feature_names)   # pyright: ignore[reportAttributeAccessIssue]
+    df["target"] = iris.target                                      # pyright: ignore[reportAttributeAccessIssue]
 
     return df
 
@@ -36,7 +36,7 @@ def bad_input(request):
         return {1: "EXAMPLE", 2: "DICT"}
 
 
-@pytest.mark.parametrize("output_type", ["list", "array", "dataframe"])
+@pytest.mark.parametrize("output_type", [list, np.ndarray, pd.DataFrame])
 def test_convert_good_output_bad_input(bad_input, output_type):
     with pytest.raises(TypeError, match="cannot handle data conversion"):
         convert(bad_input, output_type)
@@ -44,7 +44,7 @@ def test_convert_good_output_bad_input(bad_input, output_type):
 
 def test_convert_bad_output(iris_df):
     with pytest.raises(ValueError, match="Unknown"):
-        convert(iris_df, "bad_parameter")
+        convert(iris_df, "bad_parameter")   # pyright: ignore[reportArgumentType, reportCallIssue] -> should raise an error
 
 
 @pytest.fixture
@@ -68,7 +68,7 @@ def test_remove_incomplete_cases_all_nan(x_y):
     x, y = x_y
     x = [None for _ in x]
 
-    x_, y_ = remove_incomplete_samples(x, y)
+    x_, y_ = remove_incomplete_samples(x, y)     # pyright: ignore[reportArgumentType]
     assert len(x_) == len(y_) == 0
 
 
@@ -87,6 +87,6 @@ def test_replace_nan_all_nan(x_y):
     x, y = x_y
     x = [None for _ in x]
 
-    x_, y_ = replace_nan_with_value(x, y, 1_000)
+    x_, y_ = replace_nan_with_value(x, y, 1_000)     # pyright: ignore[reportArgumentType]
 
     assert all([elem == 1_000 for elem in x_])

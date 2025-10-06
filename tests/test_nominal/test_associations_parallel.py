@@ -1,10 +1,10 @@
 import pytest
-import matplotlib
 import pandas as pd
 import scipy.stats as ss
 import numpy as np
 from psutil import cpu_count
 from datetime import datetime, timedelta
+from matplotlib.axes._axes import Axes
 
 from dython.nominal import associations, correlation_ratio
 
@@ -28,7 +28,7 @@ def test_return_type_check(iris_df):
         assoc["corr"], pd.DataFrame
     ), 'assoc["corr"] should be a pandas DataFrame'
     assert isinstance(
-        assoc["ax"], matplotlib.axes.Axes
+        assoc["ax"], Axes
     ), 'assoc["ax"] should be a matplotlib Axes'
 
 
@@ -65,7 +65,7 @@ def test_bad_nom_nom_assoc_parameter(iris_df):
     with pytest.raises(ValueError, match="is not a supported"):
         associations(
             iris_df,
-            nom_nom_assoc="bad_parameter_name",
+            nom_nom_assoc="bad_parameter_name",   # pyright: ignore[reportArgumentType] -> should raise an error
             multiprocessing=True,
             max_cpu_cores=MAX_CORE_COUNT,
         )
@@ -73,7 +73,7 @@ def test_bad_nom_nom_assoc_parameter(iris_df):
 
 def test_bad_num_num_assoc_parameter(iris_df):
     with pytest.raises(ValueError, match="is not a supported"):
-        associations(iris_df, num_num_assoc="bad_parameter_name")
+        associations(iris_df, num_num_assoc="bad_parameter_name")     # pyright: ignore[reportArgumentType] -> should raise an error
 
 
 def test_compute_only_ax_is_none(iris_df):
@@ -102,8 +102,8 @@ def test_mark_columns(iris_df):
     ), "first column should contain (con) mark if iris_df is used"
 
 
-def pr(x, y):
-    return ss.pearsonr(x, y)[0]
+def pr(x: pd.Series, y: pd.Series) -> float:
+    return ss.pearsonr(x, y)[0]   # pyright: ignore[reportReturnType]
 
 
 def test_udf(iris_df):

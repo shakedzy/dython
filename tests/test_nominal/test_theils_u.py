@@ -1,5 +1,5 @@
 import pytest
-from hypothesis import given, strategies as st, assume
+from hypothesis import given, strategies as st
 
 from dython.nominal import theils_u
 
