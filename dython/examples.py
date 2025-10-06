@@ -22,8 +22,8 @@ def roc_graph_example():
 
     # Load data
     iris = datasets.load_iris()
-    X = iris.data
-    y = label_binarize(iris.target, classes=[0, 1, 2])
+    X = iris.data                                                                   # pyright: ignore[reportAttributeAccessIssue]
+    y = label_binarize(iris.target, classes=[0, 1, 2])                              # pyright: ignore[reportAttributeAccessIssue]   
 
     # Add noisy features
     random_state = np.random.RandomState(4)
@@ -43,7 +43,7 @@ def roc_graph_example():
 
     # Plot ROC graphs
     return metric_graph(
-        y_test, y_score, "roc", class_names_list=iris.target_names
+        y_test, y_score, "roc", class_names_list=iris.target_names                  # pyright: ignore[reportAttributeAccessIssue, reportCallIssue]
     )
 
 
@@ -55,8 +55,8 @@ def pr_graph_example():
 
     # Load data
     iris = datasets.load_iris()
-    X = iris.data
-    y = label_binarize(iris.target, classes=[0, 1, 2])
+    X = iris.data                                                                   # pyright: ignore[reportAttributeAccessIssue]   
+    y = label_binarize(iris.target, classes=[0, 1, 2])                              # pyright: ignore[reportAttributeAccessIssue]
 
     # Add noisy features
     random_state = np.random.RandomState(4)
@@ -76,7 +76,7 @@ def pr_graph_example():
 
     # Plot PR graphs
     return metric_graph(
-        y_test, y_score, "pr", class_names_list=iris.target_names
+        y_test, y_score, "pr", class_names_list=iris.target_names                  # pyright: ignore[reportAttributeAccessIssue, reportCallIssue]
     )
 
 
@@ -91,10 +91,10 @@ def associations_iris_example():
 
     # Convert int classes to strings to allow associations method
     # to automatically recognize categorical columns
-    target = ["C{}".format(i) for i in iris.target]
+    target = ["C{}".format(i) for i in iris.target]                                 # pyright: ignore[reportAttributeAccessIssue]   
 
     # Prepare data
-    X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+    X = pd.DataFrame(data=iris.data, columns=iris.feature_names)                    # pyright: ignore[reportAttributeAccessIssue]
     y = pd.DataFrame(data=target, columns=["target"])
     df = pd.concat([X, y], axis=1)
 
@@ -151,8 +151,8 @@ def split_hist_example():
 
     # Load data and convert to DataFrame
     data = datasets.load_breast_cancer()
-    df = pd.DataFrame(data=data.data, columns=data.feature_names)
-    df["malignant"] = [not bool(x) for x in data.target]
+    df = pd.DataFrame(data=data.data, columns=data.feature_names)                       # pyright: ignore[reportAttributeAccessIssue]
+    df["malignant"] = [not bool(x) for x in data.target]                                # pyright: ignore[reportAttributeAccessIssue]
 
     # Plot histogram
     return split_hist(df, "mean radius", "malignant", bins=20, figsize=(15, 7))
@@ -167,7 +167,7 @@ def ks_abc_example():
     # Load and split data
     data = datasets.load_breast_cancer()
     X_train, X_test, y_train, y_test = train_test_split(
-        data.data, data.target, test_size=0.5, random_state=0
+        data.data, data.target, test_size=0.5, random_state=0                           # pyright: ignore[reportAttributeAccessIssue]
     )
 
     # Train model and predict

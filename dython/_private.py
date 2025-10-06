@@ -2,15 +2,14 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from numpy.typing import NDArray
-from typing import Optional, Any, Tuple, Union, List, Literal
-from .typing import Number, OneDimArray
+from typing import Any, Literal, cast, overload, Type
+from .typing import OneDimArray, TwoDimArray
 
 
 IS_JUPYTER: bool = False
 
 
-def set_is_jupyter(force_to: Optional[bool] = None) -> None:
+def set_is_jupyter(force_to: bool | None = None) -> None:
     global IS_JUPYTER
     if force_to is not None:
         IS_JUPYTER = force_to
@@ -27,13 +26,39 @@ def plot_or_not(plot: bool) -> None:
             plt.close(fig)  
 
 
+@overload
 def convert(
-    data: Union[List[Number], NDArray, pd.DataFrame],
-    to: Literal["array", "list", "dataframe"],
+    data: OneDimArray | TwoDimArray,
+    to: Type[np.ndarray],
     copy: bool = True,
-) -> Union[List[Number], NDArray, pd.DataFrame]:
+) -> np.ndarray:
+    ...
+
+@overload
+def convert(
+    data: OneDimArray | TwoDimArray,
+    to: Type[list],
+    copy: bool = True,
+) -> list:
+    ...
+
+@overload
+def convert(
+    data: OneDimArray | TwoDimArray,
+    to: Type[pd.DataFrame],
+    copy: bool = True,
+) -> pd.DataFrame:
+    ...
+
+def convert(
+    data: OneDimArray | TwoDimArray,
+    to: Type[list | pd.DataFrame | np.ndarray],
+    copy: bool = True,
+) -> list | pd.DataFrame | np.ndarray:
+    
     converted = None
-    if to == "array":
+
+    if to == np.ndarray:
         if isinstance(data, np.ndarray):
             converted = data.copy() if copy else data
         elif isinstance(data, pd.Series):
@@ -41,19 +66,23 @@ def convert(
         elif isinstance(data, list):
             converted = np.array(data)
         elif isinstance(data, pd.DataFrame):
-            converted = data.values()  # type: ignore
-    elif to == "list":
+            converted = data.values             
+        converted = cast(np.ndarray, converted)
+
+    elif to == list:
         if isinstance(data, list):
             converted = data.copy() if copy else data
         elif isinstance(data, pd.Series):
             converted = data.values.tolist()
         elif isinstance(data, np.ndarray):
             converted = data.tolist()
-    elif to == "dataframe":
+        
+    elif to == pd.DataFrame:
         if isinstance(data, pd.DataFrame):
             converted = data.copy(deep=True) if copy else data
         elif isinstance(data, np.ndarray):
             converted = pd.DataFrame(data)
+        
     else:
         raise ValueError("Unknown data conversion: {}".format(to))
     if converted is None:
@@ -63,12 +92,14 @@ def convert(
             )
         )
     else:
-        return converted  # type: ignore
+        return converted
 
 
 def remove_incomplete_samples(
-    x: Union[List[Any], OneDimArray], y: Union[List[Any], OneDimArray]
-) -> Tuple[Union[List[Any], OneDimArray], Union[List[Any], OneDimArray]]:
+    x: OneDimArray, 
+    y: OneDimArray,
+) -> tuple[OneDimArray, OneDimArray]:
+    
     x = [v if v is not None else np.nan for v in x]
     y = [v if v is not None else np.nan for v in y]
     arr = np.array([x, y]).transpose()
@@ -80,10 +111,11 @@ def remove_incomplete_samples(
 
 
 def replace_nan_with_value(
-    x: Union[List[Any], OneDimArray],
-    y: Union[List[Any], OneDimArray],
+    x: OneDimArray,
+    y: OneDimArray,
     value: Any,
-) -> Tuple[NDArray, NDArray]:
+) -> tuple[np.ndarray, np.ndarray]:
+    
     x = np.array(
         [v if v == v and v is not None else value for v in x]
     )  # NaN != NaN

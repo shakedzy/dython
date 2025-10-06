@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.axes._axes import Axes
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_curve, precision_recall_curve, auc
 from sklearn.preprocessing import LabelEncoder
-from typing import List, Union, Optional, Tuple, Dict, Any, Iterable
-from numpy.typing import NDArray
+from typing import Any, Iterable
 from .typing import Number, OneDimArray
 from ._private import convert, plot_or_not
 
@@ -14,16 +14,16 @@ _ROC_PLOT_COLORS = ["b", "g", "r", "c", "m", "y", "k", "darkorange"]
 
 
 def _display_metric_plot(
-    ax: plt.Axes,
+    ax: Axes,
     metric: str,
-    naives: List[Tuple[Number, Number, Number, Number, str]],
-    xlim: Tuple[float, float],
-    ylim: Tuple[float, float],
-    legend: Optional[str],
-    title: Optional[str],
-    filename: Optional[str],
+    naives: list[tuple[Number, Number, Number, Number, str]],
+    xlim: tuple[float, float],
+    ylim: tuple[float, float],
+    legend: str | None,
+    title: str | None,
+    filename: str | None,
     plot: bool,
-) -> plt.Axes:
+) -> Axes:
     for n in naives:
         ax.plot([n[0], n[1]], [n[2], n[3]], color=n[4], lw=1, linestyle="--")
     ax.set_xlim(left=xlim[0], right=xlim[1])
@@ -52,8 +52,8 @@ def _draw_estimated_optimal_threshold_mark(
     color: str,
     ms: int,
     fmt: str,
-    ax: plt.Axes,
-) -> Tuple[Number, Number, Number]:
+    ax: Axes,
+) -> tuple[Number, Number, Number]:
     annotation_offset = (-0.027, 0.03)
     a = np.zeros((len(x_axis), 2))
     a[:, 0] = x_axis
@@ -65,17 +65,17 @@ def _draw_estimated_optimal_threshold_mark(
             lambda row: (1 - row[0]) ** 2 + (1 - row[1]) ** 2
         )  # optimal: (1,1)
     amin = np.apply_along_axis(dist, 1, a).argmin()
-    ax.plot(x_axis[amin], y_axis[amin], color=color, marker="o", ms=ms)
+    ax.plot(x_axis[amin], y_axis[amin], color=color, marker="o", ms=ms)     # pyright: ignore[reportCallIssue, reportArgumentType]
     ax.annotate(
-        "{th:{fmt}}".format(th=thresholds[amin], fmt=fmt),
-        xy=(x_axis[amin], y_axis[amin]),
+        "{th:{fmt}}".format(th=thresholds[amin], fmt=fmt),                  # pyright: ignore[reportCallIssue, reportArgumentType]
+        xy=(x_axis[amin], y_axis[amin]),                                    # pyright: ignore[reportCallIssue, reportArgumentType]
         color=color,
         xytext=(
-            x_axis[amin] + annotation_offset[0],
-            y_axis[amin] + annotation_offset[1],
+            x_axis[amin] + annotation_offset[0],                            # pyright: ignore[reportCallIssue, reportArgumentType, reportOperatorIssue]
+            y_axis[amin] + annotation_offset[1],                            # pyright: ignore[reportCallIssue, reportArgumentType, reportOperatorIssue]  
         ),
     )
-    return thresholds[amin], x_axis[amin], y_axis[amin]
+    return thresholds[amin], x_axis[amin], y_axis[amin]                     # pyright: ignore[reportCallIssue, reportArgumentType, reportReturnType]
 
 
 def _plot_macro_metric(
@@ -84,12 +84,12 @@ def _plot_macro_metric(
     n: int,
     lw: int,
     fmt: str,
-    ax: plt.Axes,
+    ax: Axes,
 ) -> None:
     all_x_axis = np.unique(np.concatenate([x_axis[i] for i in range(n)]))
     mean_y_axis = np.zeros_like(all_x_axis)
     for i in range(n):
-        mean_y_axis += np.interp(all_x_axis, x_axis[i], y_axis[i])
+        mean_y_axis += np.interp(all_x_axis, x_axis[i], y_axis[i])          # pyright: ignore[reportCallIssue, reportArgumentType]
     mean_y_axis /= n
     x_axis_macro = all_x_axis
     y_axis_macro = mean_y_axis
@@ -107,16 +107,16 @@ def _binary_metric_graph(
     y_true: OneDimArray,
     y_pred: OneDimArray,
     eoptimal: bool,
-    class_label: Optional[str],
+    class_label: str | None,
     color: str,
     lw: int,
     ls: str,
     ms: int,
     fmt: str,
-    ax: plt.Axes,
-) -> Dict[str, Any]:
-    y_true_array: NDArray = convert(y_true, "array")  # type: ignore
-    y_pred_array: NDArray = convert(y_pred, "array")  # type: ignore
+    ax: Axes,
+) -> dict[str, Any]:
+    y_true_array = convert(y_true, np.ndarray)  
+    y_pred_array = convert(y_pred, np.ndarray) 
     if y_pred_array.shape != y_true_array.shape:
         raise ValueError("y_true and y_pred must have the same shape")
     elif len(y_pred_array.shape) == 1:
@@ -125,7 +125,7 @@ def _binary_metric_graph(
     else:
         y_t = np.array([np.argmax(x) for x in y_true_array])
         y_p = np.array([x[1] for x in y_pred_array])
-    y_t_ratio = np.sum(y_t) / y_t.size  # type: ignore
+    y_t_ratio = np.sum(y_t) / y_t.size
     if metric == "roc":
         x_axis, y_axis, th = roc_curve(y_t, y_p)  # x = fpr, y = tpr
     else:  # metric == 'pr'
@@ -166,8 +166,9 @@ def _binary_metric_graph(
 
 
 def _build_metric_graph_output_dict(
-    metric: str, d: Dict[str, Any]
-) -> Dict[str, Dict[str, Any]]:
+    metric: str, 
+    d: dict[str, Any]
+) -> dict[str, dict[str, Any]]:
     naive = d["y_t_ratio"] if metric == "pr" else 0.5
     return {
         "auc": {"val": d["auc"], "naive": naive},
@@ -183,22 +184,22 @@ def metric_graph(
     micro: bool = True,
     macro: bool = True,
     eopt: bool = True,
-    class_names: Optional[Union[str, List[str]]] = None,
-    colors: Optional[str] = None,
-    ax: Optional[plt.Axes] = None,
-    figsize: Optional[Tuple[int, int]] = None,
-    xlim: Tuple[float, float] = (0.0, 1.0),
-    ylim: Tuple[float, float] = (0.0, 1.02),
+    class_names: str | list[str] | None = None,
+    colors: str | None = None,
+    ax: Axes | None = None,
+    figsize: tuple[int, int] | None = None,
+    xlim: tuple[float, float] = (0.0, 1.0),
+    ylim: tuple[float, float] = (0.0, 1.02),
     lw: int = 2,
     ls: str = "-",
     ms: int = 10,
     fmt: str = ".2f",
-    legend: Optional[str] = "best",
+    legend: str | None = "best",
     plot: bool = True,
-    title: Optional[str] = None,
-    filename: Optional[str] = None,
+    title: str | None = None,
+    filename: str | None = None,
     force_multiclass: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Plot a ROC graph of predictor's results (including AUC scores), where each
     row of y_true and y_pred represent a single example.
@@ -300,20 +301,18 @@ def metric_graph(
 
     all_x_axis = list()
     all_y_axis = list()
-    y_true_array: NDArray = convert(y_true, "array")  # type: ignore
-    y_pred_array: NDArray = convert(y_pred, "array")  # type: ignore
+    y_true_array = convert(y_true, np.ndarray)  
+    y_pred_array = convert(y_pred, np.ndarray)  
 
     if y_pred_array.shape != y_true_array.shape:
         raise ValueError("y_true and y_pred must have the same shape")
 
-    class_names_list: Optional[List[str]]
+    class_names_list: list[str] | None = None
     if class_names is not None:
         if not isinstance(class_names, str):
-            class_names_list = convert(class_names, "list")  # type: ignore
+            class_names_list = convert(class_names, list)  
         else:
             class_names_list = [class_names]
-    else:
-        class_names_list = None
 
     if ax is None:
         plt.figure(figsize=figsize)
@@ -324,7 +323,7 @@ def metric_graph(
     if isinstance(colors, str):
         colors_list = [colors]
     else:
-        colors_list: List[str] = colors or _ROC_PLOT_COLORS
+        colors_list: list[str] = colors or _ROC_PLOT_COLORS
 
     output_dict = dict()
     pr_naives = list()
@@ -405,7 +404,7 @@ def metric_graph(
         if macro and metric == "roc":
             _plot_macro_metric(all_x_axis, all_y_axis, n, lw, fmt, axis)
     if metric == "roc":
-        naives: List[Tuple[Number, Number, Number, Number, str]] = [
+        naives: list[tuple[Number, Number, Number, Number, str]] = [
             (0, 1, 0, 1, "grey")
         ]
     elif metric == "pr":
@@ -428,8 +427,10 @@ def metric_graph(
 
 
 def random_forest_feature_importance(
-    forest: RandomForestClassifier, features: List[str], precision: int = 4
-) -> Iterable[Tuple[float, str]]:
+    forest: RandomForestClassifier, 
+    features: list[str], 
+    precision: int = 4
+) -> Iterable[tuple[float, str]]:
     """
     Given a trained `sklearn.ensemble.RandomForestClassifier`, plot the
     different features based on their importance according to the classifier,
@@ -459,18 +460,18 @@ def ks_abc(
     y_true: OneDimArray,
     y_pred: OneDimArray,
     *,
-    ax: Optional[plt.Axes] = None,
-    figsize: Optional[Tuple[int, int]] = None,
-    colors: Tuple[str, str] = ("darkorange", "b"),
-    title: Optional[str] = None,
-    xlim: Tuple[float, float] = (0.0, 1.0),
-    ylim: Tuple[float, float] = (0.0, 1.0),
+    ax: Axes | None = None,
+    figsize: tuple[int, int] | None = None,
+    colors: tuple[str, str] = ("darkorange", "b"),
+    title: str | None = None,
+    xlim: tuple[float, float] = (0.0, 1.0),
+    ylim: tuple[float, float] = (0.0, 1.0),
     fmt: str = ".2f",
     lw: int = 2,
-    legend: Optional[str] = "best",
+    legend: str | None = "best",
     plot: bool = True,
-    filename: Optional[str] = None,
-) -> Dict[str, Any]:
+    filename: str | None = None,
+) -> dict[str, Any]:
     """
     Perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute
     the area between curves.
@@ -519,8 +520,8 @@ def ks_abc(
     'eopt': estimated optimal threshold,
     'ax': the ax used to plot the curves
     """
-    y_true_arr: NDArray = convert(y_true, "array")  # type: ignore
-    y_pred_arr: NDArray = convert(y_pred, "array")  # type: ignore
+    y_true_arr = convert(y_true, np.ndarray)
+    y_pred_arr = convert(y_pred, np.ndarray)
     if y_pred_arr.shape != y_true_arr.shape:
         raise ValueError("y_true and y_pred must have the same shape")
     elif len(y_pred_arr.shape) == 1 or y_pred_arr.shape[1] == 1:
@@ -537,7 +538,7 @@ def ks_abc(
         )
 
     thresholds, nr, pr, ks_statistic, max_distance_at, _ = _binary_ks_curve(
-        y_t, y_p  # type: ignore
+        y_t, y_p  # pyright: ignore[reportArgumentType]
     )
     if ax is None:
         plt.figure(figsize=figsize)
@@ -550,7 +551,7 @@ def ks_abc(
     idx = np.where(thresholds == max_distance_at)[0][0]
     axis.axvline(
         max_distance_at,
-        *sorted([nr[idx], pr[idx]]),
+        *sorted([nr[idx], pr[idx]]),  #pyright: ignore[reportArgumentType]
         label="KS Statistic: {ks:{fmt}} at {d:{fmt}}".format(
             ks=ks_statistic, d=max_distance_at, fmt=fmt
         ),
@@ -587,8 +588,9 @@ def ks_abc(
 
 
 def _binary_ks_curve(
-    y_true: OneDimArray, y_probas: OneDimArray
-) -> Tuple[NDArray, NDArray, NDArray, Number, Number, NDArray]:
+    y_true: OneDimArray, 
+    y_probas: OneDimArray
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, Number, Number, np.ndarray]:
     """Copied from scikit-plot: https://github.com/reiinakano/scikit-plot/blob/master/scikitplot/helpers.py
 
     This function generates the points necessary to calculate the KS
@@ -677,13 +679,13 @@ def _binary_ks_curve(
     pct2 = np.asarray(pct2) / float(len(data2))
 
     if thresholds[0] != 0:
-        thresholds = np.insert(thresholds, 0, [0.0])  # type: ignore
-        pct1 = np.insert(pct1, 0, [0.0])  # type: ignore
-        pct2 = np.insert(pct2, 0, [0.0])  # type: ignore
+        thresholds = np.insert(thresholds, 0, [0.0]) 
+        pct1 = np.insert(pct1, 0, [0.0])
+        pct2 = np.insert(pct2, 0, [0.0]) 
     if thresholds[-1] != 1:
-        thresholds = np.append(thresholds, [1.0])  # type: ignore
-        pct1 = np.append(pct1, [1.0])  # type: ignore
-        pct2 = np.append(pct2, [1.0])  # type: ignore
+        thresholds = np.append(thresholds, [1.0])
+        pct1 = np.append(pct1, [1.0])
+        pct2 = np.append(pct2, [1.0])
 
     differences = pct1 - pct2
     ks_statistic, max_distance_at = (
@@ -691,4 +693,4 @@ def _binary_ks_curve(
         thresholds[np.argmax(differences)],
     )
 
-    return thresholds, pct1, pct2, ks_statistic, max_distance_at, lb.classes_  # type: ignore
+    return thresholds, pct1, pct2, ks_statistic, max_distance_at, lb.classes_  # pyright: ignore[reportReturnType]

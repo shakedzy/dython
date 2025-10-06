@@ -1,7 +1,6 @@
 import pytest
 import numpy as np
-import matplotlib
-
+from matplotlib.axes._axes import Axes
 from dython.model_utils import metric_graph
 
 
@@ -22,7 +21,7 @@ def test_metric_graph_check_types(y_true, y_pred):
 
     assert "ax" in result, 'metric_graph should return dict containing "ax" key'
 
-    assert isinstance(result["ax"], matplotlib.axes.Axes)
+    assert isinstance(result["ax"], Axes)
 
 
 def test_metric_graph_bad_metric_parameter(y_true, y_pred):

@@ -1,7 +1,6 @@
 import pytest
 import numpy as np
-import matplotlib
-
+from matplotlib.axes._axes import Axes
 from dython.model_utils import ks_abc
 
 
@@ -38,7 +37,7 @@ def test_ks_abc_check_types(y_true, y_pred):
     ), "estimated optimal threshold should be a float"
 
     assert "ax" in result, 'ks_abc should return dict containing "ax" key'
-    assert isinstance(result["ax"], matplotlib.axes.Axes)
+    assert isinstance(result["ax"], Axes)
 
 
 def test_ks_abc_check_known_value(y_true, y_pred):

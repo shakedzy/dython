@@ -1,8 +1,8 @@
-from pandas import DataFrame, Series
-from typing import List, Union, Any
-from numpy.typing import NDArray
+import numpy as np
+import pandas as pd
+from typing import Sequence, Any
 
 
-Number = Union[int, float]
-OneDimArray = Union[List[Number], NDArray, Series]
-TwoDimArray = Union[NDArray, DataFrame]
+Number = int | float
+OneDimArray = Sequence[Number | str] | pd.Series | np.ndarray[Any, np.dtype[np.int64] | np.dtype[np.float64] | np.dtype[np.str_]]
+TwoDimArray = np.ndarray[Any, np.dtype[np.int64] | np.dtype[np.float64] | np.dtype[np.str_]] | pd.DataFrame 

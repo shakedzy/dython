@@ -1,4 +1,3 @@
-import pytest
 from sklearn.ensemble import RandomForestClassifier
 
 from dython.model_utils import random_forest_feature_importance

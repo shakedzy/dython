@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from typing import Optional, Tuple, List, Any, Union
-from numpy.typing import NDArray
-from .typing import Number, TwoDimArray
+from matplotlib.axes._axes import Axes
+from typing import Any, Sequence, cast
+from .typing import TwoDimArray, OneDimArray
 from ._private import convert, plot_or_not
 
 
@@ -16,9 +16,9 @@ __all__ = [
 
 
 def one_hot_encode(
-    array: Union[List[Union[Number, str]], NDArray],
-    classes: Optional[int] = None,
-) -> NDArray:
+    array: OneDimArray,
+    classes: int | None = None,
+) -> np.ndarray:
     """
     One-hot encode a 1D array.
     Based on this StackOverflow answer: https://stackoverflow.com/a/29831596/5863503
@@ -41,7 +41,7 @@ def one_hot_encode(
            [1., 0., 0., 0., 0., 0.],
            [0., 0., 0., 0., 0., 1.]])
     """
-    arr: NDArray = convert(array, "array").astype(int)  # type: ignore
+    arr = convert(array, np.ndarray).astype(int)
     if not len(arr.shape) == 1:
         raise ValueError(
             f"array must have only one dimension, but has shape: {arr.shape}"
@@ -49,7 +49,8 @@ def one_hot_encode(
     if arr.min() < 0:
         raise ValueError("array cannot contain negative values")
     classes = classes if classes is not None else arr.max() + 1
-    h = np.zeros((arr.size, classes))  # type: ignore
+    classes = cast(int, classes)
+    h = np.zeros((arr.size, classes))
     h[np.arange(arr.size), arr] = 1
     return h
 
@@ -58,14 +59,14 @@ def split_hist(
     dataset: pd.DataFrame,
     values: str,
     split_by: str,
-    title: Optional[str] = "",
-    xlabel: Optional[str] = "",
-    ylabel: Optional[str] = None,
-    figsize: Optional[Tuple[int, int]] = None,
-    legend: Optional[str] = "best",
+    title: str | None = "",
+    xlabel: str | None = "",
+    ylabel: str | None = None,
+    figsize: tuple[int, int] | None = None,
+    legend: str | None = "best",
     plot: bool = True,
     **hist_kwargs,
-) -> plt.Axes:
+) -> Axes:  
     """
     Plot a histogram of values from a given dataset, split by the values of a chosen column
 
@@ -125,8 +126,9 @@ def split_hist(
 
 
 def identify_columns_by_type(
-    dataset: TwoDimArray, include: List[str]
-) -> List[Any]:
+    dataset: TwoDimArray, 
+    include: Sequence[str]
+) -> list[Any]:
     """
     Given a dataset, identify columns of the types requested.
 
@@ -147,8 +149,8 @@ def identify_columns_by_type(
     ['col2', 'col3']
 
     """
-    df: pd.DataFrame = convert(dataset, "dataframe")  # type: ignore
-    columns = list(df.select_dtypes(include=include).columns)
+    df = convert(dataset, pd.DataFrame)
+    columns = list(df.select_dtypes(include=include).columns)   # pyright: ignore[reportCallIssue, reportArgumentType]
     return columns
 
 
@@ -173,7 +175,7 @@ def identify_columns_with_na(dataset: TwoDimArray) -> pd.DataFrame:
     1   col2         2
     0   col1         1
     """
-    df: pd.DataFrame = convert(dataset, "dataframe")  # type: ignore
+    df = convert(dataset, pd.DataFrame)
     na_count = [sum(df[cc].isnull()) for cc in df.columns]
     return (
         pd.DataFrame({"column": df.columns, "na_count": na_count})

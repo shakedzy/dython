@@ -1,7 +1,7 @@
 import pytest
 import functools
 import numpy as np
-from hypothesis import given, strategies as st, assume, settings, example
+from hypothesis import given, strategies as st, assume, settings
 
 from dython.nominal import cramers_v
 

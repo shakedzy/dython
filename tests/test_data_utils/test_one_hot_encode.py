@@ -22,4 +22,4 @@ def test_more_than_one_dimension():
     lst = [[0, 1], [2, 3]]
 
     with pytest.raises(ValueError, match="must have only one dimension"):
-        one_hot_encode(lst)
+        one_hot_encode(lst)     # pyright: ignore[reportArgumentType] -> should raise an error
