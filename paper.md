@@ -1,5 +1,5 @@
 ---
-title: "dython: A Set of Analysis Tools for Data and Variables in Python"
+title: "dython: A Set of Analysis and Visualization Tools for Data and Variables in Python"
 authors:  
   - name: Shaked Zychlinski
     orcid: 0009-0003-7968-6489
