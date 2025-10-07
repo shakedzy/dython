@@ -1,3 +1,7 @@
 .vscode*
 .env
 .DS_Store
+.hypothesis*
+*__pycache__*
+*egg-info*
+.pytest_cache*
