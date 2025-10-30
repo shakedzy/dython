@@ -27,6 +27,8 @@ highly-readable and customizable visualizations of the output, treating those as
 
 In short, **`dython`** lowers the friction for inter-variable association analysis in mixed-type datasets and improves reproducibility of EDA workflows.
 
+**First version release date:** February 2018.
+
 # Statement of Need  
 
 While there are many statistical and visualization libraries in Python (e.g. `pandas` [@pandas], `scipy` [@scipy], `scikit-learn` [@scikit-learn], `seaborn` [@seaborn]), they treat continuous data, categorical data and the overall visualization separately. Users often resort to custom glue code to:  
