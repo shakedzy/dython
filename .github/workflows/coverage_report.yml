@@ -1,0 +1,13 @@
+name: Manual CodeCov Coverage Report Generation
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  create-report:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}

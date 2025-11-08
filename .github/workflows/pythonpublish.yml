@@ -49,3 +49,12 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
+
+  # post-deploy:
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Upload coverage reports to Codecov
+  #     uses: codecov/codecov-action@v5
+  #     with:
+  #       token: ${{ secrets.CODECOV_TOKEN }}
