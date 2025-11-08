@@ -3,3 +3,4 @@ hypothesis>=6.111.0
 black>=24.8.0
 pre-commit>=3.8.0
 pytest-enabler>=3.1.1
+pytest-cov>=7.0.0
