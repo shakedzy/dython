@@ -6,6 +6,7 @@
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/dython)](https://anaconda.org/conda-forge/dython)
 [![Python Version](https://img.shields.io/pypi/pyversions/dython.svg)](https://pypi.org/project/dython/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython)](https://pypistats.org/packages/dython)
+[![Coverage](https://codecov.io/github/shakedzy/dython/coverage.svg?branch=main)](https://app.codecov.io/github/shakedzy/dython/tree/master/)
 [![License](https://img.shields.io/pypi/l/dython)](https://github.com/shakedzy/dython/blob/master/LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12698421-eb34c6)](https://zenodo.org/doi/10.5281/zenodo.12698421)
 
