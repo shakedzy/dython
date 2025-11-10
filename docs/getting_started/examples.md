@@ -3,8 +3,6 @@ title: examples
 ---
 # Examples
 
-_Examples can be imported and executed from `dython.examples`._
-
 #### `associations_iris_example()`
 
 Plot an example of an associations heat-map of the Iris dataset features. 
