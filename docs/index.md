@@ -56,7 +56,6 @@ for more information.
 
 ## Examples
 See some usage examples of `nominal.associations` and `model_utils.roc_graph` on the [examples page](getting_started/examples.md).
-All examples can also be imported and executed from `dython.examples`.
 
 ## Citing
 Use this reference to cite if you use Dython in a paper:
