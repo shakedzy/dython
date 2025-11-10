@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.7.12 (dev)
+* _Dython now officially supports Python 3.14_
 * Added new tests (issue [#172](https://github.com/shakedzy/dython/issues/172))
 * `examples` module removed (all examples exist in the [official documentation](https://shakedzy.xyz/dython/getting_started/examples/))
 
