@@ -1,3 +1,4 @@
+import os
 import pytest
 import functools
 import matplotlib
@@ -5,6 +6,11 @@ import numpy as np
 import pandas as pd
 from sklearn import datasets
 
+
+# Only force headless backend in CI
+if os.environ.get("CI") == "true":
+    matplotlib.use("Agg")
+    
 
 @pytest.fixture(autouse=True)
 def disable_plot(monkeypatch):
