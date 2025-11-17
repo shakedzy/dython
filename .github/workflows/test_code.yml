@@ -1,4 +1,4 @@
-name: Run pytest
+name: Test Code
 
 on:
   push:
@@ -33,10 +33,11 @@ jobs:
     strategy:
       matrix:
         version: ["3.10", "3.14"]
-    runs-on: ubuntu-latest
+        platform: ["ubuntu-latest", "macos-latest", "windows-latest"]
+    runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.version }}
+    - name: Set up Python ${{ matrix.version }} on ${{ matrix.platform }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.version }}
