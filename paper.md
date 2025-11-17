@@ -56,10 +56,50 @@ This fragmentation results in boilerplate, inconsistency, or mistake-risk, espec
 Therefore, **`dython`** helps data scientists, statisticians, and researchers spend less time writing glue code and more time focusing on insights.
 
 # Functionality  
+Below is a summary of existing methods of `dython`, per module.
 
-Below is a non-exhaustive overview of core modules and features. For full API and examples, see the documentation.  
+## `nominal`
 
-## Associations  
+| Method | Description |
+|--------|-------------|
+| associations | Computes associations between mixed-type features. |
+| cluster_correlations | Applies clustering to reorder a correlation matrix. |
+| compute_associations | Deprecated; replaced by associations(compute_only). |
+| conditional_entropy | Computes conditional entropy of X given Y. |
+| correlation_ratio | Computes correlation between categorical and numeric vars. |
+| cramers_v | Computes Cramer’s V between categorical variables. |
+| identify_nominal_columns | Detects nominal (categorical) columns. |
+| identify_numeric_columns | Detects numeric columns. |
+| numerical_encoding | Encodes a mixed dataset into numeric format. |
+| replot_last_associations | Re-plots the last association heatmap. |
+| theils_u | Computes Theil’s U (uncertainty coefficient). |
+
+## `model_utils`
+
+| Method | Description |
+|--------|-------------|
+| ks_abc | Computes KS statistic, ABC, and optional plot. |
+| metric_graph | Plots ROC/PR curves for classifiers. |
+| random_forest_feature_importance | Plots feature importance for Random Forest models. | 
+
+## `sampling`
+
+| Method | Description |
+|--------|-------------|
+| boltzmann_sampling | Samples values under Boltzmann distribution. |
+| weighted_sampling | Samples values using weighted probabilities. |
+
+## `data_utils`
+
+| Method | Description |
+|-------|-------------|
+| identify_columns_with_na | Returns dataset columns containing NA values. |
+| identify_columns_by_type | Identifies columns of requested data types. |
+| one_hot_encode | Converts a 1D array of integers into a one-hot matrix. |
+| split_hist | Plots a histogram split by categories. |
+
+## Code Examples
+### Associations  
 
 * `dython.nominal.associations(df, theil_u=False, plot=False, return_results=False, **kwargs)`  
   Computes pairwise associations across all columns in a pandas DataFrame `df`. Internally, for each pair, it selects a measure appropriate to the variable types:
@@ -77,7 +117,7 @@ Below is a non-exhaustive overview of core modules and features. For full API an
   assoc_df = associations(my_df, theil_u=True, plot=True)
   ```
 
-## Model evaluation
+### Model evaluation
 
 * `dython.model_utils.metric_graph(y_true, y_pred, metric='roc', **kwargs)`
     This utility helps visualize classification performance. For a given true-label array y_true and predicted scores y_pred, it can plot ROC curves, compute AUC for each class (in multiclass settings), and show threshold recommendations.
@@ -126,7 +166,25 @@ Dependencies include standard scientific Python packages such as
 `matplotlib` [@matplotlib], 
 and `seaborn` [@seaborn].
 
-# Example workflow
+# Usage Mention
+
+Throughout its lifetime, `dython` has been used in many projects, including:
+
+* [Official implementation](`https://github.com/yandex-research/tab-ddpm`) of TabDDPM [@tabddpm] by [Yandex Research](https://research.yandex.com)
+
+* [`gretel-synthetics`](https://github.com/gretelai/gretel-synthetics/tree/a0e712852f74c238ce848456952e90a141e8da2a) by [Gretal.ai](https://gretel.ai)
+
+* [`torchmetrics`](https://github.com/Lightning-AI/torchmetrics?tab=readme-ov-file) by [Lightning AI](https://lightning.ai)
+
+* [`ydata-quiality`](https://github.com/ydataai/ydata-quality) by [YData](https://ydata.ai)
+
+
+# Acknowledgements
+
+The author thanks users and contributors who have filed issues, submitted pull requests, or suggested enhancements, as well as the authors and 
+communities of the foundational packages on which `dython` builds.
+
+# Appendix: Code Examples
 **A minimal example using `associations`**:
 
 ```python
@@ -195,23 +253,5 @@ This would output:
 
 ![Example of a ROC graph plotted over the Iris Dataset](roc.png)
 
-
-# Usage Mention
-
-Throughout its lifetime, `dython` has been used in many projects, including:
-
-* [Official implementation](`https://github.com/yandex-research/tab-ddpm`) of TabDDPM [@tabddpm] by [Yandex Research](https://research.yandex.com)
-
-* [`gretel-synthetics`](https://github.com/gretelai/gretel-synthetics/tree/a0e712852f74c238ce848456952e90a141e8da2a) by [Gretal.ai](https://gretel.ai)
-
-* [`torchmetrics`](https://github.com/Lightning-AI/torchmetrics?tab=readme-ov-file) by [Lightning AI](https://lightning.ai)
-
-* [`ydata-quiality`](https://github.com/ydataai/ydata-quality) by [YData](https://ydata.ai)
-
-
-# Acknowledgements
-
-The author thanks users and contributors who have filed issues, submitted pull requests, or suggested enhancements, as well as the authors and 
-communities of the foundational packages on which `dython` builds.
 
 # References
