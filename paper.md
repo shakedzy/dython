@@ -244,7 +244,7 @@ classifier = OneVsRestClassifier(
 y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
 
 # Plot ROC graphs
-return metric_graph(
+metric_graph(
     y_test, y_score, "roc", class_names_list=iris.target_names
 )
 ```
