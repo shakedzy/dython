@@ -30,6 +30,7 @@ jobs:
       - name: Test with pytest
         run: pytest tests --cov=dython --cov-branch --cov-report=xml
       - name: Upload coverage artifact
+        if: matrix.version == '3.14' && matrix.platform == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
