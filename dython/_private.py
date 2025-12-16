@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from typing import Any, Literal, cast, overload, Type
+from typing import Any, cast, overload, Type
 from .typing import OneDimArray, TwoDimArray
 
 
@@ -92,7 +92,7 @@ def convert(
             )
         )
     else:
-        return converted
+        return converted                                # pyright: ignore[reportReturnType]
 
 
 def remove_incomplete_samples(
@@ -100,8 +100,8 @@ def remove_incomplete_samples(
     y: OneDimArray,
 ) -> tuple[OneDimArray, OneDimArray]:
     
-    x = [v if v is not None else np.nan for v in x]
-    y = [v if v is not None else np.nan for v in y]
+    x = [v if v is not None else np.nan for v in x]     # pyright: ignore[reportAssignmentType]
+    y = [v if v is not None else np.nan for v in y]     # pyright: ignore[reportAssignmentType]
     arr = np.array([x, y]).transpose()
     arr = arr[~np.isnan(arr).any(axis=1)].transpose()
     if isinstance(x, list):

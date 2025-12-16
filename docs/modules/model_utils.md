@@ -118,10 +118,15 @@ Plots true-positive rate as a function of the false-positive rate of the positiv
 where $TPR = TP / (TP + FN)$ and $FPR = FP / (FP + TN)$. A naive algorithm will display a linear line going from
 (0,0) to (1,1), therefore having an area under-curve (AUC) of 0.5.
 
+Computes the estimated optimal threshold using two methods:
+* Geometric distance: Finding the closest point to the optimum at (0,1) using Euclidean distance
+* Youden's J: Maximizing $TPR - FPR$ (corresponding to $Y - X$)
+
 **Precision-Recall:**
 Plots precision as a function of recall of the positive label in a binary classification, where
 $Precision = TP / (TP + FP)$ and $Recall = TP / (TP + FN)$. A naive algorithm will display a horizontal linear
 line with precision of the ratio of positive examples in the dataset.
+Estimated optimal threshold is computed using Euclidean (geometric) distance.
 
 Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html) (as was seen on April 2018):
 
@@ -258,8 +263,20 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
     consider the data as a multiclass data rather than binary (useful when plotting
     curves of different models one against the other)
 
-**Returns:** A dictionary, one key for each class. Each value is another dictionary,
-holding AUC and eOpT values.
+**Returns:**     
+A dictionary with these keys:
+- `ax`: the Matplotlib plot axis
+- `metrics`: each key is a class name from the list of provided classes., 
+             Per each class, another dict exists with AUC results
+             and measurement methods results.
+             AUC key holds both the measured area-under-curve (under `val`)
+             and the AUC of a random-guess classifier (under `naive`) for
+             comparison.
+             Each measurement method key contains three values: `x`, `y`, `val`,
+             corresponding to the (x,y) coordinates on the metric graph of the
+             threshold, and its value.
+             If only one class exists, then the measurements method keys and AUC
+             will be directly under `metrics`.
 
 **Example:** See [examples](../getting_started/examples.md).
 

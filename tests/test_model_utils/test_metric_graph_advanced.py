@@ -28,9 +28,9 @@ def test_metric_graph_multiclass_with_class_names():
     y_pred = np.array([[0.7, 0.2, 0.1], [0.1, 0.8, 0.1], [0.2, 0.1, 0.7], [0.6, 0.3, 0.1]])
     
     result = metric_graph(y_true, y_pred, metric='roc', class_names=['A', 'B', 'C'], plot=False)
-    assert 'A' in result
-    assert 'B' in result
-    assert 'C' in result
+    assert 'A' in result['metrics']
+    assert 'B' in result['metrics']
+    assert 'C' in result['metrics']
 
 
 def test_metric_graph_multiclass_wrong_class_names_type():
@@ -58,8 +58,8 @@ def test_metric_graph_pr_binary():
     y_pred = [0.1, 0.9, 0.3, 0.8, 0.7, 0.2]
     
     result = metric_graph(y_true, y_pred, metric='pr', plot=False)
-    assert 'auc' in result['0']
-    assert 'naive' in result['0']['auc']
+    assert 'auc' in result['metrics']
+    assert 'naive' in result['metrics']['auc']
 
 
 def test_metric_graph_pr_multiclass():
@@ -68,7 +68,7 @@ def test_metric_graph_pr_multiclass():
     y_pred = np.array([[0.7, 0.2, 0.1], [0.1, 0.8, 0.1], [0.2, 0.1, 0.7], [0.6, 0.3, 0.1]])
     
     result = metric_graph(y_true, y_pred, metric='pr', plot=False)
-    assert '0' in result
+    assert '0' in result['metrics']
 
 
 def test_metric_graph_with_colors_string():
@@ -86,7 +86,7 @@ def test_metric_graph_multiclass_no_micro():
     y_pred = np.array([[0.7, 0.2, 0.1], [0.1, 0.8, 0.1], [0.2, 0.1, 0.7], [0.6, 0.3, 0.1]])
     
     result = metric_graph(y_true, y_pred, metric='roc', micro=False, plot=False)
-    assert '0' in result
+    assert '0' in result['metrics']
 
 
 def test_metric_graph_multiclass_no_macro():
@@ -95,7 +95,7 @@ def test_metric_graph_multiclass_no_macro():
     y_pred = np.array([[0.7, 0.2, 0.1], [0.1, 0.8, 0.1], [0.2, 0.1, 0.7], [0.6, 0.3, 0.1]])
     
     result = metric_graph(y_true, y_pred, metric='roc', macro=False, plot=False)
-    assert '0' in result
+    assert '0' in result['metrics']
 
 
 def test_metric_graph_pr_multiclass_no_macro():
@@ -104,7 +104,7 @@ def test_metric_graph_pr_multiclass_no_macro():
     y_pred = np.array([[0.7, 0.2, 0.1], [0.1, 0.8, 0.1], [0.2, 0.1, 0.7], [0.6, 0.3, 0.1]])
     
     result = metric_graph(y_true, y_pred, metric='pr', macro=False, plot=False)
-    assert '0' in result
+    assert '0' in result['metrics']
 
 
 def test_metric_graph_binary_no_eopt():
@@ -113,7 +113,7 @@ def test_metric_graph_binary_no_eopt():
     y_pred = [0.1, 0.9, 0.3, 0.8]
     
     result = metric_graph(y_true, y_pred, metric='roc', eopt=False, plot=False)
-    assert result['0']['eopt']['val'] is None
+    assert len(list(result['metrics'].keys())) == 1
 
 
 def test_metric_graph_multiclass_force():
@@ -122,8 +122,8 @@ def test_metric_graph_multiclass_force():
     y_pred = np.array([[0.7, 0.3], [0.2, 0.8], [0.6, 0.4], [0.3, 0.7]])
     
     result = metric_graph(y_true, y_pred, metric='roc', force_multiclass=True, plot=False)
-    assert '0' in result
-    assert '1' in result
+    assert '0' in result['metrics']
+    assert '1' in result['metrics']
 
 
 def test_metric_graph_binary_2d_array():
@@ -132,7 +132,7 @@ def test_metric_graph_binary_2d_array():
     y_pred = np.array([[0.7, 0.3], [0.2, 0.8], [0.6, 0.4], [0.3, 0.7]])
     
     result = metric_graph(y_true, y_pred, metric='roc', plot=False)
-    assert 'auc' in result['0']
+    assert 'auc' in result['metrics']
 
 
 def test_metric_graph_mismatched_shapes():
@@ -161,7 +161,7 @@ def test_metric_graph_binary_1d_arrays():
     y_pred = np.array([0.9, 0.2, 0.7, 0.3])
     
     result = metric_graph(y_true, y_pred, metric='roc', plot=False)
-    assert '0' in result
+    assert '0' not in result['metrics']
 
 
 def test_metric_graph_with_custom_params():
@@ -191,5 +191,5 @@ def test_metric_graph_with_class_name_string():
     y_pred = [0.1, 0.9, 0.3, 0.8]
     
     result = metric_graph(y_true, y_pred, metric='roc', class_names='PositiveClass', plot=False)
-    assert 'PositiveClass' in result
+    assert 'PositiveClass' not in result['metrics']
 
