@@ -13,10 +13,10 @@ from psutil import cpu_count
 from collections import Counter
 from matplotlib.colors import Colormap
 from matplotlib.axes._axes import Axes
-from typing import Any, Callable, Iterable, Literal, TypedDict, cast, overload
+from typing import Any, Callable, Iterable, Literal, cast, overload
 from ._private import convert, remove_incomplete_samples, replace_nan_with_value, plot_or_not
 from .data_utils import identify_columns_by_type
-from .typing import Number, OneDimArray, TwoDimArray
+from .typing import Number, OneDimArray, TwoDimArray, AssociationsResult
 
 
 __all__ = [
@@ -51,11 +51,6 @@ _ASSOC_OP = "assoc-op"
 NomNumAssocStr = Literal["correlation_ratio"]
 NumNumAssocStr = Literal["pearson", "spearman", "kendall"]
 NomNomAssocStr = Literal["cramer", "theil"]
-
-
-class AssociationsResult(TypedDict):
-    corr: pd.DataFrame
-    ax: Axes | None
 
 
 def _inf_nan_str(x: Number) -> str:
