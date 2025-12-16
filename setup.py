@@ -22,7 +22,7 @@ dev_requirements = (HERE / "dev_requirements.txt").read_text(encoding="utf8")
 EXTRAS_REQUIRE = {"dev": [s.strip() for s in dev_requirements.split("\n")]}
 
 min_minor = 10
-max_minor = 13
+max_minor = 14
 CLASSIFIERS = [
     f"Programming Language :: Python :: 3.{str(v)}" for v in range(min_minor, max_minor+1)
 ]
