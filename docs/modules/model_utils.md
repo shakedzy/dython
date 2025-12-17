@@ -263,7 +263,11 @@ Based on [scikit-learn examples](http://scikit-learn.org/stable/auto_examples/mo
     consider the data as a multiclass data rather than binary (useful when plotting
     curves of different models one against the other)
 
-**Returns:**     
+**Returns:**   
+
+!!! info "Return value changed"
+    The keys of the returned `dict` of this function changed on version 0.7.12 
+
 A dictionary with these keys:
 - `ax`: the Matplotlib plot axis
 - `metrics`: each key is a class name from the list of provided classes., 
