@@ -8,7 +8,8 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/dython)](https://pypistats.org/packages/dython)
 [![Coverage](https://codecov.io/github/shakedzy/dython/coverage.svg?branch=main)](https://app.codecov.io/github/shakedzy/dython/)
 [![License](https://img.shields.io/pypi/l/dython)](https://github.com/shakedzy/dython/blob/master/LICENSE)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12698421-eb34c6)](https://zenodo.org/doi/10.5281/zenodo.12698421)
+[![Paper](https://img.shields.io/badge/JOSS-10.21105%2Fjoss.09174-eb34c6)](https://joss.theoj.org/papers/10.21105/joss.09174)
+[![Zenodo](https://img.shields.io/badge/Zenodo-10.5281%2Fzenodo.12698421-8f34eb)](https://zenodo.org/doi/10.5281/zenodo.12698421)
 
 A set of **D**ata analysis tools in p**YTHON** 3.x.
 
@@ -34,13 +35,18 @@ You can also learn more and see examples of the main methods of this library on
 Contributions are always welcomed - if you found something you can fix, or have an idea for a new feature, feel free to write it and open a pull request. Please make sure to go over the [contributions guidelines](https://github.com/shakedzy/dython/blob/master/CONTRIBUTING.md).
 
 ## Citing
-Use this reference to cite if you use Dython in a paper:
+When using Dython, please cite it using this citation:
 ```bibtex
-@software{Zychlinski_dython_2018,
-  author = {Zychlinski, Shaked},
-  title = {{dython}},
-  year = {2018},
-  url = {https://github.com/shakedzy/dython},
-  doi = {10.5281/zenodo.12698421}
-}
+@article{Zychlinski2025,
+    doi = {10.21105/joss.09174},
+    url = {https://doi.org/10.21105/joss.09174},
+    year = {2025},
+    publisher = {The Open Journal},
+    volume = {10},
+    number = {116},
+    pages = {9174},
+    author = {Shaked Zychlinski},
+    title = {dython: A Set of Analysis and Visualization Tools for Data and Variables in Python},
+    journal = {Journal of Open Source Software}
+ }
 ```
