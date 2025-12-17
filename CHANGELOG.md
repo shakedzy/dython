@@ -4,7 +4,7 @@
 * _Dython now officially supports Python 3.14_
 * Added new tests (issue [#172](https://github.com/shakedzy/dython/issues/172))
 * `examples` module removed (all examples exist in the [official documentation](https://shakedzy.xyz/dython/getting_started/examples/))
-* Added [Youden's J](https://en.wikipedia.org/wiki/Youden%27s_J_statistic) statistic to `model_utils.metric_graph` ROC Curve option _(breaking change: function signature has changed)_.
+* Added [Youden's J](https://en.wikipedia.org/wiki/Youden%27s_J_statistic) statistic to `model_utils.metric_graph` ROC Curve option _(breaking change: function return value has changed)_.
 
 ## 0.7.11
 * Fixing dependency issue ([#170](https://github.com/shakedzy/dython/issues/170))
