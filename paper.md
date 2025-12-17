@@ -64,7 +64,6 @@ Below is a summary of existing methods of `dython`, per module.
 |--------|-------------|
 | associations | Computes associations between mixed-type features |
 | cluster_correlations | Applies clustering to reorder a correlation matrix |
-| compute_associations | Deprecated; replaced by `associations(compute_only=True)` |
 | conditional_entropy | Computes conditional entropy of X given Y |
 | correlation_ratio | Computes correlation between categorical and numeric variables |
 | cramers_v | Computes Cramér’s V between categorical variables |
@@ -78,7 +77,7 @@ Below is a summary of existing methods of `dython`, per module.
 
 | Method | Description |
 |--------|-------------|
-| ks_abc | Computes KS statistic, ABC, and optional plot |
+| ks_abc | Computes and plots KS statistic and area-between-curves |
 | metric_graph | Plots ROC/PR curves for classifiers |
 | random_forest_feature_importance | Plots feature importance for Random Forest models | 
 
