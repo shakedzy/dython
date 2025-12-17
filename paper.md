@@ -130,7 +130,7 @@ Below is a summary of existing methods of `dython`, per module.
     ```
 
 * `dython.model_utils.ks_abc(y_true, y_pred, **kwargs)`
-    This perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute the area between curves.
+    This performs the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute the area between curves.
 
     Example:
     
