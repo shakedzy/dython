@@ -31,25 +31,25 @@ In short, **`dython`** lowers the friction for inter-variable association analys
 
 # Statement of Need  
 
-While there are many statistical and visualization libraries in Python (e.g. `pandas` [@pandas], `scipy` [@scipy], `scikit-learn` [@scikit-learn], `seaborn` [@seaborn]), they treat continuous data, categorical data and the overall visualization separately. Users often resort to custom glue code to:  
+While there are many statistical and visualization libraries in Python (e.g., `pandas` [@pandas], `scipy` [@scipy], `scikit-learn` [@scikit-learn], `seaborn` [@seaborn]), they treat continuous data, categorical data, and the overall visualization separately. Users often resort to custom glue code to:  
 
 1. determine which columns are categorical vs. numeric,  
-2. choose an appropriate association statistic (e.g. Pearson's R for numeric–numeric, correlation ratio for numeric–categorical, Cramér’s V or Theil’s U for categorical–categorical),  
+2. choose an appropriate association statistic (e.g., Pearson's R for numeric–numeric, correlation ratio for numeric–categorical, Cramér’s V or Theil’s U for categorical–categorical),  
 3. compute those pairwise,  
-4. assemble a matrix or graph,  
+4. assemble a matrix or graph, and
 5. annotate, visualize, and interpret the results.
 
 This fragmentation results in boilerplate, inconsistency, or risk of mistakes, especially in exploratory settings or pipelines.  
 
 **`dython`** addresses this gap by providing a unified, high-level API that:  
 
-- **infers variable types** 
+- **infers variable types**, 
  
-- **automatically selects appropriate measures** 
+- **automatically selects appropriate measures**,
  
-- **returns structured and annotated output**
+- **returns structured and annotated output**,
   
-- **offers visualization** (heatmaps, annotation) integrations
+- **offers visualization** (heatmaps, annotation) integrations, and
    
 - **offers model evaluation tools** (ROC, AUC, thresholding) for classification tasks
 
@@ -62,47 +62,47 @@ Below is a summary of existing methods of `dython`, per module.
 
 | Method | Description |
 |--------|-------------|
-| associations | Computes associations between mixed-type features. |
-| cluster_correlations | Applies clustering to reorder a correlation matrix. |
-| compute_associations | Deprecated; replaced by `associations(compute_only=True)`. |
-| conditional_entropy | Computes conditional entropy of X given Y. |
-| correlation_ratio | Computes correlation between categorical and numeric variables. |
-| cramers_v | Computes Cramér’s V between categorical variables. |
-| identify_nominal_columns | Detects nominal (categorical) columns. |
-| identify_numeric_columns | Detects numeric columns. |
-| numerical_encoding | Encodes a mixed dataset into numeric format. |
-| replot_last_associations | Replots the last association heatmap. |
-| theils_u | Computes Theil’s U (uncertainty coefficient). |
+| associations | Computes associations between mixed-type features |
+| cluster_correlations | Applies clustering to reorder a correlation matrix |
+| compute_associations | Deprecated; replaced by `associations(compute_only=True)` |
+| conditional_entropy | Computes conditional entropy of X given Y |
+| correlation_ratio | Computes correlation between categorical and numeric variables |
+| cramers_v | Computes Cramér’s V between categorical variables |
+| identify_nominal_columns | Detects nominal (categorical) columns |
+| identify_numeric_columns | Detects numeric columns |
+| numerical_encoding | Encodes a mixed dataset into numeric format |
+| replot_last_associations | Replots the last association heatmap |
+| theils_u | Computes Theil’s U (uncertainty coefficient) |
 
 ## `model_utils`
 
 | Method | Description |
 |--------|-------------|
-| ks_abc | Computes KS statistic, ABC, and optional plot. |
-| metric_graph | Plots ROC/PR curves for classifiers. |
-| random_forest_feature_importance | Plots feature importance for Random Forest models. | 
+| ks_abc | Computes KS statistic, ABC, and optional plot |
+| metric_graph | Plots ROC/PR curves for classifiers |
+| random_forest_feature_importance | Plots feature importance for Random Forest models | 
 
 ## `sampling`
 
 | Method | Description |
 |--------|-------------|
-| boltzmann_sampling | Samples values under Boltzmann distribution. |
-| weighted_sampling | Samples values using weighted probabilities. |
+| boltzmann_sampling | Samples values under Boltzmann distribution |
+| weighted_sampling | Samples values using weighted probabilities |
 
 ## `data_utils`
 
 | Method | Description |
 |-------|-------------|
-| identify_columns_with_na | Returns dataset columns containing NA values. |
-| identify_columns_by_type | Identifies columns of requested data types. |
-| one_hot_encode | Converts a 1D array of integers into a one-hot matrix. |
-| split_hist | Plots a histogram split by categories. |
+| identify_columns_with_na | Returns dataset columns containing NA values |
+| identify_columns_by_type | Identifies columns of requested data types |
+| one_hot_encode | Converts a 1D array of integers into a one-hot matrix |
+| split_hist | Plots a histogram split by categories |
 
 ## Code Examples
 ### Associations  
 
 * `dython.nominal.associations(df, theil_u=False, plot=False, return_results=False, **kwargs)`  
-  Computes pairwise associations across all columns in a pandas DataFrame `df`. Internally, for each pair, it selects a measure appropriate to the variable types:
+  This computes pairwise associations across all columns in a pandas DataFrame `df`. Internally, for each pair, it selects a measure appropriate to the variable types:
 
   - continuous–continuous → Pearson correlation (or Spearman, if configured)  
   - continuous–categorical → correlation ratio  
@@ -130,7 +130,7 @@ Below is a summary of existing methods of `dython`, per module.
     ```
 
 * `dython.model_utils.ks_abc(y_true, y_pred, **kwargs)`
-    Perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute the area between curves.
+    This perform the Kolmogorov–Smirnov test over the positive and negative distributions of a binary classifier, and compute the area between curves.
 
     Example:
     
