@@ -39,7 +39,7 @@ While there are many statistical and visualization libraries in Python (e.g., `p
 4. assemble a matrix or graph, and
 5. annotate, visualize, and interpret the results.
 
-This fragmentation results in boilerplate, inconsistency, or risk of mistakes, especially in exploratory settings or pipelines.  
+This fragmentation results in excessive copying and pasting of boilerplate code, inconsistencies, or risk of mistakes, especially in exploratory settings or pipelines.  
 
 **`dython`** addresses this gap by providing a unified, high-level API that:  
 
