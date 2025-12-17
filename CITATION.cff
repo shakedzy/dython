@@ -1,0 +1,25 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Zychlinski
+  given-names: Shaked
+  orcid: "https://orcid.org/0009-0003-7968-6489"
+doi: 10.5281/zenodo.17956912
+message: If you use this software, please cite our article in the Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Zychlinski
+    given-names: Shaked
+    orcid: "https://orcid.org/0009-0003-7968-6489"
+  date-published: 2025-12-17
+  doi: 10.21105/joss.09174
+  issn: 2475-9066
+  issue: 116
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 9174
+  title: "dython: A Set of Analysis and Visualization Tools for Data and Variables in Python"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.09174"
+  volume: 10
+title: "dython: A Set of Analysis and Visualization Tools for Data and Variables in Python"
