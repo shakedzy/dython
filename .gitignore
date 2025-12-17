@@ -4,4 +4,5 @@
 .hypothesis*
 *__pycache__*
 *egg-info*
-.pytest_cache*
+*pytest_cache*
+.coverage
