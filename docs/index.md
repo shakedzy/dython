@@ -72,5 +72,5 @@ When using Dython, please cite it using this citation:
     author = {Shaked Zychlinski},
     title = {dython: A Set of Analysis and Visualization Tools for Data and Variables in Python},
     journal = {Journal of Open Source Software}
- }
+ }  
 ```
