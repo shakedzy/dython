@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>http://shakedzy.xyz/dython/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+    <url>
+         <loc>http://shakedzy.xyz/dython/related_blogposts/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+    <url>
+         <loc>http://shakedzy.xyz/dython/getting_started/examples/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+    <url>
+         <loc>http://shakedzy.xyz/dython/getting_started/installation/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+    <url>
+         <loc>http://shakedzy.xyz/dython/modules/data_utils/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+    <url>
+         <loc>http://shakedzy.xyz/dython/modules/model_utils/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+    <url>
+         <loc>http://shakedzy.xyz/dython/modules/nominal/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+    <url>
+         <loc>http://shakedzy.xyz/dython/modules/sampling/</loc>
+         <lastmod>2026-01-12</lastmod>
+    </url>
+</urlset>

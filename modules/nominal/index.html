@@ -1,0 +1,1637 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A set of data-analysis tools for Python 3.x">
+      
+      
+        <meta name="author" content="Shaked Zychlinski">
+      
+      
+        <link rel="canonical" href="http://shakedzy.xyz/dython/modules/nominal/">
+      
+      
+        <link rel="prev" href="../data_utils/">
+      
+      
+        <link rel="next" href="../model_utils/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>nominal - dython</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  
+    
+  
+  
+  <meta property="og:type" content="documentation">
+  <meta property="og:title" content="dython:nominal">
+  <meta property="og:description" content="A set of data-analysis tools for Python 3.x">
+  <meta property="og:url" content="http://shakedzy.xyz/dython/modules/nominal/">
+  <meta property="og:image" content="http://shakedzy.xyz/dython/images/social_banner.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="http://shakedzy.xyz/dython/">
+  <meta name="twitter:creator" content="@shakezy">
+  <meta name="twitter:title" content="dython:nominal">
+  <meta name="twitter:description" content="A set of data-analysis tools for Python 3.x">
+  <meta name="twitter:image" content="http://shakedzy.xyz/dython/images/social_banner.png">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nominal" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="dython" class="md-header__button md-logo" aria-label="dython" data-md-component="logo">
+      
+  <img src="../../images/favicon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            dython
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              nominal
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/shakedzy/dython" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    shakedzy/dython
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="dython" class="md-nav__button md-logo" aria-label="dython" data-md-component="logo">
+      
+  <img src="../../images/favicon.png" alt="logo">
+
+    </a>
+    dython
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/shakedzy/dython" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    shakedzy/dython
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data_utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    nominal
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    nominal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#associations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        associations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cluster_correlations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cluster_correlations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compute_associations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compute_associations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conditional_entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        conditional_entropy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#correlation_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        correlation_ratio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cramers_v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cramers_v
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identify_nominal_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        identify_nominal_columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identify_numeric_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        identify_numeric_columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#numerical_encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        numerical_encoding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replot_last_associations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        replot_last_associations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theils_u" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        theils_u
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model_utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    model_utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../related_blogposts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Related Blogosts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#associations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        associations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cluster_correlations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cluster_correlations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compute_associations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compute_associations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conditional_entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        conditional_entropy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#correlation_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        correlation_ratio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cramers_v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cramers_v
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identify_nominal_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        identify_nominal_columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identify_numeric_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        identify_numeric_columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#numerical_encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        numerical_encoding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replot_last_associations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        replot_last_associations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theils_u" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        theils_u
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="nominal">nominal<a class="headerlink" href="#nominal" title="Permanent link">&para;</a></h1>
+<h4 id="associations"><code>associations</code><a class="headerlink" href="#associations" title="Permanent link">&para;</a></h4>
+<p><code>associations(dataset, nominal_columns='auto', numerical_columns=None, mark_columns=False,nom_nom_assoc='cramer', num_num_assoc='pearson', nom_num_assoc='correlation_ratio', symmetric_nom_nom=True, symmetric_num_num=True, display_rows='all', display_columns='all', hide_rows=None, hide_columns=None, cramers_v_bias_correction=True, nan_strategy=_REPLACE, nan_replace_value=_DEFAULT_REPLACE_VALUE, ax=None, figsize=None, annot=True, fmt='.2f', cmap=None, sv_color='silver', cbar=True, vmax=1.0, vmin=None, plot=True, compute_only=False, clustering=False, title=None, filename=None, multiprocessing=False, max_cpu_cores=None)</code></p>
+<p>Calculate the correlation/strength-of-association of features in data-set with both categorical and
+continuous features using:
+ * Pearson's R for continuous-continuous cases
+ * Correlation Ratio for categorical-continuous cases
+ * Cramer's V or Theil's U for categorical-categorical cases</p>
+<ul>
+<li>
+<p><strong><code>dataset</code></strong> : <code>NumPy ndarray / Pandas DataFrame</code></p>
+<p>The data-set for which the features' correlation is computed</p>
+</li>
+<li>
+<p><strong><code>nominal_columns</code></strong> : <code>string / list / NumPy ndarray</code></p>
+<p><em>Default: 'auto'</em></p>
+<p>Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all
+columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are
+categorical. Only used if <code>numerical_columns</code> is <code>None</code>.</p>
+</li>
+<li>
+<p><strong><code>numerical_columns</code></strong> : <code>string / list / NumPy ndarray</code></p>
+<p><em>Default: None</em></p>
+<p>To be used instead of <code>nominal_columns</code>. Names of columns of the data-set
+which hold numerical values. Can also be the string 'all' to state that
+all columns are numerical (equivalent to <code>nominal_columns=None</code>) or
+'auto' to try to identify numerical columns (equivalent to
+<code>nominal_columns=auto</code>). If <code>None</code>, <code>nominal_columns</code> is used.</p>
+</li>
+<li>
+<p><strong><code>mark_columns</code></strong> : <code>Boolean</code></p>
+<p><em>Default: False</em></p>
+<p>if True, output's columns' names will have a suffix of '(nom)' or '(con)' based on their type (nominal or
+continuous), as provided by nominal_columns</p>
+</li>
+<li>
+<p><strong><code>nom_nom_assoc</code></strong> : <code>callable / string</code></p>
+<p><em>Default: 'cramer'</em></p>
+<div class="admonition info">
+<p class="admonition-title">Method signature change</p>
+<p>This replaces the <code>theil_u</code> flag which was used till version 0.6.6.</p>
+</div>
+<p>If callable, a function which recieves two <code>pd.Series</code> and returns a single number.</p>
+<p>If string, name of nominal-nominal (categorical-categorical) association to use:</p>
+<ul>
+<li>
+<p><code>cramer</code>: Cramer's V</p>
+</li>
+<li>
+<p><code>theil</code>: Theil's U. When selected, heat-map columns are the provided information (meaning: <span class="arithmatex">\(U = U(row|col)\)</span>)</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>num_num_assoc</code></strong> : <code>callable / string</code></p>
+<p><em>Default: 'pearson'</em></p>
+<p>If callable, a function which recieves two <code>pd.Series</code> and returns a single number.</p>
+<p>If string, name of numerical-numerical association to use:</p>
+<ul>
+<li>
+<p><code>pearson</code>: Pearson's R</p>
+</li>
+<li>
+<p><code>spearman</code>: Spearman's R</p>
+</li>
+<li>
+<p><code>kendall</code>: Kendall's Tau</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>nom_num_assoc</code></strong> : <code>callable / string</code></p>
+<p><em>Default: 'correlation_ratio'</em></p>
+<p>If callable, a function which recieves two <code>pd.Series</code> and returns a single number.</p>
+<p>If string, name of nominal-numerical association to use:</p>
+<ul>
+<li><code>correlation_ratio</code>: correlation ratio</li>
+</ul>
+</li>
+<li>
+<p><strong><code>symmetric_nom_nom</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<p>Relevant only if <code>nom_nom_assoc</code> is a callable. If so, declare whether the function is symmetric (<span class="arithmatex">\(f(x,y) = f(y,x)\)</span>).
+If False, heat-map values should be interpreted as <span class="arithmatex">\(f(row,col)\)</span>.</p>
+</li>
+<li>
+<p><strong><code>symmetric_num_num</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<p>Relevant only if <code>num_num_assoc</code> is a callable. If so, declare whether the function is symmetric (<span class="arithmatex">\(f(x,y) = f(y,x)\)</span>).
+If False, heat-map values should be interpreted as <span class="arithmatex">\(f(row,col)\)</span>. </p>
+</li>
+<li>
+<p><strong><code>display_rows</code></strong> : <code>list / string</code></p>
+<p><em>Default: 'all'</em></p>
+<p>Choose which of the dataset's features will be displyed in the output's
+correlations table rows. If string, can either be a single feature's name or 'all'.
+Only used if <code>hide_rows</code> is <code>None</code>.</p>
+</li>
+<li>
+<p><strong><code>display_columns</code></strong> : <code>list / string</code></p>
+<p><em>Default: 'all'</em></p>
+<p>Choose which of the dataset's features will be displyed in the output's
+correlations table columns. If string, can either be a single feature's name or 'all'.
+Only used if <code>hide_columns</code> is <code>None</code>.</p>
+</li>
+<li>
+<p><strong><code>hide_rows</code></strong> : <code>list / string</code></p>
+<p><em>Default: None</em></p>
+<p>choose which of the dataset's features will not be displyed in the output's
+correlations table rows. If string, must be a single feature's name. If <code>None</code>,
+<code>display_rows</code> is used.</p>
+</li>
+<li>
+<p><strong><code>hide_columns</code></strong> : <code>list / string</code></p>
+<p><em>Default: None</em></p>
+<p>choose which of the dataset's features will not be displyed in the output's
+correlations table columns. If string, must be a single feature's name. If <code>None</code>,
+<code>display_columns</code> is used.</p>
+</li>
+<li>
+<p><strong><code>cramers_v_bias_correction</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<div class="admonition info">
+<p class="admonition-title">Method signature change</p>
+<p>This replaces the <code>bias_correction</code> flag which was used till version 0.6.6.</p>
+</div>
+<p>Use bias correction for Cramer's V from Bergsma and Wicher, Journal of the Korean
+ Statistical Society 42 (2013): 323-328.</p>
+</li>
+<li>
+<p><strong><code>nan_strategy</code></strong> : <code>string</code></p>
+<p><em>Default: 'replace'</em></p>
+<p>How to handle missing values: can be either <code>'drop_samples'</code> to remove
+samples with missing values, <code>'drop_features'</code> to remove features
+(columns) with missing values, <code>'replace'</code> to replace all missing
+values with the <code>nan_replace_value</code>, or <code>'drop_sample_pairs'</code> to drop each
+pair of missing observables separately before calculating the corresponding coefficient.
+Missing values are <code>None</code> and <code>np.nan</code>.</p>
+</li>
+<li>
+<p><strong><code>nan_replace_value</code></strong> : <code>any</code></p>
+<p><em>Default: 0.0</em></p>
+<p>The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'</p>
+</li>
+<li>
+<p><strong><code>ax</code></strong> : matplotlib <code>Axe</code></p>
+<p><em>Default: None</em></p>
+<p>Matplotlib Axis on which the heat-map will be plotted</p>
+</li>
+<li>
+<p><strong><code>figsize</code></strong> : <code>(float, float)</code> or <code>None</code></p>
+<p><em>Default: None</em></p>
+<p>A Matplotlib figure-size tuple. If <code>None</code>, will attempt to set the size automatically.
+ Only used if <code>ax=None</code>.</p>
+</li>
+<li>
+<p><strong><code>annot</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<p>Plot number annotations on the heat-map</p>
+</li>
+<li>
+<p><strong><code>fmt</code></strong> : <code>string</code></p>
+<p><em>Default: '.2f'</em></p>
+<p>String formatting of annotations</p>
+</li>
+<li>
+<p><strong><code>cmap</code></strong> : Matplotlib colormap or <code>None</code></p>
+<p><em>Default: None</em></p>
+<p>A colormap to be used for the heat-map. If None, falls back to Seaborn's heat-map default</p>
+</li>
+<li>
+<p><strong><code>sv_color</code></strong> : <code>string</code></p>
+<p><em>Default: 'silver'</em></p>
+<p>A Matplotlib color. The color to be used when displaying single-value features over the heat-map</p>
+</li>
+<li>
+<p><strong><code>cbar</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<p>Display heat-map's color-bar</p>
+</li>
+<li>
+<p><strong><code>vmax</code></strong> : <code>float</code></p>
+<p><em>Default: 1.0</em></p>
+<p>Set heat-map <code>vmax</code> option</p>
+</li>
+<li>
+<p><strong><code>vmin</code></strong> : <code>float</code> or <code>None</code></p>
+<p><em>Default: None</em></p>
+<p>Set heat-map <code>vmin</code> option. If set to <code>None</code>, <code>vmin</code> will be chosen automatically
+between 0 and -1.0, depending on the types of associations used (-1.0 if Pearson's R
+is used, 0 otherwise)</p>
+</li>
+<li>
+<p><strong><code>plot</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<p>Plot a heat-map of the correlation matrix. If False, heat-map will still be
+drawn, but not shown. The heat-map's <code>ax</code> is part of this function's output.</p>
+</li>
+<li>
+<p><strong><code>compute_only</code></strong> : <code>Boolean</code></p>
+<p><em>Default: False</em></p>
+<p>Use this flag only if you have no need of the plotting at all. This skips the entire
+plotting mechanism (similar to the old <code>compute_associations</code> method).</p>
+</li>
+<li>
+<p><strong><code>clustering</code></strong> : <code>Boolean</code></p>
+<p><em>Default: False</em></p>
+<p>If True, the computed associations will be sorted into groups by similar correlations</p>
+</li>
+<li>
+<p><strong><code>title</code></strong>: <code>string</code> or <code>None</code></p>
+<p><em>Default: None</em></p>
+<p>Plotted graph title.</p>
+</li>
+<li>
+<p><strong><code>filename</code></strong>: <code>string</code> or <code>None</code></p>
+<p><em>Default: None</em></p>
+<p>If not None, plot will be saved to the given file name.</p>
+</li>
+<li>
+<p><strong><code>multiprocessing</code></strong>: <code>Boolean</code></p>
+<p><em>Default: False</em></p>
+<p>If True, use multiprocessing to speed up computations. If None, falls back to single core computation</p>
+</li>
+<li>
+<p><strong><code>max_cpu_cores</code></strong>: <code>int</code> or <code>None</code> </p>
+<p><em>Default</em>: <code>None</code></p>
+<p>If not <code>None</code>, <code>ProcessPoolExecutor</code> will use the given number of CPU cores</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> A dictionary with the following keys:</p>
+<ul>
+<li><code>corr</code>: A DataFrame of the correlation/strength-of-association between all features</li>
+<li><code>ax</code>: A Matplotlib <code>Axe</code></li>
+</ul>
+<p><strong>Example:</strong> See <a href="../../getting_started/examples/">examples</a>.</p>
+<hr />
+<h4 id="cluster_correlations"><code>cluster_correlations</code><a class="headerlink" href="#cluster_correlations" title="Permanent link">&para;</a></h4>
+<p><code>cluster_correlations(corr_mat, indexes=None)</code></p>
+<p>Apply agglomerative clustering in order to sort a correlation matrix.
+Based on <a href="https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb">this clustering example</a>.</p>
+<ul>
+<li>
+<p><strong><code>corr_mat</code></strong> : <code>Pandas DataFrame</code></p>
+<p>A correlation matrix (as output from <code>associations</code>)</p>
+</li>
+<li>
+<p><strong><code>indexes</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of cluster indexes for sorting. If not present, a clustering is performed.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li>a sorted correlation matrix (<code>pd.DataFrame</code>)</li>
+<li>cluster indexes based on the original dataset (<code>list</code>)</li>
+</ul>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">assoc</span> <span class="o">=</span> <span class="n">associations</span><span class="p">(</span>
+  <span class="n">customers</span><span class="p">,</span>
+  <span class="n">plot</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">correlations</span> <span class="o">=</span> <span class="n">assoc</span><span class="p">[</span><span class="s1">&#39;corr&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">correlations</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cluster_correlations</span><span class="p">(</span><span class="n">correlations</span><span class="p">)</span>
+</code></pre></div></p>
+<hr />
+<h4 id="compute_associations"><code>compute_associations</code><a class="headerlink" href="#compute_associations" title="Permanent link">&para;</a></h4>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p><code>compute_associations</code> was deprecated and removed. Use <code>associations(compute_only=True)['corr']</code>.</p>
+</div>
+<hr />
+<h4 id="conditional_entropy"><code>conditional_entropy</code><a class="headerlink" href="#conditional_entropy" title="Permanent link">&para;</a></h4>
+<p><code>conditional_entropy(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE, log_base=math.e)</code></p>
+<p>Given measurements <code>x</code> and <code>y</code> of random variables <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span>, calculates the conditional entropy of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(Y\)</span>:</p>
+<div class="arithmatex">\[ S(X|Y) = - \sum_{x,y} p(x,y) \log\frac{p(x,y)}{p(y)} \]</div>
+<p>Read more on <a href="https://en.wikipedia.org/wiki/Conditional_entropy">Wikipedia</a>.</p>
+<ul>
+<li>
+<p><strong><code>x</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of measurements</p>
+</li>
+<li>
+<p><strong><code>y</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of measurements</p>
+</li>
+<li>
+<p><strong><code>nan_strategy</code></strong> : <code>string</code></p>
+<p><em>Default: 'replace'</em></p>
+<p>How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace' to replace all missing values with the nan_replace_value. Missing values are None and np.nan.</p>
+</li>
+<li>
+<p><strong><code>nan_replace_value</code></strong> : <code>any</code></p>
+<p><em>Default: 0.0</em></p>
+<p>The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.</p>
+</li>
+<li>
+<p><strong><code>log_base</code></strong> : <code>float</code></p>
+<p><em>Default: <code>math.e</code></em></p>
+<p>Specifying base for calculating entropy.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> <code>float</code></p>
+<hr />
+<h4 id="correlation_ratio"><code>correlation_ratio</code><a class="headerlink" href="#correlation_ratio" title="Permanent link">&para;</a></h4>
+<p><code>correlation_ratio(categories, measurements, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)</code></p>
+<p>Calculates the Correlation Ratio (<span class="arithmatex">\(\eta\)</span>) for categorical-continuous association:</p>
+<div class="arithmatex">\[ \eta = \sqrt{\frac{\sum_x{n_x (\bar{y}_x - \bar{y})^2}}{\sum_{x,i}{(y_{xi}-\bar{y})^2}}} \]</div>
+<p>where <span class="arithmatex">\(n_x\)</span> is the number of observations in category <span class="arithmatex">\(x\)</span>, and we define:</p>
+<div class="arithmatex">\[\bar{y}_x = \frac{\sum_i{y_{xi}}}{n_x} , \bar{y} = \frac{\sum_i{n_x \bar{y}_x}}{\sum_x{n_x}}\]</div>
+<p>Answers the question - given a continuous value of a measurement, is it possible to know which category is it
+associated with?
+Value is in the range [0,1], where 0 means a category cannot be determined by a continuous measurement, and 1 means
+a category can be determined with absolute certainty.
+Read more on <a href="https://en.wikipedia.org/wiki/Correlation_ratio">Wikipedia</a>.</p>
+<ul>
+<li>
+<p><strong><code>categories</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of categorical measurements</p>
+</li>
+<li>
+<p><strong><code>measurements</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of continuous measurements</p>
+</li>
+<li>
+<p><strong><code>nan_strategy</code></strong> : <code>string</code></p>
+<p><em>Default: 'replace'</em></p>
+<p>How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace' to replace all missing values with the nan_replace_value. Missing values are None and np.nan.</p>
+</li>
+<li>
+<p><strong><code>nan_replace_value</code></strong> : <code>any</code></p>
+<p><em>Default: 0.0</em></p>
+<p>The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> float in the range of [0,1]</p>
+<hr />
+<h4 id="cramers_v"><code>cramers_v</code><a class="headerlink" href="#cramers_v" title="Permanent link">&para;</a></h4>
+<p><code>cramers_v(x, y, bias_correction=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)</code></p>
+<p>Calculates Cramer's V statistic for categorical-categorical association.
+This is a symmetric coefficient: <span class="arithmatex">\(V(x,y) = V(y,x)\)</span>. Read more on <a href="https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V">Wikipedia</a>.</p>
+<p>Original function taken from <a href="https://stackoverflow.com/a/46498792/5863503">this answer</a> on StackOverflow.</p>
+<div class="admonition info">
+<p class="admonition-title">Cramer's V limitations when applied on skewed or small datasets</p>
+<p>As the Cramer's V measure of association depends directly on the counts of each samples-pair in the data, it tends to be suboptimal when applied on skewed or small datasets.</p>
+<p>Consider each of the following cases, where we would expect Cramer's V to reach a high value, yet this only happens in the first scenario:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">400</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">400</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cramers_v</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="mf">0.9937374102534072</span>
+
+<span class="c1"># skewed dataset</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">500</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">500</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cramers_v</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="mf">0.4974896903293253</span>
+
+<span class="c1"># very small dataset</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cramers_v</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="mf">0.0</span>
+</code></pre></div>
+</div>
+<ul>
+<li>
+<p><strong><code>x</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of categorical measurements</p>
+</li>
+<li>
+<p><strong><code>y</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of categorical measurements</p>
+</li>
+<li>
+<p><strong><code>bias_correction</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<p>Use bias correction from Bergsma and Wicher, Journal of the Korean Statistical Society 42 (2013): 323-328.</p>
+</li>
+<li>
+<p><strong><code>nan_strategy</code></strong> : <code>string</code></p>
+<p><em>Default: 'replace'</em></p>
+<p>How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace' to replace all missing values with the nan_replace_value. Missing values are None and np.nan.</p>
+</li>
+<li>
+<p><strong><code>nan_replace_value</code></strong> : <code>any</code></p>
+<p><em>Default: 0.0</em></p>
+<p>The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> float in the range of [0,1]</p>
+<hr />
+<h4 id="identify_nominal_columns"><code>identify_nominal_columns</code><a class="headerlink" href="#identify_nominal_columns" title="Permanent link">&para;</a></h4>
+<p><code>identify_nominal_columns(dataset)</code></p>
+<p>Given a dataset, identify categorical columns. This is used internally in <code>associations</code> and <code>numerical_encoding</code>,
+but can also be used directly.</p>
+<div class="admonition info">
+<p class="admonition-title">Note:</p>
+<p>This is a shortcut for <code>data_utils.identify_columns_by_type(dataset, include=['object', 'category'])</code></p>
+</div>
+<ul>
+<li><strong><code>dataset</code></strong> : <code>np.ndarray</code> / <code>pd.DataFrame</code></li>
+</ul>
+<p><strong>Returns:</strong> list of categorical columns</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]})</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">identify_nominal_columns</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;col1&#39;</span><span class="p">]</span>
+</code></pre></div></p>
+<hr />
+<h4 id="identify_numeric_columns"><code>identify_numeric_columns</code><a class="headerlink" href="#identify_numeric_columns" title="Permanent link">&para;</a></h4>
+<p><code>identify_numeric_columns(dataset)</code></p>
+<p>Given a dataset, identify numeric columns.</p>
+<div class="admonition info">
+<p class="admonition-title">Note:</p>
+<p>This is a shortcut for <code>data_utils.identify_columns_by_type(dataset, include=['int64', 'float64'])</code></p>
+</div>
+<ul>
+<li><strong><code>dataset</code></strong> : <code>np.ndarray</code> / <code>pd.DataFrame</code></li>
+</ul>
+<p><strong>Returns:</strong> list of numerical columns</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;col3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]})</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">identify_numeric_columns</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;col2&#39;</span><span class="p">,</span> <span class="s1">&#39;col3&#39;</span><span class="p">]</span>
+</code></pre></div></p>
+<hr />
+<h4 id="numerical_encoding"><code>numerical_encoding</code><a class="headerlink" href="#numerical_encoding" title="Permanent link">&para;</a></h4>
+<p><code>numerical_encoding(dataset, nominal_columns='auto', drop_single_label=False, drop_fact_dict=True, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)</code></p>
+<p>Encoding a data-set with mixed data (numerical and categorical) to a numerical-only data-set,
+using the following logic:</p>
+<ul>
+<li>
+<p>categorical with only a single value will be marked as zero (or dropped, if requested)</p>
+</li>
+<li>
+<p>categorical with two values will be replaced with the result of Pandas <code>factorize</code></p>
+</li>
+<li>
+<p>categorical with more than two values will be replaced with the result of Pandas <code>get_dummies</code></p>
+</li>
+<li>
+<p>numerical columns will not be modified</p>
+</li>
+<li>
+<p><strong><code>dataset</code></strong> : <code>NumPy ndarray / Pandas DataFrame</code></p>
+<p>The data-set to encode</p>
+</li>
+<li>
+<p><strong><code>nominal_columns</code></strong> : <code>sequence / string</code></p>
+<p><em>Default: 'auto'</em></p>
+<p>Names of columns of the data-set which hold categorical values. Can also be the string 'all' to state that all columns are categorical, 'auto' (default) to identify nominal columns automatically, or None to state none are categorical (nothing happens)</p>
+</li>
+<li>
+<p><strong><code>drop_single_label</code></strong> : <code>Boolean</code></p>
+<p><em>Default: False</em></p>
+<p>If True, nominal columns with a only a single value will be dropped.</p>
+</li>
+<li>
+<p><strong><code>drop_fact_dict</code></strong> : <code>Boolean</code></p>
+<p><em>Default: True</em></p>
+<p>If True, the return value will be the encoded DataFrame alone. If False, it will be a tuple of the DataFrame and the dictionary of the binary factorization (originating from pd.factorize)</p>
+</li>
+<li>
+<p><strong><code>nan_strategy</code></strong> : <code>string</code></p>
+<p><em>Default: 'replace'</em></p>
+<p>How to handle missing values: can be either 'drop_samples' to remove samples with missing values, 'drop_features' to remove features (columns) with missing values, or 'replace' to replace all missing values with the nan_replace_value. Missing values are None and np.nan.</p>
+</li>
+<li>
+<p><strong><code>nan_replace_value</code></strong> : <code>any</code></p>
+<p><em>Default: 0.0</em></p>
+<p>The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> <code>pd.DataFrame</code> or <code>(pd.DataFrame, dict)</code>. If <code>drop_fact_dict</code> is True, returns the encoded DataFrame.
+else, returns a tuple of the encoded DataFrame and dictionary, where each key is a two-value column, and the
+value is the original labels, as supplied by Pandas <code>factorize</code>. Will be empty if no two-value columns are
+present in the data-set</p>
+<hr />
+<h4 id="replot_last_associations"><code>replot_last_associations</code><a class="headerlink" href="#replot_last_associations" title="Permanent link">&para;</a></h4>
+<p><code>replot_last_associations(ax=None, figsize=None, annot=None, fmt=None, cmap=None, sv_color=None, cbar=None, vmax=None, vmin=None, plot=True, title=None, filename=None)</code></p>
+<p>Re-plot last computed associations heat-map. This method performs no new computations, but only allows
+to change the visual output of the last computed heat-map.</p>
+<ul>
+<li>
+<p><strong><code>ax</code></strong> : matplotlib <code>Axe</code> </p>
+<p><em>Default: <code>None</code></em></p>
+<p>Matplotlib Axis on which the heat-map will be plotted</p>
+</li>
+<li>
+<p><strong><code>figsize</code></strong> : <code>(int,int)</code> or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>A Matplotlib figure-size tuple. If <code>None</code>, uses the last <code>associations</code> call value.
+Only used if <code>ax=None</code>.</p>
+</li>
+<li>
+<p><strong><code>annot</code></strong> : <code>Boolean</code> or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>Plot number annotations on the heat-map. If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>fmt</code></strong> : <code>string</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>String formatting of annotations. If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>cmap</code></strong> : Matplotlib <code>colormap</code> or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>A colormap to be used for the heat-map. If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>sv_color</code></strong> : <code>string</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>A Matplotlib color. The color to be used when displaying single-value.
+If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>cbar</code></strong> : <code>Boolean</code>or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>Display heat-map's color-bar. If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>vmax</code></strong> : <code>float</code> or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>Set heat-map <code>vmax</code> option. If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>vmin</code></strong> : <code>float</code> or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>Set heat-map <code>vmin</code> option. If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>plot</code></strong> : <code>Boolean</code></p>
+<p><em>Default: <code>True</code></em></p>
+<p>Plot a heat-map of the correlation matrix. If False, plotting still
+happens, but the heat-map will not be displayed.</p>
+</li>
+<li>
+<p><strong><code>title</code></strong> : <code>string</code> or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>Plotted graph title. If <code>None</code>, uses the last <code>associations</code> call value.</p>
+</li>
+<li>
+<p><strong><code>filename</code></strong> : <code>string</code> or <code>None</code></p>
+<p><em>Default: <code>None</code></em></p>
+<p>If not <code>None</code>, plot will be saved to the given file name. Note: in order to avoid accidental file
+overwrites, the last <code>associations</code> call value is never used, and when filename is set to None,
+no writing to file occurs.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> A Matplotlib <code>Axe</code></p>
+<hr />
+<h4 id="theils_u"><code>theils_u</code><a class="headerlink" href="#theils_u" title="Permanent link">&para;</a></h4>
+<p><code>theils_u(x, y, nan_strategy=REPLACE, nan_replace_value=DEFAULT_REPLACE_VALUE)</code></p>
+<p>Calculates Theil's U statistic (Uncertainty coefficient) for categorical-categorical association, defined as:</p>
+<div class="arithmatex">\[ U(X|Y) = \frac{S(X) - S(X|Y)}{S(X)} \]</div>
+<p>where <span class="arithmatex">\(S(X)\)</span> is the entropy of <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(S(X|Y)\)</span> is the <a href="#conditional_entropy">conditional entropy</a> of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(Y\)</span>.</p>
+<p>This is the uncertainty of x given y: value is on the range of [0,1] - where 0 means y provides no information about
+x, and 1 means y provides full information about x.
+This is an asymmetric coefficient: <span class="arithmatex">\(U(x,y) \neq U(y,x)\)</span>. Read more on
+<a href="https://en.wikipedia.org/wiki/Uncertainty_coefficient">Wikipedia</a>.</p>
+<ul>
+<li>
+<p><strong><code>x</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of categorical measurements</p>
+</li>
+<li>
+<p><strong><code>y</code></strong> : <code>list / NumPy ndarray / Pandas Series</code></p>
+<p>A sequence of categorical measurements</p>
+</li>
+<li>
+<p><strong><code>nan_strategy</code></strong> : <code>string</code></p>
+<p><em>Default: 'replace'</em></p>
+<p>How to handle missing values: can be either 'drop' to remove samples with missing values, or 'replace' to replace all missing values with the nan_replace_value. Missing values are None and np.nan.</p>
+</li>
+<li>
+<p><strong><code>nan_replace_value</code></strong> : <code>any</code></p>
+<p><em>Default: 0.0</em></p>
+<p>The value used to replace missing values with. Only applicable when nan_strategy is set to 'replace'.</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> float in the range of [0,1]</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; Shaked Zychlinski
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://shakedzy.xyz/" target="_blank" rel="noopener" title="shakedzy.xyz" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/shakedzy" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/shakedzy/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://shakedzy.medium.com/" target="_blank" rel="noopener" title="shakedzy.medium.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M369.4 32c43.4 0 78.6 35.2 78.6 78.6v83.8c-1.9-.1-3.8-.2-5.7-.2h-.4c-10 0-22.3 2.4-31.1 6.8-10 4.6-18.7 11.5-26 20.6-11.8 14.6-18.9 34.3-20.6 56.4-.1.7-.1 1.3-.2 2s-.1 1.2-.1 1.9c-.1 1.2-.1 2.4-.1 3.6 0 1.9-.1 3.8 0 5.8 1.2 50.1 28.2 90.2 76.3 90.2 2.7 0 5.3-.1 7.9-.4v20.4c0 43.4-35.2 78.6-78.6 78.6L78.6 480C35.2 480 0 444.8 0 401.4V110.6C0 67.2 35.2 32 78.6 32zM82.3 138.9l.3.1c13.2 3 19.8 7.4 19.8 23.4v187.2c0 16-6.7 20.4-19.9 23.4l-.3.1v2.8H135v-2.8l-.3-.1c-13.2-3-19.9-7.4-19.9-23.4V173.3l86.1 202.5h4.9l88.6-208.2v186.6c-1.1 12.6-7.8 16.5-19.7 19.2l-.3.1v2.7h91.9v-2.7l-.3-.1c-11.9-2.7-18.7-6.6-19.9-19.2l-.1-191.8h.1c0-16 6.7-20.4 19.9-23.4l.3-.1v-2.7h-72.2l-67 157.4-67-157.4H82.3zM448 340.3c-25.1-7.4-43-35.1-41.2-67.8h41.1v67.8zm-6.4-135.6c2.3 0 4.4.3 6.4.9V263h-40.2c1.5-33.6 13.6-57.9 33.8-58.3"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>
